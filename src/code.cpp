@@ -2983,7 +2983,7 @@ Rcpp::List ClusteringCPsEPI(arma::mat data,
 
 //' Clustering univariate times series with common changes in time
 //'
-//' @param data First value
+//' @param data a matrix (nxd) where each row is an observation and each column corresponds to a discrete time
 //' @param n_iterations Second value
 //' @param B
 //' @param L

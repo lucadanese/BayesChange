@@ -39,9 +39,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// DetectCPsUnivariateTS
-Rcpp::List DetectCPsUnivariateTS(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_DetectCPsUnivariateTS(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP user_seedSEXP) {
+// get_order_VI
+arma::vec get_order_VI(arma::mat orders_mat);
+RcppExport SEXP _BayesCPs_get_order_VI(SEXP orders_matSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type orders_mat(orders_matSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_order_VI(orders_mat));
+    return rcpp_result_gen;
+END_RCPP
+}
+// detect_cp_univariate
+Rcpp::List detect_cp_univariate(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_detect_cp_univariate(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -55,7 +66,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type par_theta_c(par_theta_cSEXP);
     Rcpp::traits::input_parameter< double >::type par_theta_d(par_theta_dSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(DetectCPsUnivariateTS(data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed));
+    rcpp_result_gen = Rcpp::wrap(detect_cp_univariate(data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -156,7 +167,8 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesCPs_SimEpiData", (DL_FUNC) &_BayesCPs_SimEpiData, 6},
     {"_BayesCPs_psm", (DL_FUNC) &_BayesCPs_psm, 1},
-    {"_BayesCPs_DetectCPsUnivariateTS", (DL_FUNC) &_BayesCPs_DetectCPsUnivariateTS, 10},
+    {"_BayesCPs_get_order_VI", (DL_FUNC) &_BayesCPs_get_order_VI, 1},
+    {"_BayesCPs_detect_cp_univariate", (DL_FUNC) &_BayesCPs_detect_cp_univariate, 10},
     {"_BayesCPs_DetectCPsMultivariateTS", (DL_FUNC) &_BayesCPs_DetectCPsMultivariateTS, 11},
     {"_BayesCPs_ClusteringCPsEPI", (DL_FUNC) &_BayesCPs_ClusteringCPsEPI, 19},
     {"_BayesCPs_ClusteringCPsUnivariateTS", (DL_FUNC) &_BayesCPs_ClusteringCPsUnivariateTS, 11},

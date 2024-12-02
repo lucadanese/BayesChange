@@ -24,6 +24,15 @@ psm <- function(M) {
     .Call(`_BayesCPs_psm`, M)
 }
 
+#' Estimate order
+#'
+#' @param orders_mat First value
+#' @return TO DO
+#'
+get_order_VI <- function(orders_mat) {
+    .Call(`_BayesCPs_get_order_VI`, orders_mat)
+}
+
 #' Detect Change Points on univariate time series
 #'
 #' @param data vector of observations.
@@ -33,7 +42,7 @@ psm <- function(M) {
 #' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 #' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{DetectCPsUnivariateTS} returns a list containing the following components: \itemize{
+#' @return Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 #' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
@@ -44,15 +53,15 @@ psm <- function(M) {
 #'
 #' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 #'
-#' out <- DetectCPsUnivariateTS(data = data_vec,
-#'                              n_iterations = 2500,
-#'                              q = 0.25,
-#'                              phi = 0.1, a = 1, b = 1, c = 0.1)
+#' out <- detect_cp_univariate(data = data_vec,
+#'                             n_iterations = 2500,
+#'                             q = 0.25,
+#'                             phi = 0.1, a = 1, b = 1, c = 0.1)
 #'
-#' salso::salso(x = out$order)
+#' get_order_VI(out$order)
 #' @export
-DetectCPsUnivariateTS <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, user_seed = 1234L) {
-    .Call(`_BayesCPs_DetectCPsUnivariateTS`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed)
+detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, user_seed = 1234L) {
+    .Call(`_BayesCPs_detect_cp_univariate`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed)
 }
 
 #' Detect Change Points on multivariate time series

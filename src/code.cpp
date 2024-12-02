@@ -14,6 +14,20 @@
 // UTILS
 //--------
 
+int which_min_cpp(arma::vec x) {
+  int n = x.size();
+  int min_index = 0; // 0-based index
+  double min_value = x[0];
+
+  for (int i = 1; i < n; ++i) {
+    if (x[i] < min_value) {
+      min_value = x[i];
+      min_index = i;
+    }
+  }
+
+  return min_index; // Convert to 1-based index
+}
 
 double rshiftedgamma(double a, double b, double shift_param, gsl_rng *r){
 
@@ -2524,6 +2538,42 @@ arma::mat psm(arma::mat M){
   return(result / M.n_rows);
 }
 
+//' Estimate order
+//'
+//' @param orders_mat First value
+//' @return TO DO
+//'
+//[[Rcpp::export]]
+arma::vec get_order_VI(arma::mat orders_mat){
+
+  arma::vec out_res(orders_mat.n_cols);
+  arma::vec result(orders_mat.n_rows);
+  arma::mat psm_mat = psm(orders_mat);
+
+  double f = 0.0;
+  int n = psm_mat.n_cols;
+  arma::vec tvec(n);
+
+  for(arma::uword j = 0; j < orders_mat.n_rows; j++){
+    f = 0.0;
+    for(int i = 0; i < n; i++){
+      tvec = psm_mat.col(i);
+      f += (log2(sum(orders_mat.row(j) == orders_mat(j,i))) +
+        log2(sum(tvec)) -
+        2 * log2(sum(tvec.elem(find(orders_mat.row(j).t() == orders_mat(j,i))))))/n;
+    }
+    result(j) = f;
+    Rcpp::checkUserInterrupt();
+  }
+
+
+  int index_min = which_min_cpp(result);
+
+  out_res = orders_mat.row(index_min).t();
+
+  return(out_res);
+}
+
 //-----------------
 // MAIN FUNCTIONS
 //-----------------
@@ -2537,7 +2587,7 @@ arma::mat psm(arma::mat M){
 //' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 //' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{DetectCPsUnivariateTS} returns a list containing the following components: \itemize{
+//' @return Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 //' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
@@ -2548,15 +2598,15 @@ arma::mat psm(arma::mat M){
 //'
 //' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 //'
-//' out <- DetectCPsUnivariateTS(data = data_vec,
-//'                              n_iterations = 2500,
-//'                              q = 0.25,
-//'                              phi = 0.1, a = 1, b = 1, c = 0.1)
+//' out <- detect_cp_univariate(data = data_vec,
+//'                             n_iterations = 2500,
+//'                             q = 0.25,
+//'                             phi = 0.1, a = 1, b = 1, c = 0.1)
 //'
-//' salso::salso(x = out$order)
+//' get_order_VI(out$order)
 //' @export
 //[[Rcpp::export]]
-Rcpp::List DetectCPsUnivariateTS(arma::vec data,
+Rcpp::List detect_cp_univariate(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
                                 double par_theta_c = 1, double par_theta_d = 1, unsigned long user_seed = 1234){
 

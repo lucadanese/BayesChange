@@ -2532,16 +2532,15 @@ arma::mat psm(arma::mat M){
 //'
 //' @param data_vec First value
 //' @param n_iterations Second value
-//' @param q
-//' @param phi
-//' @param a
-//' @param b
-//' @param c
-//' @param user_seed
-//' @param prior_theta_c
-//' @param prior_theta_d
+//' @param q prova
+//' @param phi prova
+//' @param a prova
+//' @param b prova
+//' @param c prova
+//' @param user_seed prova
+//' @param prior_theta_c prova
+//' @param prior_theta_d prova
 //' @return TO DO
-//'
 // [[Rcpp::export]]
 Rcpp::List DetectCPsUnivariateTS(arma::vec data_vec,
                                 int n_iterations, double q, double phi, double a, double b, double c,
@@ -2690,17 +2689,16 @@ Rcpp::List DetectCPsUnivariateTS(arma::vec data_vec,
 //'
 //' @param data First value
 //' @param n_iterations Second value
-//' @param q
-//' @param k_0
-//' @param nu_0
-//' @param phi_0
-//' @param m_0
-//' @param user_seed
-//' @param prior_theta_c
-//' @param prior_theta_d
-//' @param prior_var_gamma
+//' @param q prova
+//' @param k_0 prova
+//' @param nu_0 prova
+//' @param phi_0 prova
+//' @param m_0 prova
+//' @param user_seed prova
+//' @param prior_theta_c prova
+//' @param prior_theta_d prova
+//' @param prior_var_gamma prova
 //' @return TO DO
-//'
 // [[Rcpp::export]]
 Rcpp::List DetectCPsMultivariateTS(arma::mat data,
                                    int n_iterations, double q, double k_0, double nu_0,
@@ -2853,27 +2851,24 @@ Rcpp::List DetectCPsMultivariateTS(arma::mat data,
 //'
 //' @param data First value
 //' @param niter Second value
-//' @param M
-//' @param B
-//' @param L
-//' @param gamma
-//' @param alpha
-//' @param q
-//' @param dt
-//' @param a0
-//' @param b0
-//' @param c0
-//' @param d0
-//' @param MH_var
-//' @param S0
-//' @param R0
-//' @param p
-//' @param coarsening
-//' @user_seed
+//' @param M prova
+//' @param B prova
+//' @param L prova
+//' @param gamma prova
+//' @param alpha prova
+//' @param q prova
+//' @param dt prova
+//' @param a0 prova
+//' @param b0 prova
+//' @param c0 prova
+//' @param d0 prova
+//' @param MH_var prova
+//' @param S0 prova
+//' @param R0 prova
+//' @param p prova
+//' @param coarsening prova
+//' @param user_seed prova
 //' @return TO DO
-//'
-//'
-//'
 // [[Rcpp::export]]
 Rcpp::List ClusteringCPsEPI(arma::mat data,
                            int niter,
@@ -2983,22 +2978,19 @@ Rcpp::List ClusteringCPsEPI(arma::mat data,
 
 //' Clustering univariate times series with common changes in time
 //'
-//' @param data a matrix (nxd) where each row is an observation and each column corresponds to a discrete time
+//' @param data a matrix where each row is an observation and each column corresponds to a discrete time
 //' @param n_iterations Second value
-//' @param B
-//' @param L
-//' @param gamma
-//' @param a
-//' @param b
-//' @param c
-//' @param d
-//' @param q
-//' @param alpha_SM
-//' @param user_seed
+//' @param B Prova
+//' @param L prova
+//' @param gamma prova
+//' @param a prova
+//' @param b prova
+//' @param c prova
+//' @param d prova
+//' @param q prova
+//' @param alpha_SM prova
+//' @param user_seed prova
 //' @return TO DO
-//'
-//'
-//'
 // [[Rcpp::export]]
 Rcpp::List ClusteringCPsUnivariateTS(arma::mat data,
                                    int n_iterations,
@@ -3303,24 +3295,21 @@ return out_list;
 }
 
 //' Clustering multivariate times series with common changes in time
- //'
- //' @param data First value
- //' @param n_iterations Second value
- //' @param B
- //' @param L
- //' @param gamma
- //' @param k_0
- //' @param nu_0
- //' @param phi_0
- //' @param m_0
- //' @param q
- //' @param alpha_SM
- //' @param user_seed
- //' @return TO DO
- //'
- //'
- //'
- // [[Rcpp::export]]
+//'
+//' @param data First value
+//' @param n_iterations Second value
+//' @param B prova
+//' @param L prova
+//' @param gamma prova
+//' @param k_0 prova
+//' @param nu_0 prova
+//' @param phi_0 prova
+//' @param m_0 prova
+//' @param q prova
+//' @param alpha_SM prova
+//' @param user_seed prova
+//' @return TO DO
+// [[Rcpp::export]]
 Rcpp::List ClusteringCPsMultivariateTS(arma::cube data,
                                        int n_iterations,
                                        int B,
@@ -3332,9 +3321,6 @@ Rcpp::List ClusteringCPsMultivariateTS(arma::cube data,
                                        arma::vec m_0,
                                        double q = 0.5,
                                        double alpha_SM = 0.1, unsigned long user_seed = 1234){
-  //
-  //
-  //
 
   arma::mat res_clust(n_iterations, data.n_slices), orders_temp_clean;
   arma::cube res_orders(data.n_slices, data.slice(0).n_cols, n_iterations);

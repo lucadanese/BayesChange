@@ -30,6 +30,40 @@ ClusteringCPsEPI(
 \item{data}{First value}
 
 \item{niter}{Second value}
+
+\item{M}{prova}
+
+\item{B}{prova}
+
+\item{L}{prova}
+
+\item{gamma}{prova}
+
+\item{alpha}{prova}
+
+\item{q}{prova}
+
+\item{dt}{prova}
+
+\item{a0}{prova}
+
+\item{b0}{prova}
+
+\item{c0}{prova}
+
+\item{d0}{prova}
+
+\item{MH_var}{prova}
+
+\item{S0}{prova}
+
+\item{R0}{prova}
+
+\item{p}{prova}
+
+\item{coarsening}{prova}
+
+\item{user_seed}{prova}
 }
 \value{
 TO DO

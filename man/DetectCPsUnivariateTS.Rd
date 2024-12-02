@@ -21,6 +21,22 @@ DetectCPsUnivariateTS(
 \item{data_vec}{First value}
 
 \item{n_iterations}{Second value}
+
+\item{q}{prova}
+
+\item{phi}{prova}
+
+\item{a}{prova}
+
+\item{b}{prova}
+
+\item{c}{prova}
+
+\item{user_seed}{prova}
+
+\item{prior_theta_c}{prova}
+
+\item{prior_theta_d}{prova}
 }
 \value{
 TO DO

@@ -19,9 +19,29 @@ ClusteringCPsUnivariateTS(
 )
 }
 \arguments{
-\item{data}{First value}
+\item{data}{a matrix where each row is an observation and each column corresponds to a discrete time}
 
 \item{n_iterations}{Second value}
+
+\item{B}{Prova}
+
+\item{L}{prova}
+
+\item{gamma}{prova}
+
+\item{a}{prova}
+
+\item{b}{prova}
+
+\item{c}{prova}
+
+\item{q}{prova}
+
+\item{alpha_SM}{prova}
+
+\item{user_seed}{prova}
+
+\item{d}{prova}
 }
 \value{
 TO DO

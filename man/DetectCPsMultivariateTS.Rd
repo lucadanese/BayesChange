@@ -22,6 +22,24 @@ DetectCPsMultivariateTS(
 \item{data}{First value}
 
 \item{n_iterations}{Second value}
+
+\item{q}{prova}
+
+\item{k_0}{prova}
+
+\item{nu_0}{prova}
+
+\item{phi_0}{prova}
+
+\item{m_0}{prova}
+
+\item{user_seed}{prova}
+
+\item{prior_theta_c}{prova}
+
+\item{prior_theta_d}{prova}
+
+\item{prior_var_gamma}{prova}
 }
 \value{
 TO DO

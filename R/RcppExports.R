@@ -29,6 +29,7 @@ psm <- function(M) {
 #' @param orders_mat First value
 #' @return TO DO
 #'
+#' @export
 get_order_VI <- function(orders_mat) {
     .Call(`_BayesCPs_get_order_VI`, orders_mat)
 }

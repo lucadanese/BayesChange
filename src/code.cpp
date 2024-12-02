@@ -2543,6 +2543,7 @@ arma::mat psm(arma::mat M){
 //' @param orders_mat First value
 //' @return TO DO
 //'
+//' @export
 //[[Rcpp::export]]
 arma::vec get_order_VI(arma::mat orders_mat){
 
@@ -2609,6 +2610,16 @@ arma::vec get_order_VI(arma::mat orders_mat){
 Rcpp::List detect_cp_univariate(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
                                 double par_theta_c = 1, double par_theta_d = 1, unsigned long user_seed = 1234){
+
+
+  if(n_iterations < 1){
+    Rcpp::stop("number of iterations must be at least 1.");
+  }
+
+  if((q > 1) | (q < 0)){
+    Rcpp::stop("'q' must be included in (0,1).");
+  }
+
 
  int start_s = clock();
  int current_s;

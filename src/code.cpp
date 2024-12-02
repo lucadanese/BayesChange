@@ -2466,10 +2466,10 @@ Rcpp::List DoobGillespieAlg(double S0,
 //'
 //' @param S0 First value
 //' @param I0 Second value
-//' @param MaxTime
-//' @param beta_vec
-//' @param gamma_0
-//' @param user_seed
+//' @param MaxTime Prova
+//' @param beta_vec Prova
+//' @param gamma_0 Prova
+//' @param user_seed Prova
 //' @return TO DO
 //'
 // [[Rcpp::export]]
@@ -2530,21 +2530,32 @@ arma::mat psm(arma::mat M){
 
 //' Detect Change Points on univariate time series
 //'
-//' @param data_vec vector of observations.
+//' @param data vector of observations.
 //' @param n_iterations number of MCMC iterations.
 //' @param q probability of performing a split at each iterations.
 //' @param phi parameter \eqn{\phi} of the integrated likelihood function.
-//' @param a prova
-//' @param b prova
-//' @param c prova
-//' @param user_seed prova
-//' @param prior_theta_c prova
-//' @param prior_theta_d prova
-//' @return TO DO
+//' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
+//' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
+//' @param user_seed seed for random distribution generation.
+//' @return Function \code{DetectCPsUnivariateTS} returns a list containing the following components: \itemize{
+//' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
+//' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
+//' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
+//' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+//' }
+//'
+//' @examples
+//' library(BayesCPs)
+//' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+//' out <- DetectCPsUnivariateTS(data = data_vec,
+//'                              n_iterations = 2500,
+//'                              q = 0.25,
+//'                              phi = 0.1, a = 1, b = 1, c = 0.1)
+//'
 // [[Rcpp::export]]
 Rcpp::List DetectCPsUnivariateTS(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
-                                double prior_theta_c = 1, double prior_theta_d = 1, unsigned long user_seed = 1234){
+                                double par_theta_c = 1, double par_theta_d = 1, unsigned long user_seed = 1234){
 
  int start_s = clock();
  int current_s;
@@ -2657,7 +2668,7 @@ Rcpp::List DetectCPsUnivariateTS(arma::vec data,
    // Posterior infererence on main parameters
    UpdateSigma(order, theta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
 
-   UpdateTheta(theta_inf(iter), sigma_inf(iter+1), order, theta_inf, prior_theta_c, prior_theta_d, r);
+   UpdateTheta(theta_inf(iter), sigma_inf(iter+1), order, theta_inf, par_theta_c, par_theta_d, r);
    //
 
    res_mat.row(iter) = order.t();
@@ -2673,9 +2684,9 @@ Rcpp::List DetectCPsUnivariateTS(arma::vec data,
 
  Rcpp::List out_list;
  out_list["orders"] = res_mat;
- out_list["sigma_chains"] = sigma_inf;
- out_list["sigma_AR"] = sigma_inf_10;
- out_list["theta_AR"] = theta_inf;
+ out_list["sigma_MCMC"] = sigma_inf;
+ out_list["sigma_MCMC_01"] = sigma_inf_10;
+ out_list["theta_MCMC"] = theta_inf;
 
  gsl_rng_free (r);
 

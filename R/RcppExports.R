@@ -5,10 +5,10 @@
 #'
 #' @param S0 First value
 #' @param I0 Second value
-#' @param MaxTime
-#' @param beta_vec
-#' @param gamma_0
-#' @param user_seed
+#' @param MaxTime Prova
+#' @param beta_vec Prova
+#' @param gamma_0 Prova
+#' @param user_seed Prova
 #' @return TO DO
 #'
 SimEpiData <- function(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L) {
@@ -26,19 +26,30 @@ psm <- function(M) {
 
 #' Detect Change Points on univariate time series
 #'
-#' @param data_vec vector of observations.
+#' @param data vector of observations.
 #' @param n_iterations number of MCMC iterations.
 #' @param q probability of performing a split at each iterations.
 #' @param phi parameter \eqn{\phi} of the integrated likelihood function.
-#' @param a prova
-#' @param b prova
-#' @param c prova
-#' @param user_seed prova
-#' @param prior_theta_c prova
-#' @param prior_theta_d prova
-#' @return TO DO
-DetectCPsUnivariateTS <- function(data, n_iterations, q, phi, a, b, c, prior_theta_c = 1, prior_theta_d = 1, user_seed = 1234L) {
-    .Call(`_BayesCPs_DetectCPsUnivariateTS`, data, n_iterations, q, phi, a, b, c, prior_theta_c, prior_theta_d, user_seed)
+#' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
+#' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
+#' @param user_seed seed for random distribution generation.
+#' @return Function \code{DetectCPsUnivariateTS} returns a list containing the following components: \itemize{
+#' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
+#' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
+#' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
+#' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+#' }
+#'
+#' @examples
+#' library(BayesCPs)
+#' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+#' out <- DetectCPsUnivariateTS(data = data_vec,
+#'                              n_iterations = 2500,
+#'                              q = 0.25,
+#'                              phi = 0.1, a = 1, b = 1, c = 0.1)
+#'
+DetectCPsUnivariateTS <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, user_seed = 1234L) {
+    .Call(`_BayesCPs_DetectCPsUnivariateTS`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed)
 }
 
 #' Detect Change Points on multivariate time series

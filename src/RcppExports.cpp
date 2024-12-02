@@ -40,8 +40,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // DetectCPsUnivariateTS
-Rcpp::List DetectCPsUnivariateTS(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double prior_theta_c, double prior_theta_d, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_DetectCPsUnivariateTS(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP prior_theta_cSEXP, SEXP prior_theta_dSEXP, SEXP user_seedSEXP) {
+Rcpp::List DetectCPsUnivariateTS(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_DetectCPsUnivariateTS(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -52,10 +52,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     Rcpp::traits::input_parameter< double >::type c(cSEXP);
-    Rcpp::traits::input_parameter< double >::type prior_theta_c(prior_theta_cSEXP);
-    Rcpp::traits::input_parameter< double >::type prior_theta_d(prior_theta_dSEXP);
+    Rcpp::traits::input_parameter< double >::type par_theta_c(par_theta_cSEXP);
+    Rcpp::traits::input_parameter< double >::type par_theta_d(par_theta_dSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(DetectCPsUnivariateTS(data, n_iterations, q, phi, a, b, c, prior_theta_c, prior_theta_d, user_seed));
+    rcpp_result_gen = Rcpp::wrap(DetectCPsUnivariateTS(data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }

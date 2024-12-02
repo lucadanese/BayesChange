@@ -10,6 +10,14 @@ SimEpiData(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L)
 \item{S0}{First value}
 
 \item{I0}{Second value}
+
+\item{MaxTime}{Prova}
+
+\item{beta_vec}{Prova}
+
+\item{gamma_0}{Prova}
+
+\item{user_seed}{Prova}
 }
 \value{
 TO DO

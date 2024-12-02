@@ -79,6 +79,8 @@ detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_
 #' @param prior_theta_d prova
 #' @param prior_var_gamma prova
 #' @return TO DO
+#'
+#' @export
 DetectCPsMultivariateTS <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, user_seed = 1234L, prior_theta_c = 1, prior_theta_d = 1, prior_var_gamma = 0.1) {
     .Call(`_BayesCPs_DetectCPsMultivariateTS`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, user_seed, prior_theta_c, prior_theta_d, prior_var_gamma)
 }
@@ -105,6 +107,8 @@ DetectCPsMultivariateTS <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0
 #' @param coarsening prova
 #' @param user_seed prova
 #' @return TO DO
+#'
+#' @export
 ClusteringCPsEPI <- function(data, niter, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coarsening = 1, user_seed = 1234L) {
     .Call(`_BayesCPs_ClusteringCPsEPI`, data, niter, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coarsening, user_seed)
 }
@@ -119,11 +123,12 @@ ClusteringCPsEPI <- function(data, niter, M, B, L, gamma = 1/8, alpha = 1, q = 0
 #' @param a prova
 #' @param b prova
 #' @param c prova
-#' @param d prova
 #' @param q prova
 #' @param alpha_SM prova
 #' @param user_seed prova
 #' @return TO DO
+#'
+#' @export
 ClusteringCPsUnivariateTS <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, user_seed = 1234L) {
     .Call(`_BayesCPs_ClusteringCPsUnivariateTS`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, user_seed)
 }
@@ -143,6 +148,8 @@ ClusteringCPsUnivariateTS <- function(data, n_iterations, B, L, gamma, a = 1, b 
 #' @param alpha_SM prova
 #' @param user_seed prova
 #' @return TO DO
+#'
+#' @export
 ClusteringCPsMultivariateTS <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, user_seed = 1234L) {
     .Call(`_BayesCPs_ClusteringCPsMultivariateTS`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, user_seed)
 }

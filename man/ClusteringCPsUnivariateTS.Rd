@@ -40,8 +40,6 @@ ClusteringCPsUnivariateTS(
 \item{alpha_SM}{prova}
 
 \item{user_seed}{prova}
-
-\item{d}{prova}
 }
 \value{
 TO DO

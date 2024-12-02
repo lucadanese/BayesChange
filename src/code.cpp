@@ -2774,6 +2774,8 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 //' @param prior_theta_d prova
 //' @param prior_var_gamma prova
 //' @return TO DO
+//'
+//' @export
 // [[Rcpp::export]]
 Rcpp::List DetectCPsMultivariateTS(arma::mat data,
                                    int n_iterations, double q, double k_0, double nu_0,
@@ -2944,6 +2946,8 @@ Rcpp::List DetectCPsMultivariateTS(arma::mat data,
 //' @param coarsening prova
 //' @param user_seed prova
 //' @return TO DO
+//'
+//' @export
 // [[Rcpp::export]]
 Rcpp::List ClusteringCPsEPI(arma::mat data,
                            int niter,
@@ -3061,11 +3065,12 @@ Rcpp::List ClusteringCPsEPI(arma::mat data,
 //' @param a prova
 //' @param b prova
 //' @param c prova
-//' @param d prova
 //' @param q prova
 //' @param alpha_SM prova
 //' @param user_seed prova
 //' @return TO DO
+//'
+//' @export
 // [[Rcpp::export]]
 Rcpp::List ClusteringCPsUnivariateTS(arma::mat data,
                                    int n_iterations,
@@ -3384,6 +3389,8 @@ return out_list;
 //' @param alpha_SM prova
 //' @param user_seed prova
 //' @return TO DO
+//'
+//' @export
 // [[Rcpp::export]]
 Rcpp::List ClusteringCPsMultivariateTS(arma::cube data,
                                        int n_iterations,

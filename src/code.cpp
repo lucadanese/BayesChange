@@ -2530,10 +2530,10 @@ arma::mat psm(arma::mat M){
 
 //' Detect Change Points on univariate time series
 //'
-//' @param data_vec First value
-//' @param n_iterations Second value
-//' @param q prova
-//' @param phi prova
+//' @param data_vec vector of observations.
+//' @param n_iterations number of MCMC iterations.
+//' @param q probability of performing a split at each iterations.
+//' @param phi parameter \eqn{\phi} of the integrated likelihood function.
 //' @param a prova
 //' @param b prova
 //' @param c prova
@@ -2542,9 +2542,9 @@ arma::mat psm(arma::mat M){
 //' @param prior_theta_d prova
 //' @return TO DO
 // [[Rcpp::export]]
-Rcpp::List DetectCPsUnivariateTS(arma::vec data_vec,
+Rcpp::List DetectCPsUnivariateTS(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
-                                unsigned long user_seed = 1234, double prior_theta_c = 1, double prior_theta_d = 1){
+                                double prior_theta_c = 1, double prior_theta_d = 1, unsigned long user_seed = 1234){
 
  int start_s = clock();
  int current_s;
@@ -2560,14 +2560,14 @@ Rcpp::List DetectCPsUnivariateTS(arma::vec data_vec,
  //
 
  arma::vec res_order, probs(2), sigma_inf(1), sigma_inf_10(1), theta_inf(1);
- arma::mat data(1,data_vec.n_elem), res_mat(n_iterations, data.n_cols);
+ arma::mat data_mat(1,data.n_elem), res_mat(n_iterations, data_mat.n_cols);
 
  sigma_inf(0) = 0.1; // add a random initialisation for the gamma param
  sigma_inf_10(0) = 0;
  theta_inf(0) = 0.1;
 
- for(arma::uword i = 0; i < data_vec.n_elem; i++){
-   data.row(0).col(i) = data_vec(i);
+ for(arma::uword i = 0; i < data.n_elem; i++){
+   data_mat.row(0).col(i) = data(i);
  }
 
  //generate random starting order
@@ -2577,8 +2577,8 @@ Rcpp::List DetectCPsUnivariateTS(arma::vec data_vec,
 
    double k = max(order) + 1;
 
-   probs(0) = q * indicator_1(k,data.n_cols) + indicator_3(k);
-   probs(1) = (1-q) * indicator_1(k,data.n_cols) + indicator_2(k, data.n_cols);
+   probs(0) = q * indicator_1(k,data_mat.n_cols) + indicator_3(k);
+   probs(1) = (1-q) * indicator_1(k,data_mat.n_cols) + indicator_2(k, data_mat.n_cols);
 
    probs(0) = probs(0)/(probs(0)+probs(1));
    probs(1) = probs(1)/(probs(0)+probs(1));
@@ -2598,7 +2598,7 @@ Rcpp::List DetectCPsUnivariateTS(arma::vec data_vec,
 
      /// evaluate the proposed order
 
-     double alpha_split = AlphaSplitOrder_UniTS(data, split_order, order, q, split_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_split = AlphaSplitOrder_UniTS(data_mat, split_order, order, q, split_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
 
      if(log(arma::randu()) <= alpha_split){
        res_order = split_order;
@@ -2621,7 +2621,7 @@ Rcpp::List DetectCPsUnivariateTS(arma::vec data_vec,
 
      /// evaluate the proposed order
 
-     double alpha_merge = AlphaMergeOrder_UniTS(data, merge_order, order, q, merge_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_merge = AlphaMergeOrder_UniTS(data_mat, merge_order, order, q, merge_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
 
      if(log(arma::randu()) <= alpha_merge){
        res_order = merge_order;
@@ -2643,7 +2643,7 @@ Rcpp::List DetectCPsUnivariateTS(arma::vec data_vec,
 
      /// evaluate the proposed order
 
-     double alpha_shuffle = AlphaShuffleOrder_UniTS(data, shuffle_order, order, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_shuffle = AlphaShuffleOrder_UniTS(data_mat, shuffle_order, order, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
 
      if(log(arma::randu()) <= alpha_shuffle){
        res_order = shuffle_order;

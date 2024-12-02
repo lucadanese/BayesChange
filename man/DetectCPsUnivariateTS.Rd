@@ -5,26 +5,24 @@
 \title{Detect Change Points on univariate time series}
 \usage{
 DetectCPsUnivariateTS(
-  data_vec,
+  data,
   n_iterations,
   q,
   phi,
   a,
   b,
   c,
-  user_seed = 1234L,
   prior_theta_c = 1,
-  prior_theta_d = 1
+  prior_theta_d = 1,
+  user_seed = 1234L
 )
 }
 \arguments{
-\item{data_vec}{First value}
+\item{n_iterations}{number of MCMC iterations.}
 
-\item{n_iterations}{Second value}
+\item{q}{probability of performing a split at each iterations.}
 
-\item{q}{prova}
-
-\item{phi}{prova}
+\item{phi}{parameter \eqn{\phi} of the integrated likelihood function.}
 
 \item{a}{prova}
 
@@ -32,11 +30,13 @@ DetectCPsUnivariateTS(
 
 \item{c}{prova}
 
-\item{user_seed}{prova}
-
 \item{prior_theta_c}{prova}
 
 \item{prior_theta_d}{prova}
+
+\item{user_seed}{prova}
+
+\item{data_vec}{vector of observations.}
 }
 \value{
 TO DO

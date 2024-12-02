@@ -26,10 +26,10 @@ psm <- function(M) {
 
 #' Detect Change Points on univariate time series
 #'
-#' @param data_vec First value
-#' @param n_iterations Second value
-#' @param q prova
-#' @param phi prova
+#' @param data_vec vector of observations.
+#' @param n_iterations number of MCMC iterations.
+#' @param q probability of performing a split at each iterations.
+#' @param phi parameter \eqn{\phi} of the integrated likelihood function.
 #' @param a prova
 #' @param b prova
 #' @param c prova
@@ -37,8 +37,8 @@ psm <- function(M) {
 #' @param prior_theta_c prova
 #' @param prior_theta_d prova
 #' @return TO DO
-DetectCPsUnivariateTS <- function(data_vec, n_iterations, q, phi, a, b, c, user_seed = 1234L, prior_theta_c = 1, prior_theta_d = 1) {
-    .Call(`_BayesCPs_DetectCPsUnivariateTS`, data_vec, n_iterations, q, phi, a, b, c, user_seed, prior_theta_c, prior_theta_d)
+DetectCPsUnivariateTS <- function(data, n_iterations, q, phi, a, b, c, prior_theta_c = 1, prior_theta_d = 1, user_seed = 1234L) {
+    .Call(`_BayesCPs_DetectCPsUnivariateTS`, data, n_iterations, q, phi, a, b, c, prior_theta_c, prior_theta_d, user_seed)
 }
 
 #' Detect Change Points on multivariate time series

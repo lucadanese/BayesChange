@@ -2545,12 +2545,15 @@ arma::mat psm(arma::mat M){
 //' }
 //'
 //' @examples
-//' library(BayesCPs)
+//'
 //' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+//'
 //' out <- DetectCPsUnivariateTS(data = data_vec,
 //'                              n_iterations = 2500,
 //'                              q = 0.25,
 //'                              phi = 0.1, a = 1, b = 1, c = 0.1)
+//'
+//' salso::salso(x = out$order)
 //' @export
 //[[Rcpp::export]]
 Rcpp::List DetectCPsUnivariateTS(arma::vec data,

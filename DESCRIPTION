@@ -1,0 +1,18 @@
+Package: BayesCPs
+Title: Tools for Bayesian Change Points Analysis
+Version: 0.0.0.9000
+Authors@R: 
+    person("Luca", "Danese", , "danese.luca1@gmail.com", role = c("aut", "cre"))
+Description: This package containts functions for performing Change Points Detection both on univariate and multivariate time series. It also contains functions to cluster time series (either univariate or multivariate) and survival functions with common change points.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo,
+    RcppGSL
+Imports: 
+    Rcpp
+Depends: 
+    RcppGSL (>= 0.3.13)

@@ -2551,8 +2551,8 @@ arma::mat psm(arma::mat M){
 //'                              n_iterations = 2500,
 //'                              q = 0.25,
 //'                              phi = 0.1, a = 1, b = 1, c = 0.1)
-//'
-// [[Rcpp::export]]
+//' @export
+//[[Rcpp::export]]
 Rcpp::List DetectCPsUnivariateTS(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
                                 double par_theta_c = 1, double par_theta_d = 1, unsigned long user_seed = 1234){

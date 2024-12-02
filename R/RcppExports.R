@@ -47,7 +47,7 @@ psm <- function(M) {
 #'                              n_iterations = 2500,
 #'                              q = 0.25,
 #'                              phi = 0.1, a = 1, b = 1, c = 0.1)
-#'
+#' @export
 DetectCPsUnivariateTS <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, user_seed = 1234L) {
     .Call(`_BayesCPs_DetectCPsUnivariateTS`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed)
 }

@@ -50,5 +50,4 @@ out <- DetectCPsUnivariateTS(data = data_vec,
                              n_iterations = 2500,
                              q = 0.25,
                              phi = 0.1, a = 1, b = 1, c = 0.1)
-
 }

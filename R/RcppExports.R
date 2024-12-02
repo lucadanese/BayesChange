@@ -95,7 +95,7 @@ ClusteringCPsEPI <- function(data, niter, M, B, L, gamma = 1/8, alpha = 1, q = 0
 
 #' Clustering univariate times series with common changes in time
 #'
-#' @param data First value
+#' @param data a matrix (nxd) where each row is an observation and each column corresponds to a discrete time
 #' @param n_iterations Second value
 #' @param B
 #' @param L

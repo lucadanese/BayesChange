@@ -30,11 +30,11 @@ detect_cp_multivariate(
 
 \item{prior_var_gamma}{parameters for the Gamma prior for \eqn{\gamma}.}
 
+\item{print_progress}{If TRUE (default) print the progress bar.}
+
 \item{user_seed}{seed for random distribution generation.}
 
 \item{prior_theta_c, prior_theta_d}{parameters for the shifted Gamma priod for \eqn{\theta}.}
-
-\item{If}{TRUE (default) print the progress bar.}
 }
 \value{
 Function \code{detect_cp_multiivariate} returns a list containing the following components: \itemize{

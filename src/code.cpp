@@ -2587,7 +2587,7 @@ arma::vec get_order_VI(arma::mat orders_mat){
 //' @param phi parameter \eqn{\phi} of the integrated likelihood function.
 //' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 //' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
-//' @param If TRUE (default) print the progress bar.
+//' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
@@ -2610,7 +2610,7 @@ arma::vec get_order_VI(arma::mat orders_mat){
 //[[Rcpp::export]]
 Rcpp::List detect_cp_univariate(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
-                                double par_theta_c = 1, double par_theta_d = 1, bool progress_bar = true, unsigned long user_seed = 1234){
+                                double par_theta_c = 1, double par_theta_d = 1, bool print_progress = true, unsigned long user_seed = 1234){
 
 
   // WARNINGS //
@@ -2763,7 +2763,7 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 
    res_mat.row(iter) = order.t();
 
-   if(((iter + 1) % nupd == 0) & (progress_bar == true)){
+   if(((iter + 1) % nupd == 0) & (print_progress == true)){
      current_s = clock();
      Rcpp::Rcout << "Completed:\t" << (iter + 1) << "/" << n_iterations << " - in " <<
        double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
@@ -2794,7 +2794,7 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 //' @param k_0,nu_0,phi_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 //' @param prior_theta_c,prior_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
 //' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
-//' @param If TRUE (default) print the progress bar.
+//' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{detect_cp_multiivariate} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.

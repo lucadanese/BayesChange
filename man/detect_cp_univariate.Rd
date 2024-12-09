@@ -14,7 +14,7 @@ detect_cp_univariate(
   c,
   par_theta_c = 1,
   par_theta_d = 1,
-  progress_bar = TRUE,
+  print_progress = TRUE,
   user_seed = 1234L
 )
 }
@@ -31,9 +31,9 @@ detect_cp_univariate(
 
 \item{par_theta_c, par_theta_d}{parameters of the shifted Gamma prior for \eqn{\theta}.}
 
-\item{user_seed}{seed for random distribution generation.}
+\item{print_progress}{If TRUE (default) print the progress bar.}
 
-\item{If}{TRUE (default) print the progress bar.}
+\item{user_seed}{seed for random distribution generation.}
 }
 \value{
 Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{

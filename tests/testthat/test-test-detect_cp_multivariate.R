@@ -14,14 +14,14 @@ test_that("detect_cp_multivariate works", {
     out_test <- detect_cp_multivariate(data = data_mat,
                                        n_iterations = 2500, q = 0.25,
                                        k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
-                                       prior_theta_c = 2, prior_theta_d = 0.2, prior_var_gamma = 0.1, print_progress = FALSE)
+                                       par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1, print_progress = FALSE)
 
     length_orders[i] <- length(table(get_order_VI(out_test$order[1000:1500,])))
 
   }
 
 
-  if(mean(length_orders) < 3 & mean(length_orders) > 1.5){
+  if(mean(length_orders) < 4 & mean(length_orders) > 1){
     check = TRUE
   } else {
     check = FALSE

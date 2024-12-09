@@ -42,7 +42,7 @@ get_order_VI <- function(orders_mat) {
 #' @param phi parameter \eqn{\phi} of the integrated likelihood function.
 #' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 #' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
-#' @param If TRUE (default) print the progress bar.
+#' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
@@ -62,8 +62,8 @@ get_order_VI <- function(orders_mat) {
 #'
 #' get_order_VI(out$order)
 #' @export
-detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, progress_bar = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_detect_cp_univariate`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, progress_bar, user_seed)
+detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_detect_cp_univariate`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
 }
 
 #' Detect Change Points on multivariate time series
@@ -74,7 +74,7 @@ detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_
 #' @param k_0,nu_0,phi_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 #' @param prior_theta_c,prior_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
 #' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
-#' @param If TRUE (default) print the progress bar.
+#' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{detect_cp_multiivariate} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.

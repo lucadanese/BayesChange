@@ -34,14 +34,15 @@ get_order_VI <- function(orders_mat) {
     .Call(`_BayesCPs_get_order_VI`, orders_mat)
 }
 
-#' Detect Change Points on univariate time series
+#' Detect Change Points on an univariate time series.
 #'
 #' @param data vector of observations.
-#' @param n_iterations number of MCMC iterations.
+#' @param n_iterations number of MCMC iteration.
 #' @param q probability of performing a split at each iterations.
 #' @param phi parameter \eqn{\phi} of the integrated likelihood function.
 #' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 #' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
+#' @param If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
@@ -61,28 +62,46 @@ get_order_VI <- function(orders_mat) {
 #'
 #' get_order_VI(out$order)
 #' @export
-detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, user_seed = 1234L) {
-    .Call(`_BayesCPs_detect_cp_univariate`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed)
+detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, progress_bar = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_detect_cp_univariate`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, progress_bar, user_seed)
 }
 
 #' Detect Change Points on multivariate time series
 #'
-#' @param data First value
-#' @param n_iterations Second value
-#' @param q prova
-#' @param k_0 prova
-#' @param nu_0 prova
-#' @param phi_0 prova
-#' @param m_0 prova
-#' @param user_seed prova
-#' @param prior_theta_c prova
-#' @param prior_theta_d prova
-#' @param prior_var_gamma prova
-#' @return TO DO
+#' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
+#' @param n_iterations number of MCMC iterations.
+#' @param q probability of permorming a split at each iteration.
+#' @param k_0,nu_0,phi_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
+#' @param prior_theta_c,prior_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
+#' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
+#' @param If TRUE (default) print the progress bar.
+#' @param user_seed seed for random distribution generation.
+#' @return Function \code{detect_cp_multiivariate} returns a list containing the following components: \itemize{
+#' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
+#' \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
+#' \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
+#' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
+#' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
+#' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+#' }
 #'
+#'@examples
+#'
+#' data_mat <- matrix(NA, nrow = 3, ncol = 100)
+#'
+#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
+#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+#'
+#' out <- detect_cp_multivariate(data = data_mat,
+#'                               n_iterations = 2500,
+#'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
+#'                               prior_theta_c = 2, prior_theta_d = 0.2, prior_var_gamma = 0.1)
+#'
+#' table(get_order_VI(out$order))
 #' @export
-DetectCPsMultivariateTS <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, user_seed = 1234L, prior_theta_c = 1, prior_theta_d = 1, prior_var_gamma = 0.1) {
-    .Call(`_BayesCPs_DetectCPsMultivariateTS`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, user_seed, prior_theta_c, prior_theta_d, prior_var_gamma)
+detect_cp_multivariate <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_gamma = 0.1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_detect_cp_multivariate`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)
 }
 
 #' Clustering Epidemiological survival functions with common changes in time

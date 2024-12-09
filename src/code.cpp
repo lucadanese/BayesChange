@@ -2579,14 +2579,15 @@ arma::vec get_order_VI(arma::mat orders_mat){
 // MAIN FUNCTIONS
 //-----------------
 
-//' Detect Change Points on univariate time series
+//' Detect Change Points on an univariate time series.
 //'
 //' @param data vector of observations.
-//' @param n_iterations number of MCMC iterations.
+//' @param n_iterations number of MCMC iteration.
 //' @param q probability of performing a split at each iterations.
 //' @param phi parameter \eqn{\phi} of the integrated likelihood function.
 //' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 //' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
+//' @param If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
@@ -2609,9 +2610,10 @@ arma::vec get_order_VI(arma::mat orders_mat){
 //[[Rcpp::export]]
 Rcpp::List detect_cp_univariate(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
-                                double par_theta_c = 1, double par_theta_d = 1, unsigned long user_seed = 1234){
+                                double par_theta_c = 1, double par_theta_d = 1, bool progress_bar = true, unsigned long user_seed = 1234){
 
 
+  // WARNINGS //
   if(n_iterations < 1){
     Rcpp::stop("number of iterations must be at least 1.");
   }
@@ -2620,6 +2622,30 @@ Rcpp::List detect_cp_univariate(arma::vec data,
     Rcpp::stop("'q' must be included in (0,1).");
   }
 
+  if((phi > 1) | (phi < 0)){
+    Rcpp::stop("'phi' must be included in (0,1).");
+  }
+
+  if(a < 0){
+    Rcpp::stop("'a' must be positive.");
+  }
+
+  if(b < 0){
+    Rcpp::stop("'b' must be positive.");
+  }
+
+  if(c < 0){
+    Rcpp::stop("'c' must be positive.");
+  }
+
+  if(par_theta_c < 0){
+    Rcpp::stop("'par_theta_c' must be positive.");
+  }
+
+  if(par_theta_d < 0){
+    Rcpp::stop("'par_theta_d' must be positive.");
+  }
+  // ------- //
 
  int start_s = clock();
  int current_s;
@@ -2737,7 +2763,7 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 
    res_mat.row(iter) = order.t();
 
-   if((iter + 1) % nupd == 0){
+   if(((iter + 1) % nupd == 0) & (progress_bar == true)){
      current_s = clock();
      Rcpp::Rcout << "Completed:\t" << (iter + 1) << "/" << n_iterations << " - in " <<
        double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
@@ -2762,25 +2788,88 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 
 //' Detect Change Points on multivariate time series
 //'
-//' @param data First value
-//' @param n_iterations Second value
-//' @param q prova
-//' @param k_0 prova
-//' @param nu_0 prova
-//' @param phi_0 prova
-//' @param m_0 prova
-//' @param user_seed prova
-//' @param prior_theta_c prova
-//' @param prior_theta_d prova
-//' @param prior_var_gamma prova
-//' @return TO DO
+//' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
+//' @param n_iterations number of MCMC iterations.
+//' @param q probability of permorming a split at each iteration.
+//' @param k_0,nu_0,phi_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
+//' @param prior_theta_c,prior_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
+//' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
+//' @param If TRUE (default) print the progress bar.
+//' @param user_seed seed for random distribution generation.
+//' @return Function \code{detect_cp_multiivariate} returns a list containing the following components: \itemize{
+//' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
+//' \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
+//' \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
+//' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
+//' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
+//' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+//' }
 //'
+//'@examples
+//'
+//' data_mat <- matrix(NA, nrow = 3, ncol = 100)
+//'
+//' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+//' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
+//' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+//'
+//' out <- detect_cp_multivariate(data = data_mat,
+//'                               n_iterations = 2500,
+//'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
+//'                               prior_theta_c = 2, prior_theta_d = 0.2, prior_var_gamma = 0.1)
+//'
+//' table(get_order_VI(out$order))
 //' @export
 // [[Rcpp::export]]
-Rcpp::List DetectCPsMultivariateTS(arma::mat data,
-                                   int n_iterations, double q, double k_0, double nu_0,
-                                   arma::mat phi_0, arma::vec m_0, unsigned long user_seed = 1234,
-                                   double prior_theta_c = 1, double prior_theta_d = 1, double prior_var_gamma = 0.1){
+Rcpp::List detect_cp_multivariate(arma::mat data,
+                                  int n_iterations, double q, double k_0, double nu_0,
+                                  arma::mat phi_0, arma::vec m_0,
+                                  double par_theta_c = 1, double par_theta_d = 1, double prior_var_gamma = 0.1,
+                                  bool print_progress = true, unsigned long user_seed = 1234){
+
+  // WARNINGS //
+  if(n_iterations < 1){
+    Rcpp::stop("number of iterations must be at least 1.");
+  }
+
+  if((q > 1) | (q < 0)){
+    Rcpp::stop("'q' must be included in (0,1).");
+  }
+
+  if(k_0 < 0){
+    Rcpp::stop("'k_0' must be positive.");
+  }
+
+  if(nu_0 < 0){
+    Rcpp::stop("'nu_0' must be positive.");
+  }
+
+  if(phi_0.n_rows != data.n_rows){
+    Rcpp::stop("number of rows in 'phi_0' must equal number of observations.");
+  }
+
+  if(phi_0.n_cols != data.n_rows){
+    Rcpp::stop("number of columns in 'phi_0' must equal number of observations.");
+  }
+
+  if(m_0.n_elem != data.n_rows){
+    Rcpp::stop("number of elements in 'm_0' must equal number of observations.");
+  }
+
+  if(par_theta_c < 0){
+    Rcpp::stop("'par_theta_c' must be positive.");
+  }
+
+  if(par_theta_d < 0){
+    Rcpp::stop("'par_theta_d' must be positive.");
+  }
+
+  if(prior_var_gamma < 0){
+    Rcpp::stop("'prior_var_gamma' must be positive.");
+  }
+  // ------- //
+
+
 
    int start_s = clock();
    int current_s;
@@ -2894,12 +2983,12 @@ Rcpp::List DetectCPsMultivariateTS(arma::mat data,
 
      UpdateSigma(order, theta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
 
-     UpdateTheta(theta_inf(iter), sigma_inf(iter+1), order, theta_inf, prior_theta_c, prior_theta_d, r);
+     UpdateTheta(theta_inf(iter), sigma_inf(iter+1), order, theta_inf, par_theta_c, par_theta_d, r);
      //
 
      res_mat.row(iter) = order.t();
 
-     if((iter + 1) % nupd == 0){
+     if(((iter + 1) % nupd == 0) & (print_progress == true)){
        current_s = clock();
        Rcpp::Rcout << "Completed:\t" << (iter + 1) << "/" << n_iterations << " - in " <<
          double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
@@ -2910,11 +2999,11 @@ Rcpp::List DetectCPsMultivariateTS(arma::mat data,
 
    Rcpp::List out_list;
    out_list["orders"] = res_mat;
-   out_list["gamma_chains"] = gamma_inf;
-   out_list["gamma_AR"] = gamma_inf_10;
-   out_list["sigma_chains"] = sigma_inf;
-   out_list["sigma_AR"] = sigma_inf_10;
-   out_list["theta_AR"] = theta_inf;
+   out_list["gamma_MCMC"] = gamma_inf;
+   out_list["gamma_MCMC_01"] = gamma_inf_10;
+   out_list["sigma_MCMC"] = sigma_inf;
+   out_list["sigma_MCMC_01"] = sigma_inf_10;
+   out_list["theta_MCMC"] = theta_inf;
 
    gsl_rng_free (r);
 

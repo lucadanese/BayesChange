@@ -3,7 +3,7 @@
 export(ClusteringCPsEPI)
 export(ClusteringCPsMultivariateTS)
 export(ClusteringCPsUnivariateTS)
-export(DetectCPsMultivariateTS)
+export(detect_cp_multivariate)
 export(detect_cp_univariate)
 export(get_order_VI)
 importFrom(Rcpp,sourceCpp)

@@ -51,8 +51,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // detect_cp_univariate
-Rcpp::List detect_cp_univariate(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_detect_cp_univariate(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP user_seedSEXP) {
+Rcpp::List detect_cp_univariate(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, bool progress_bar, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_detect_cp_univariate(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP progress_barSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -65,14 +65,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type c(cSEXP);
     Rcpp::traits::input_parameter< double >::type par_theta_c(par_theta_cSEXP);
     Rcpp::traits::input_parameter< double >::type par_theta_d(par_theta_dSEXP);
+    Rcpp::traits::input_parameter< bool >::type progress_bar(progress_barSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(detect_cp_univariate(data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, user_seed));
+    rcpp_result_gen = Rcpp::wrap(detect_cp_univariate(data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, progress_bar, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
-// DetectCPsMultivariateTS
-Rcpp::List DetectCPsMultivariateTS(arma::mat data, int n_iterations, double q, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0, unsigned long user_seed, double prior_theta_c, double prior_theta_d, double prior_var_gamma);
-RcppExport SEXP _BayesCPs_DetectCPsMultivariateTS(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP user_seedSEXP, SEXP prior_theta_cSEXP, SEXP prior_theta_dSEXP, SEXP prior_var_gammaSEXP) {
+// detect_cp_multivariate
+Rcpp::List detect_cp_multivariate(arma::mat data, int n_iterations, double q, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0, double par_theta_c, double par_theta_d, double prior_var_gamma, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_detect_cp_multivariate(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP prior_var_gammaSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -83,11 +84,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type nu_0(nu_0SEXP);
     Rcpp::traits::input_parameter< arma::mat >::type phi_0(phi_0SEXP);
     Rcpp::traits::input_parameter< arma::vec >::type m_0(m_0SEXP);
-    Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    Rcpp::traits::input_parameter< double >::type prior_theta_c(prior_theta_cSEXP);
-    Rcpp::traits::input_parameter< double >::type prior_theta_d(prior_theta_dSEXP);
+    Rcpp::traits::input_parameter< double >::type par_theta_c(par_theta_cSEXP);
+    Rcpp::traits::input_parameter< double >::type par_theta_d(par_theta_dSEXP);
     Rcpp::traits::input_parameter< double >::type prior_var_gamma(prior_var_gammaSEXP);
-    rcpp_result_gen = Rcpp::wrap(DetectCPsMultivariateTS(data, n_iterations, q, k_0, nu_0, phi_0, m_0, user_seed, prior_theta_c, prior_theta_d, prior_var_gamma));
+    Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
+    Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(detect_cp_multivariate(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -168,8 +170,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesCPs_SimEpiData", (DL_FUNC) &_BayesCPs_SimEpiData, 6},
     {"_BayesCPs_psm", (DL_FUNC) &_BayesCPs_psm, 1},
     {"_BayesCPs_get_order_VI", (DL_FUNC) &_BayesCPs_get_order_VI, 1},
-    {"_BayesCPs_detect_cp_univariate", (DL_FUNC) &_BayesCPs_detect_cp_univariate, 10},
-    {"_BayesCPs_DetectCPsMultivariateTS", (DL_FUNC) &_BayesCPs_DetectCPsMultivariateTS, 11},
+    {"_BayesCPs_detect_cp_univariate", (DL_FUNC) &_BayesCPs_detect_cp_univariate, 11},
+    {"_BayesCPs_detect_cp_multivariate", (DL_FUNC) &_BayesCPs_detect_cp_multivariate, 12},
     {"_BayesCPs_ClusteringCPsEPI", (DL_FUNC) &_BayesCPs_ClusteringCPsEPI, 19},
     {"_BayesCPs_ClusteringCPsUnivariateTS", (DL_FUNC) &_BayesCPs_ClusteringCPsUnivariateTS, 11},
     {"_BayesCPs_ClusteringCPsMultivariateTS", (DL_FUNC) &_BayesCPs_ClusteringCPsMultivariateTS, 12},

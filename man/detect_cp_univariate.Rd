@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{detect_cp_univariate}
 \alias{detect_cp_univariate}
-\title{Detect Change Points on univariate time series}
+\title{Detect Change Points on an univariate time series.}
 \usage{
 detect_cp_univariate(
   data,
@@ -14,13 +14,14 @@ detect_cp_univariate(
   c,
   par_theta_c = 1,
   par_theta_d = 1,
+  progress_bar = TRUE,
   user_seed = 1234L
 )
 }
 \arguments{
 \item{data}{vector of observations.}
 
-\item{n_iterations}{number of MCMC iterations.}
+\item{n_iterations}{number of MCMC iteration.}
 
 \item{q}{probability of performing a split at each iterations.}
 
@@ -31,6 +32,8 @@ detect_cp_univariate(
 \item{par_theta_c, par_theta_d}{parameters of the shifted Gamma prior for \eqn{\theta}.}
 
 \item{user_seed}{seed for random distribution generation.}
+
+\item{If}{TRUE (default) print the progress bar.}
 }
 \value{
 Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
@@ -41,7 +44,7 @@ Function \code{detect_cp_univariate} returns a list containing the following com
 }
 }
 \description{
-Detect Change Points on univariate time series
+Detect Change Points on an univariate time series.
 }
 \examples{
 

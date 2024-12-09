@@ -98,7 +98,7 @@ detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_
 #'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
 #'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
 #'
-#' table(get_order_VI(out$order))
+#' get_order_VI(out$order)
 #' @export
 detect_cp_multivariate <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_gamma = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesCPs_detect_cp_multivariate`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)

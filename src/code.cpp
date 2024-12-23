@@ -3146,32 +3146,29 @@ Rcpp::List ClusteringCPsEPI(arma::mat data,
 
 //' Clustering univariate times series with common changes in time
 //'
-//' @param data a matrix where each row is an observation and each column corresponds to a discrete time
-//' @param n_iterations Second value
-//' @param B Prova
-//' @param L prova
-//' @param gamma prova
-//' @param a prova
-//' @param b prova
-//' @param c prova
-//' @param q prova
-//' @param alpha_SM prova
-//' @param user_seed prova
+//' @param data a matrix where each row is an observation and each column corresponds to a discrete time.
+//' @param n_iterations number of MCMC iterations.
+//' @param B number of orders for the normalisation constant.
+//' @param L number of split-merge steps for the proposal step.
+//' @param gamma,a,b,c parameters \eqn{\gamma} for the integrated likelihood.
+//' @param q probability of a split in the split-merge proposal and acceleration step.
+//' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
+//' @param user_seed seed for random distribution generation.
 //' @return TO DO
 //'
 //' @export
 // [[Rcpp::export]]
-Rcpp::List ClusteringCPsUnivariateTS(arma::mat data,
-                                   int n_iterations,
-                                   int B,
-                                   int L,
-                                   double gamma,
-                                   double a = 1,
-                                   double b = 1,
-                                   double c = 1,
-                                   double q = 0.5,
-                                   double alpha_SM = 0.1,
-                                   unsigned long user_seed = 1234){
+Rcpp::List cluster_cp_uni(arma::mat data,
+                          int n_iterations,
+                          int B,
+                          int L,
+                          double gamma,
+                          double a = 1,
+                          double b = 1,
+                          double c = 1,
+                          double q = 0.5,
+                          double alpha_SM = 0.1,
+                          unsigned long user_seed = 1234){
 //
 //
 //
@@ -3481,17 +3478,17 @@ return out_list;
 //'
 //' @export
 // [[Rcpp::export]]
-Rcpp::List ClusteringCPsMultivariateTS(arma::cube data,
-                                       int n_iterations,
-                                       int B,
-                                       int L,
-                                       double gamma,
-                                       double k_0,
-                                       double nu_0,
-                                       arma::mat phi_0,
-                                       arma::vec m_0,
-                                       double q = 0.5,
-                                       double alpha_SM = 0.1, unsigned long user_seed = 1234){
+Rcpp::List cluster_cp_multi(arma::cube data,
+                            int n_iterations,
+                            int B,
+                            int L,
+                            double gamma,
+                            double k_0,
+                            double nu_0,
+                            arma::mat phi_0,
+                            arma::vec m_0,
+                            double q = 0.5,
+                            double alpha_SM = 0.1, unsigned long user_seed = 1234){
 
   arma::mat res_clust(n_iterations, data.n_slices), orders_temp_clean;
   arma::cube res_orders(data.n_slices, data.slice(0).n_cols, n_iterations);

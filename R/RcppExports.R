@@ -134,22 +134,19 @@ ClusteringCPsEPI <- function(data, niter, M, B, L, gamma = 1/8, alpha = 1, q = 0
 
 #' Clustering univariate times series with common changes in time
 #'
-#' @param data a matrix where each row is an observation and each column corresponds to a discrete time
-#' @param n_iterations Second value
-#' @param B Prova
-#' @param L prova
-#' @param gamma prova
-#' @param a prova
-#' @param b prova
-#' @param c prova
-#' @param q prova
-#' @param alpha_SM prova
-#' @param user_seed prova
+#' @param data a matrix where each row is an observation and each column corresponds to a discrete time.
+#' @param n_iterations number of MCMC iterations.
+#' @param B number of orders for the normalisation constant.
+#' @param L number of split-merge steps for the proposal step.
+#' @param gamma,a,b,c parameters \eqn{\gamma} for the integrated likelihood.
+#' @param q probability of a split in the split-merge proposal and acceleration step.
+#' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
+#' @param user_seed seed for random distribution generation.
 #' @return TO DO
 #'
 #' @export
-ClusteringCPsUnivariateTS <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, user_seed = 1234L) {
-    .Call(`_BayesCPs_ClusteringCPsUnivariateTS`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, user_seed)
+cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, user_seed = 1234L) {
+    .Call(`_BayesCPs_cluster_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, user_seed)
 }
 
 #' Clustering multivariate times series with common changes in time
@@ -169,7 +166,7 @@ ClusteringCPsUnivariateTS <- function(data, n_iterations, B, L, gamma, a = 1, b 
 #' @return TO DO
 #'
 #' @export
-ClusteringCPsMultivariateTS <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, user_seed = 1234L) {
-    .Call(`_BayesCPs_ClusteringCPsMultivariateTS`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, user_seed)
+cluster_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, user_seed = 1234L) {
+    .Call(`_BayesCPs_cluster_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, user_seed)
 }
 

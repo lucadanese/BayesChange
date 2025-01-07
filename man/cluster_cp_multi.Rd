@@ -16,37 +16,66 @@ cluster_cp_multi(
   m_0,
   q = 0.5,
   alpha_SM = 0.1,
+  print_progress = TRUE,
   user_seed = 1234L
 )
 }
 \arguments{
-\item{data}{First value}
+\item{data}{a multidimensional matrix where each element is a matrix whose rows are the observations and columns the dimensions.}
 
-\item{n_iterations}{Second value}
+\item{n_iterations}{number of MCMC iterations.}
 
-\item{B}{prova}
+\item{B}{number of orders for the normalisation constant.}
 
-\item{L}{prova}
+\item{L}{number of split-merge steps for the proposal step.}
 
-\item{gamma}{prova}
+\item{gamma, k_0, nu_0, phi_0, m_0}{parameters of the integrated likelihood.}
 
-\item{k_0}{prova}
+\item{q}{probability of a split in the split-merge proposal and acceleration step.}
 
-\item{nu_0}{prova}
+\item{alpha_SM}{\eqn{\alpha} for the split-merge proposal and acceleration step.}
 
-\item{phi_0}{prova}
+\item{print_progress}{If TRUE (default) print the progress bar.}
 
-\item{m_0}{prova}
-
-\item{q}{prova}
-
-\item{alpha_SM}{prova}
-
-\item{user_seed}{prova}
+\item{user_seed}{seed for random distribution generation.}
 }
 \value{
-TO DO
+Function \code{cluster_cp_multi} returns a list containing the following components: \itemize{
+\item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
+\item{\code{$orders}} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
+\item{\code{$norm_vec}} a vector containing the normalisation constant computed at the beginning of the algorithm.
+}
 }
 \description{
 Clustering multivariate times series with common changes in time
+}
+\examples{
+
+data_array <- array(data = NA, dim = c(3,100,5))
+
+data_array[1,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+data_array[2,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+data_array[3,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+
+data_array[1,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+data_array[2,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+data_array[3,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+
+data_array[1,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+data_array[2,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+data_array[3,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+
+data_array[1,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
+data_array[2,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
+data_array[3,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
+
+data_array[1,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+
+out <- cluster_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
+                        gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
+
+get_order_VI(out$clust[2500:5000,])
+
 }

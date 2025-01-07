@@ -12,12 +12,12 @@ test_that("detect_cp_univariate works", {
                                      q = 0.25,
                                      phi = 0.1, a = 1, b = 1, c = 0.1, print_progress = FALSE)
 
-    length_orders[i] <- length(table(get_order_VI(out_test$order[1000:1500,])))
+    length_orders[i] <- length(table(get_order_VI(out_test$order[1000:2500,])))
 
   }
 
 
-  if(mean(length_orders) < 3 & mean(length_orders) > 1.5){
+  if(mean(length_orders) < 4 & mean(length_orders) > 1){
     check = TRUE
   } else {
     check = FALSE

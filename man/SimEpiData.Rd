@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{SimEpiData}
 \alias{SimEpiData}
-\title{Detect Change Points on univariate time series}
+\title{Simulate epidemiological data}
 \usage{
 SimEpiData(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L)
 }
@@ -23,5 +23,5 @@ SimEpiData(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L)
 TO DO
 }
 \description{
-Detect Change Points on univariate time series
+Simulate epidemiological data
 }

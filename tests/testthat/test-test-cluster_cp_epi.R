@@ -27,7 +27,7 @@ test_that("cluster_cp_epi works", {
 
   for(i in 1:5){
     out_test <-  cluster_cp_epi(data = data_mat, n_iterations = 250, M = 100, B = 500, L = 1, print_progress = FALSE)
-    length_orders[i] <- length(table(get_order_VI(out_test$clust[50:250,])))
+    length_orders[i] <- length(table(get_clust_VI(out_test$clust[50:250,])))
   }
 
   if(mean(length_orders) <= 3 & mean(length_orders) >= 0){

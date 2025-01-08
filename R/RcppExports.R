@@ -26,12 +26,12 @@ psm <- function(M) {
 
 #' Estimate order
 #'
-#' @param orders_mat First value
-#' @return TO DO
+#' @param orders_mat A matrix where each row corresponds to the output cluster of the corresponding iteration.
+#' @return Function \code{get_clust_VI} returns a point estimate for the clustering of the data.
 #'
 #' @export
-get_order_VI <- function(orders_mat) {
-    .Call(`_BayesCPs_get_order_VI`, orders_mat)
+get_clust_VI <- function(orders_mat) {
+    .Call(`_BayesCPs_get_clust_VI`, orders_mat)
 }
 
 #' Detect Change Points on an univariate time series.

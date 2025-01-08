@@ -17,7 +17,7 @@ test_that("cluster_cp_uni works", {
                                n_iterations = 5000,
                                B = 1000, L = 1, gamma = 0.5, print_progress = FALSE)
 
-    length_orders[i] <- length(table(get_order_VI(out_test$clust[1000:5000,])))
+    length_orders[i] <- length(table(get_clust_VI(out_test$clust[1000:5000,])))
 
   }
 

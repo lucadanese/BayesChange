@@ -2525,12 +2525,12 @@ arma::mat psm(arma::mat M){
 
 //' Estimate order
 //'
-//' @param orders_mat First value
-//' @return TO DO
+//' @param orders_mat A matrix where each row corresponds to the output cluster of the corresponding iteration.
+//' @return Function \code{get_clust_VI} returns a point estimate for the clustering of the data.
 //'
 //' @export
 //[[Rcpp::export]]
-arma::vec get_order_VI(arma::mat orders_mat){
+arma::vec get_clust_VI(arma::mat orders_mat){
 
   arma::vec out_res(orders_mat.n_cols);
   arma::vec result(orders_mat.n_rows);

@@ -39,14 +39,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// get_order_VI
-arma::vec get_order_VI(arma::mat orders_mat);
-RcppExport SEXP _BayesCPs_get_order_VI(SEXP orders_matSEXP) {
+// get_clust_VI
+arma::vec get_clust_VI(arma::mat orders_mat);
+RcppExport SEXP _BayesCPs_get_clust_VI(SEXP orders_matSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type orders_mat(orders_matSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_order_VI(orders_mat));
+    rcpp_result_gen = Rcpp::wrap(get_clust_VI(orders_mat));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -172,7 +172,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesCPs_SimEpiData", (DL_FUNC) &_BayesCPs_SimEpiData, 6},
     {"_BayesCPs_psm", (DL_FUNC) &_BayesCPs_psm, 1},
-    {"_BayesCPs_get_order_VI", (DL_FUNC) &_BayesCPs_get_order_VI, 1},
+    {"_BayesCPs_get_clust_VI", (DL_FUNC) &_BayesCPs_get_clust_VI, 1},
     {"_BayesCPs_detect_cp_univariate", (DL_FUNC) &_BayesCPs_detect_cp_univariate, 11},
     {"_BayesCPs_detect_cp_multivariate", (DL_FUNC) &_BayesCPs_detect_cp_multivariate, 12},
     {"_BayesCPs_cluster_cp_epi", (DL_FUNC) &_BayesCPs_cluster_cp_epi, 20},

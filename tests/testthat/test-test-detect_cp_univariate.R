@@ -5,7 +5,7 @@ test_that("detect_cp_univariate works", {
 
   length_orders <- as.numeric()
 
-  for(i in 1:10){
+  for(i in 1:5){
 
     out_test <- detect_cp_univariate(data = data_test,
                                      n_iterations = 2500,

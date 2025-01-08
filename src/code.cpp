@@ -1373,7 +1373,7 @@ void SplitMergeAccMultivariateTS(arma::cube data,
 // NORMALISATION CONSTANT
 // ------------------------
 
-arma::vec norm_constants_TS(arma::mat data,
+arma::vec norm_constant_uni(arma::mat data,
                             double gamma_par,
                             int R,
                             double a,
@@ -1381,11 +1381,6 @@ arma::vec norm_constants_TS(arma::mat data,
                             double c,
                             double p,
                             bool print_progress = true){
-  // Compute the normalisation constant for a set of data.
-  // Args:
-  //	data: a matrix where each row is an observations and the columns the time realisations
-  //	gamma_par,a,b,c: parameters for the OU process
-  //	p: p = x/t where x is the average number of blocks and t the number of times
   arma::vec temp_llik_vec(data.n_rows), freqs, temp_probs, cfreq, new_order_vec;
   arma::mat temp_llik_mat(R,data.n_rows), curve_mat, new_order_mat(1,data.n_cols);
   int T = data.n_cols;
@@ -1448,7 +1443,7 @@ arma::vec norm_constants_TS(arma::mat data,
   return temp_llik_vec;
 }
 
-arma::vec norm_constantsMultiTS(arma::cube data,
+arma::vec norm_constant_multi(arma::cube data,
                                 double gamma_par,
                                 int R,
                                 double k_0,
@@ -1457,11 +1452,6 @@ arma::vec norm_constantsMultiTS(arma::cube data,
                                 arma::vec m_0,
                                 double p,
                                 bool print_progress = true){
-  // Compute the normalisation constant for a set of data.
-  // Args:
-  //	data: a matrix where each row is an observations and the columns the time realisations
-  //	gamma_par,a,b,c: parameters for the OU process
-  //	p: p = x/t where x is the average number of blocks and t the number of times
   arma::vec temp_llik_vec(data.n_slices), freqs, temp_probs, cfreq, new_order_vec;
   arma::mat temp_llik_mat(R,data.n_slices), curve_mat, new_order_mat(1,data.slice(0).n_cols);
   int T = data.slice(0).n_cols;
@@ -1526,7 +1516,7 @@ arma::vec norm_constantsMultiTS(arma::cube data,
 
 
 
-arma::vec norm_constants_EPI(arma::mat data,
+arma::vec norm_constant_epi(arma::mat data,
                              double gamma_par,
                              int num_orders,
                              double a0,
@@ -1535,14 +1525,10 @@ arma::vec norm_constants_EPI(arma::mat data,
                              int M,
                              double dt,
                              gsl_rng *r,
+                             bool print_progress = true,
                              double S0 = 1,
                              double R0 = 0,
                              double p = 0.03){
-  // Compute the normalisation constant for a set of data.
-  // Args:
-  //	data: a matrix where each row is an observations and the columns the time realisations
-  //	gamma_par,a,b,c: parameters for the OU process
-  //	p: p = x/t where x is the average number of blocks and t the number of times
   arma::vec temp_llik_vec(data.n_rows), freqs, temp_probs, cfreq, new_order_vec;
   arma::mat temp_llik_mat(num_orders,data.n_rows), curve_mat, new_order_mat(1,data.n_cols);
   int T = data.n_cols;
@@ -1587,16 +1573,13 @@ arma::vec norm_constants_EPI(arma::mat data,
 
     arma::vec new_order = generate_random_order(data.n_cols, 2/data.n_cols, r);
 
-
-
     for(arma::uword i = 0; i < data.n_rows; i++){
-      //curve_mat = integrated_curves_mat(dt, new_order_mat.row(0), a0, b0, gamma_par, rho(i), M, S0, R0);
       curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma_par, rho(i), M, S0, R0);
       temp_llik_mat(r_iter,i) = log_sum_exp(curve_mat.cols(0,data.n_cols-1) * data.row(i).t() - curve_mat.col(data.n_cols)) - log(M)  - ord_lprob;
     }
 
     // print time
-    if((r_iter + 1) % nupd == 0){
+    if(((r_iter + 1) % nupd == 0) & (print_progress == true)){
       current_s = clock();
       Rcpp::Rcout << "Normalization constant - completed:\t" << (r_iter + 1) << "/" << num_orders << " - in " <<
         double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
@@ -2787,7 +2770,6 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 }
 
 
-
 //' Detect Change Points on multivariate time series
 //'
 //' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
@@ -2798,7 +2780,7 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 //' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{detect_cp_multiivariate} returns a list containing the following components: \itemize{
+//' @return Function \code{detect_cp_multivariate} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
 //' \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
@@ -3017,48 +2999,152 @@ Rcpp::List detect_cp_multivariate(arma::mat data,
 
 //' Clustering Epidemiological survival functions with common changes in time
 //'
-//' @param data First value
-//' @param niter Second value
-//' @param M prova
-//' @param B prova
-//' @param L prova
-//' @param gamma prova
-//' @param alpha prova
-//' @param q prova
-//' @param dt prova
-//' @param a0 prova
-//' @param b0 prova
-//' @param c0 prova
-//' @param d0 prova
-//' @param MH_var prova
-//' @param S0 prova
-//' @param R0 prova
-//' @param p prova
-//' @param coarsening prova
-//' @param user_seed prova
-//' @return TO DO
+//' @param data a matrix where each entry is the number of infected for a population (row) at a specific discrete time (column).
+//' @param n_iterations Second value
+//' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
+//' @param B number of orders for the normalisation constant.
+//' @param L number of split-merge steps for the proposal step.
+//' @param gamma recovery rate fixed constant for each population at each time.
+//' @param alpha \eqn{\alpha} for the acceptance ration in the split-merge procedure.
+//' @param q probability of performing a split when updating the single order for the proposal procedure.
+//' @param dt,a0,b0,c0,d0 parameters for the computation of the integrated likelihood of the survival functions.
+//' @param MH_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
+//' @param S0,R0 parameters for the SDE solver.
+//' @param p prior average number of change points for each order.
+//' @param coarsening coarsening parameter.
+//' @param print_progress If TRUE (default) print the progress bar.
+//' @param user_seed seed for random distribution generation.
+//' @return Function \code{cluster_cp_EPI} returns a list containing the following components: \itemize{
+//' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
+//' \item{\code{$orders}} a multidimensional matrix where each slice is a matrix with the orders associated to the output cluster of that iteration.
+//' \item{\code{$llik}} a matrix containing the log-likelihood of each population at each iteration.
+//' \item{\code{$rho}} traceplot for the proportion of infected individuals at time 0.
+//' }
 //'
+//'@examples
+//'
+//' data_mat <- matrix(NA, nrow = 5, ncol = 50)
+//'
+//' betas <- list(c(rep(0.45, 25),rep(0.14,25)),
+//'               c(rep(0.55, 25),rep(0.11,25)),
+//'               c(rep(0.50, 25),rep(0.12,25)),
+//'               c(rep(0.52, 10),rep(0.15,40)),
+//'               c(rep(0.53, 10),rep(0.13,40)))
+//'
+//'  inf_times <- list()
+//'
+//'  for(i in 1:5){
+//'
+//'    inf_times[[i]] <- SimEpiData(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
+//'
+//'    vec <- rep(0,50)
+//'    names(vec) <- as.character(1:50)
+//'
+//'    for(j in 1:50){
+//'      if(as.character(j) %in% names(table(floor(inf_times[[i]])))){
+//'        vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
+//'      }
+//'    }
+//'    data_mat[i,] <- vec
+//'  }
+//'
+//'  out <- cluster_cp_EPI(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
+//'
+//'  get_order_VI(out$clust[1000:5000,])
 //' @export
 // [[Rcpp::export]]
-Rcpp::List ClusteringCPsEPI(arma::mat data,
-                           int niter,
-                           int M,
-                           int B,
-                           int L,
-                           double gamma = 1/8,
-                           double alpha = 1,
-                           double q = 0.1,
-                           double dt = 0.1,
-                           double a0 = 4,
-                           double b0 = 10,
-                           double c0 = 1,
-                           double d0 = 1,
-                           double MH_var = 0.01,
-                           double S0 = 1,
-                           double R0 = 0,
-                           double p = 0.003,
-                           double coarsening = 1,
-                           unsigned long user_seed = 1234){
+Rcpp::List cluster_cp_epi(arma::mat data,
+                          int n_iterations,
+                          int M,
+                          int B,
+                          int L,
+                          double gamma = 1/8,
+                          double alpha = 1,
+                          double q = 0.1,
+                          double dt = 0.1,
+                          double a0 = 4,
+                          double b0 = 10,
+                          double c0 = 1,
+                          double d0 = 1,
+                          double MH_var = 0.01,
+                          double S0 = 1,
+                          double R0 = 0,
+                          double p = 0.003,
+                          double coarsening = 1,
+                          bool print_progress = true,
+                          unsigned long user_seed = 1234){
+
+  // WARNINGS //
+  if(n_iterations < 1){
+    Rcpp::stop("number of iterations must be at least 1.");
+  }
+
+  if(M < 1){
+    Rcpp::stop("'M' must be at least equal to 1.");
+  }
+
+  if(B < 1){
+    Rcpp::stop("'B' must be at least equal to 1.");
+  }
+
+  if(L < 1){
+    Rcpp::stop("'L' must be at least equal to 1.");
+  }
+
+  if((gamma < 0)| (gamma > 1)){
+    Rcpp::stop("'gamma' must be in the interval (0,1).");
+  }
+
+  if(alpha < 0){
+    Rcpp::stop("'alpha' must be positive.");
+  }
+
+  if((q < 0) | (q > 1)){
+    Rcpp::stop("'q' must be in the interval (0,1).");
+  }
+
+  if((dt < 0) | (dt > 1)){
+    Rcpp::stop("'dt' must be in the interval (0,1).");
+  }
+
+  if(a0 < 0){
+    Rcpp::stop("'a0' must be positive.");
+  }
+
+  if(b0 < 0){
+    Rcpp::stop("'b0' must be positive.");
+  }
+
+  if(c0 < 0){
+    Rcpp::stop("'c0' must be positive.");
+  }
+
+  if(d0 < 0){
+    Rcpp::stop("'d0' must be positive.");
+  }
+
+  if(MH_var < 0){
+    Rcpp::stop("'MH_var' must be positive.");
+  }
+
+  if(S0 < 0){
+    Rcpp::stop("'S0' must be positive.");
+  }
+
+  if(R0 < 0){
+    Rcpp::stop("'R0' must be positive.");
+  }
+
+  if((p < 0) | (p > 1)){
+    Rcpp::stop("'p' must be in the interval (0,1).");
+  }
+
+  if((coarsening < 0) | (coarsening > 1)){
+    Rcpp::stop("'coarsening' must be in the interval (0,1).");
+  }
+
+
+  // ------- //
 
 
  // set seed for gsl random distribution generator
@@ -3078,9 +3164,8 @@ Rcpp::List ClusteringCPsEPI(arma::mat data,
  arma::mat orders(data.n_rows, data.n_cols);
  orders.fill(0);
 
- arma::vec norm_vec = norm_constants_EPI(data, gamma, B, a0, b0, rho, M, dt, r);
+ arma::vec norm_vec = norm_constant_epi(data, gamma, B, a0, b0, rho, M, dt, r, print_progress = print_progress);
 
- //mat curve_mat = integrated_curves_mat(dt, orders.row(0).t(), a0, b0, gamma, rho, M, S0, R0);
  for(arma::uword i = 0; i < clust.n_elem; i++){
    arma::mat curve_mat = integrated_curves_mat(dt, orders.row(0).t(), a0, b0, gamma, rho(i), M, S0, R0);
    llik(i) = log_sum_exp(curve_mat.cols(0,data.n_cols-1) * data.row(i).t() - curve_mat.col(data.n_cols)) - log(M);
@@ -3092,20 +3177,22 @@ Rcpp::List ClusteringCPsEPI(arma::mat data,
                          q, dt, a0, b0, gamma, rho, M, S0, R0, coarsening);
    }
  }
- arma::mat res_clust(niter, data.n_rows);
- arma::cube res_orders(data.n_rows, data.n_cols, niter);
- arma::mat res_llik(niter, data.n_rows);
- arma::mat res_rho(niter, data.n_rows);
+ arma::mat res_clust(n_iterations, data.n_rows);
+ arma::cube res_orders(data.n_rows, data.n_cols, n_iterations);
+ arma::mat res_llik(n_iterations, data.n_rows);
+ arma::mat res_rho(n_iterations, data.n_rows);
 
  //loop
  int start_s = clock();
  int current_s;
- int nupd = round(niter / 10);
+ int nupd = round(n_iterations / 10);
 
- Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
+ if(print_progress == true){
+   Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
+ }
+
  // start
- for(int iter = 0; iter < niter; iter++){
-
+ for(int iter = 0; iter < n_iterations; iter++){
 
    update_rho(data, rho, a0, b0, c0, d0, MH_var, gamma, dt, M,
               S0, R0, llik, clust, orders);
@@ -3127,9 +3214,9 @@ Rcpp::List ClusteringCPsEPI(arma::mat data,
    res_orders.slice(iter).rows(0, orders.n_rows-1) = orders;
 
    // print time
-   if((iter + 1) % nupd == 0){
+   if(((iter + 1) % nupd == 0) & (print_progress == true)){
      current_s = clock();
-     Rcpp::Rcout << "Completed:\t" << (iter + 1) << "/" << niter << " - in " <<
+     Rcpp::Rcout << "Completed:\t" << (iter + 1) << "/" << n_iterations << " - in " <<
        double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
    }
    Rcpp::checkUserInterrupt();
@@ -3271,7 +3358,7 @@ for(arma::uword i = 0; i < data.n_rows; i++){
 
 // COMPUTE NORMALISATION CONSTANT
 
-arma::vec norm_const = norm_constants_TS(data, gamma, B, a, b, c, 2.0/data.n_cols, print_progress = print_progress);
+arma::vec norm_const = norm_constant_uni(data, gamma, B, a, b, c, 2.0/data.n_cols, print_progress = print_progress);
 
 if(print_progress == true){
   Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
@@ -3660,7 +3747,7 @@ Rcpp::List cluster_cp_multi(arma::cube data,
   }
   // COMPUTE NORMALISATION CONSTANT
 
-  arma::vec norm_const = norm_constantsMultiTS(data, gamma, B, k_0, nu_0, phi_0, m_0, 2.0/data.slice(0).n_cols,print_progress = print_progress);
+  arma::vec norm_const = norm_constant_multi(data, gamma, B, k_0, nu_0, phi_0, m_0, 2.0/data.slice(0).n_cols,print_progress = print_progress);
 
   if(print_progress == true){
     Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
@@ -3760,7 +3847,6 @@ Rcpp::List cluster_cp_multi(arma::cube data,
         partition_temp = proposed_partition_clean;
 
         for(arma::uword i = 0; i < data.n_slices; i++){
-          //lkl_temp(i) = LogLikelihood_TS(data.row(i), orders_temp.row(partition_temp(i)).t(),gamma,a,b,c);
           lkl_temp(i) = Likelihood_MultiTS(data.slice(i), orders_temp.row(partition_temp(i)).t(), gamma,k_0,nu_0,phi_0,m_0);
         }
 

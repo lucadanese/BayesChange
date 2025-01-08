@@ -76,7 +76,7 @@ detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_
 #' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{detect_cp_multiivariate} returns a list containing the following components: \itemize{
+#' @return Function \code{detect_cp_multivariate} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
 #' \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
@@ -106,30 +106,61 @@ detect_cp_multivariate <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0,
 
 #' Clustering Epidemiological survival functions with common changes in time
 #'
-#' @param data First value
-#' @param niter Second value
-#' @param M prova
-#' @param B prova
-#' @param L prova
-#' @param gamma prova
-#' @param alpha prova
-#' @param q prova
-#' @param dt prova
-#' @param a0 prova
-#' @param b0 prova
-#' @param c0 prova
-#' @param d0 prova
-#' @param MH_var prova
-#' @param S0 prova
-#' @param R0 prova
-#' @param p prova
-#' @param coarsening prova
-#' @param user_seed prova
-#' @return TO DO
+#' @param data a matrix where each entry is the number of infected for a population (row) at a specific discrete time (column).
+#' @param n_iterations Second value
+#' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
+#' @param B number of orders for the normalisation constant.
+#' @param L number of split-merge steps for the proposal step.
+#' @param gamma recovery rate fixed constant for each population at each time.
+#' @param alpha \eqn{\alpha} for the acceptance ration in the split-merge procedure.
+#' @param q probability of performing a split when updating the single order for the proposal procedure.
+#' @param dt,a0,b0,c0,d0 parameters for the computation of the integrated likelihood of the survival functions.
+#' @param MH_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
+#' @param S0,R0 parameters for the SDE solver.
+#' @param p prior average number of change points for each order.
+#' @param coarsening coarsening parameter.
+#' @param print_progress If TRUE (default) print the progress bar.
+#' @param user_seed seed for random distribution generation.
+#' @return Function \code{cluster_cp_EPI} returns a list containing the following components: \itemize{
+#' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
+#' \item{\code{$orders}} a multidimensional matrix where each slice is a matrix with the orders associated to the output cluster of that iteration.
+#' \item{\code{$llik}} a matrix containing the log-likelihood of each population at each iteration.
+#' \item{\code{$rho}} traceplot for the proportion of infected individuals at time 0.
+#' }
 #'
+#'@examples
+#'
+#' data_mat <- matrix(NA, nrow = 5, ncol = 50)
+#'
+#' betas <- list(c(rep(0.45, 25),rep(0.14,25)),
+#'               c(rep(0.55, 25),rep(0.11,25)),
+#'               c(rep(0.50, 25),rep(0.12,25)),
+#'               c(rep(0.52, 10),rep(0.15,40)),
+#'               c(rep(0.53, 10),rep(0.13,40)))
+#'
+#'  inf_times <- list()
+#'
+#'  for(i in 1:5){
+#'
+#'    inf_times[[i]] <- SimEpiData(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
+#'
+#'    vec <- rep(0,50)
+#'    names(vec) <- as.character(1:50)
+#'
+#'    for(j in 1:50){
+#'      if(as.character(j) %in% names(table(floor(inf_times[[i]])))){
+#'        vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
+#'      }
+#'    }
+#'    data_mat[i,] <- vec
+#'  }
+#'
+#'  out <- cluster_cp_EPI(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
+#'
+#'  get_order_VI(out$clust[1000:5000,])
 #' @export
-ClusteringCPsEPI <- function(data, niter, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coarsening = 1, user_seed = 1234L) {
-    .Call(`_BayesCPs_ClusteringCPsEPI`, data, niter, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coarsening, user_seed)
+cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coarsening = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_cluster_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coarsening, print_progress, user_seed)
 }
 
 #' Clustering univariate times series with common changes in time

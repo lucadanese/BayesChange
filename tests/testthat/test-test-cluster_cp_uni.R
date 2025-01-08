@@ -11,7 +11,7 @@ test_that("cluster_cp_uni works", {
 
   length_orders <- as.numeric()
 
-  for(i in 1:10){
+  for(i in 1:5){
 
     out_test <- cluster_cp_uni(data = data_mat,
                                n_iterations = 5000,

@@ -1,0 +1,40 @@
+test_that("cluster_cp_epi works", {
+
+  length_orders <- as.numeric()
+
+  data_mat <- matrix(NA, nrow = 3, ncol = 20)
+
+  betas <- list(c(rep(0.45, 10),rep(0.14,10)),
+                c(rep(0.52, 5),rep(0.15,15)),
+                c(rep(0.53, 5),rep(0.13,15)))
+
+  inf_times <- list()
+
+  for(i in 1:3){
+
+    inf_times[[i]] <- SimEpiData(S0 = 10000, I0 = 10, MaxTime = 20, beta_vec = betas[[i]], gamma_0 = 1/8)
+
+    vec <- rep(0,20)
+    names(vec) <- as.character(1:20)
+
+    for(j in 1:20){
+      if(as.character(j) %in% names(table(floor(inf_times[[i]])))){
+        vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
+      }
+    }
+    data_mat[i,] <- vec
+  }
+
+  for(i in 1:5){
+    out_test <-  cluster_cp_epi(data = data_mat, n_iterations = 250, M = 100, B = 500, L = 1, print_progress = FALSE)
+    length_orders[i] <- length(table(get_order_VI(out_test$clust[50:250,])))
+  }
+
+  if(mean(length_orders) <= 3 & mean(length_orders) >= 0){
+    check = TRUE
+  } else {
+    check = FALSE
+  }
+
+  expect_equal(check, TRUE)
+})

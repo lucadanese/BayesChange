@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of BayesCPs is to ...
+The goal of `BayesCPs` is to ...
 
 ## Installation
 

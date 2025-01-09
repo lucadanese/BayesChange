@@ -17,8 +17,8 @@ SimEpiData <- function(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L) {
 
 #' Compute the posterior similarity matrix
 #'
-#' @param M First value
-#' @return TO DO
+#' @param M A matrix where each row corresponds to the output cluster of the corresponding iteration.
+#' @return Function \code{psm} returns an \eqn{n}\eqn{\times}\eqn{n} posterior similarity matrix.
 #'
 psm <- function(M) {
     .Call(`_BayesCPs_psm`, M)

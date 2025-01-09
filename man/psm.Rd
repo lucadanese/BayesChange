@@ -7,10 +7,10 @@
 psm(M)
 }
 \arguments{
-\item{M}{First value}
+\item{M}{A matrix where each row corresponds to the output cluster of the corresponding iteration.}
 }
 \value{
-TO DO
+Function \code{psm} returns an \eqn{n}\eqn{\times}\eqn{n} posterior similarity matrix.
 }
 \description{
 Compute the posterior similarity matrix

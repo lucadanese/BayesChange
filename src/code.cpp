@@ -2504,8 +2504,8 @@ return infection_times;
 
 //' Compute the posterior similarity matrix
 //'
-//' @param M First value
-//' @return TO DO
+//' @param M A matrix where each row corresponds to the output cluster of the corresponding iteration.
+//' @return Function \code{psm} returns an \eqn{n}\eqn{\times}\eqn{n} posterior similarity matrix.
 //'
 //[[Rcpp::export]]
 arma::mat psm(arma::mat M){

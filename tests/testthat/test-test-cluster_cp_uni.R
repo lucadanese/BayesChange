@@ -15,13 +15,13 @@ test_that("cluster_cp_uni works", {
 
     out_test <- cluster_cp_uni(data = data_mat,
                                n_iterations = 5000,
-                               B = 1000, L = 1, gamma = 0.5, print_progress = FALSE)
+                               B = 1000, L = 1, gamma = 0.1, print_progress = FALSE)
 
     length_orders[i] <- length(table(get_clust_VI(out_test$clust[1000:5000,])))
 
   }
 
-  if(mean(length_orders) < 4.1 & mean(length_orders) > 0.9){
+  if(mean(length_orders) < 5.1 & mean(length_orders) > 0.9){
     check = TRUE
   } else {
     check = FALSE

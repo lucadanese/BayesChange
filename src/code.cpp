@@ -3313,8 +3313,8 @@ if((q > 1) | (q < 0)){
   Rcpp::stop("'q' must be included in (0,1).");
 }
 
-if((alpha_SM > 1) | (alpha_SM < 0)){
-  Rcpp::stop("'alpha_SM' must be included in (0,1).");
+if(alpha_SM <= 0){
+  Rcpp::stop("'alpha_SM' must be positive.");
 }
 
 // ------- //
@@ -3713,8 +3713,8 @@ Rcpp::List cluster_cp_multi(arma::cube data,
     Rcpp::stop("'q' must be included in (0,1).");
   }
 
-  if((alpha_SM > 1) | (alpha_SM < 0)){
-    Rcpp::stop("'alpha_SM' must be included in (0,1).");
+  if(alpha_SM <= 0){
+    Rcpp::stop("'alpha_SM' must be positive.");
   }
 
   // ------- //

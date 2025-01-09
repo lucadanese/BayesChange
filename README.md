@@ -4,15 +4,20 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of `BayesCPs` is to ...
+`BayesCPs` provides several tools to perform Change Points analysis on time series and survival functions. 
 
 ## Installation
 
-You can install the development version of BayesCPs from [GitHub](https://github.com/) with:
+To install `BayesCPs` the package `devtools` is needed. 
 
 ``` r
-# install.packages("pak")
-pak::pak("lucadanese/BayesCPs")
+install.packages("devtools")
+```
+
+Now `BayesCPs` can be installed through the [GitHub repository](https://github.com/lucadanese/BayesCPs) of the package:
+
+``` r
+devtools::install_github("lucadanese/BayesCPs")
 ```
 
 ## Example

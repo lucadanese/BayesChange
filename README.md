@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-`BayesCPs` provides C++ function to perform Bayesian Change Points analysis. 
+`BayesCPs` provides C++ functions to perform Bayesian Change Points analysis. 
 
 ## Installation
 

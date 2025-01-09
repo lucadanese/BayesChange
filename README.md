@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-`BayesCPs` provides several tools to perform Change Points analysis on time series and survival functions. 
+`BayesCPs` provides C++ function to perform Bayesian Change Points analysis. 
 
 ## Installation
 

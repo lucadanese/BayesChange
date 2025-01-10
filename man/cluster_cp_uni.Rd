@@ -15,6 +15,7 @@ cluster_cp_uni(
   c = 1,
   q = 0.5,
   alpha_SM = 0.1,
+  coars = 1,
   print_progress = TRUE,
   user_seed = 1234L
 )
@@ -33,6 +34,8 @@ cluster_cp_uni(
 \item{q}{probability of a split in the split-merge proposal and acceleration step.}
 
 \item{alpha_SM}{\eqn{\alpha} for the split-merge proposal and acceleration step.}
+
+\item{coars}{coarsening coefficient, must be in (0,1].}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 

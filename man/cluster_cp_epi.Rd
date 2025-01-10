@@ -22,7 +22,7 @@ cluster_cp_epi(
   S0 = 1,
   R0 = 0,
   p = 0.003,
-  coarsening = 1,
+  coars = 1,
   print_progress = TRUE,
   user_seed = 1234L
 )
@@ -52,7 +52,7 @@ cluster_cp_epi(
 
 \item{p}{prior average number of change points for each order.}
 
-\item{coarsening}{coarsening parameter.}
+\item{coars}{coarsening parameter.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 

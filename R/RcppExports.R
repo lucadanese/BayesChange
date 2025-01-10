@@ -118,7 +118,7 @@ detect_cp_multivariate <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0,
 #' @param MH_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #' @param S0,R0 parameters for the SDE solver.
 #' @param p prior average number of change points for each order.
-#' @param coarsening coarsening parameter.
+#' @param coars coarsening parameter.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{cluster_cp_EPI} returns a list containing the following components: \itemize{
@@ -159,8 +159,8 @@ detect_cp_multivariate <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0,
 #'
 #'  get_order_VI(out$clust[1000:5000,])
 #' @export
-cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coarsening = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_cluster_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coarsening, print_progress, user_seed)
+cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coars = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_cluster_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed)
 }
 
 #' Clustering univariate times series with common changes in time
@@ -172,6 +172,7 @@ cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, 
 #' @param gamma,a,b,c parameters \eqn{\gamma} of the integrated likelihood.
 #' @param q probability of a split in the split-merge proposal and acceleration step.
 #' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
+#' @param coars coarsening coefficient, must be in (0,1].
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{cluster_cp_uni} returns a list containing the following components: \itemize{
@@ -195,8 +196,8 @@ cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, 
 #' get_order_VI(out$clust[2500:5000,])
 #'
 #' @export
-cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_cluster_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, print_progress, user_seed)
+cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_cluster_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, coars, print_progress, user_seed)
 }
 
 #' Clustering multivariate times series with common changes in time
@@ -208,6 +209,7 @@ cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1,
 #' @param gamma,k_0,nu_0,phi_0,m_0 parameters of the integrated likelihood.
 #' @param q probability of a split in the split-merge proposal and acceleration step.
 #' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
+#' @param coars coarsening coefficient, must be in (0,1].
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{cluster_cp_multi} returns a list containing the following components: \itemize{
@@ -246,7 +248,7 @@ cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1,
 #' get_order_VI(out$clust[2500:5000,])
 #'
 #' @export
-cluster_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_cluster_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, print_progress, user_seed)
+cluster_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_cluster_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, coars, print_progress, user_seed)
 }
 

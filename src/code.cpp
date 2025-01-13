@@ -878,7 +878,7 @@ double AlphaMergePartition_cpp(arma::vec lkl_old_i,
 
   f_merge = f_merge_n - f_merge_d;
 
-  double res = q_merge + p_merge + (coars * l_merge) + f_merge;
+  double res = q_merge + p_merge + (coars * l_merge) + (coars * f_merge);
 
   return(my_min(log(1),res));
 
@@ -894,7 +894,7 @@ double AlphaSplitPartition_cpp(arma::vec lkl_proposal_i,
                                arma::vec split_i,
                                arma::vec split_j,
                                arma::vec norm_const,
-                               double coars = 1){
+                               double coars){
 
   double n_i_split = std::count(split_i.begin(),split_i.end(),1.0);
   double n_j_split = std::count(split_j.begin(),split_j.end(),1.0);
@@ -937,7 +937,7 @@ double AlphaSplitPartition_cpp(arma::vec lkl_proposal_i,
 
   double f_split = f_split_n_1 - f_split_d_1 - f_split_d_2;
 
-  double res = q_split + p_split + (coars * l_split) + f_split;
+  double res = q_split + p_split + (coars * l_split) + (coars * f_split);
 
   return(my_min(log(1),res));
 
@@ -3540,7 +3540,7 @@ for(int iter = 0; iter < n_iterations; iter++){
                                     k, data.n_cols, n, alpha_SM,
                                     prob_temp_i,
                                     prob_temp_j,
-                                    norm_const, coars = coars);
+                                    norm_const, coars);
 
     if(log(arma::randu()) <= alpha){
 

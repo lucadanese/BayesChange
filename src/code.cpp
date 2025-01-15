@@ -2576,7 +2576,7 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
+//' @return Function \code{gdetect_cp_uni} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 //' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
@@ -2587,7 +2587,7 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //'
 //' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 //'
-//' out <- detect_cp_univariate(data = data_vec,
+//' out <- gdetect_cp_uni(data = data_vec,
 //'                             n_iterations = 2500,
 //'                             q = 0.25,
 //'                             phi = 0.1, a = 1, b = 1, c = 0.1)
@@ -2595,7 +2595,7 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //' get_clust_VI(out$order)
 //' @export
 //[[Rcpp::export]]
-Rcpp::List detect_cp_univariate(arma::vec data,
+Rcpp::List gdetect_cp_uni(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
                                 double par_theta_c = 1, double par_theta_d = 1, bool print_progress = true, unsigned long user_seed = 1234){
 
@@ -2782,7 +2782,7 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 //' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{detect_cp_multivariate} returns a list containing the following components: \itemize{
+//' @return Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
 //' \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
@@ -2799,7 +2799,7 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 //' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
 //' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 //'
-//' out <- detect_cp_multivariate(data = data_mat,
+//' out <- detect_cp_multi(data = data_mat,
 //'                               n_iterations = 2500,
 //'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
 //'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
@@ -2807,7 +2807,7 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 //' get_clust_VI(out$order)
 //' @export
 // [[Rcpp::export]]
-Rcpp::List detect_cp_multivariate(arma::mat data,
+Rcpp::List detect_cp_multi(arma::mat data,
                                   int n_iterations, double q, double k_0, double nu_0,
                                   arma::mat phi_0, arma::vec m_0,
                                   double par_theta_c = 1, double par_theta_d = 1, double prior_var_gamma = 0.1,

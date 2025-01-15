@@ -22,7 +22,7 @@ devtools::install_github("lucadanese/BayesCPs")
 
 ## Example
 
-The package contains five main functions: `BayesCPs` and `BayesCPs` perform change points detection on univariate and multivariate time series data, `BayesCPs` and `BayesCPs` cluster univariate and multivariate time series with common change points. Finally `cluster_cp_multi` perform clustering of survival functions with common change points. 
+The package contains five main functions: `detect_cp_uni` and `detect_cp_multi` perform change points detection on univariate and multivariate time series data, `cluster_cp_uni` and `cluster_cp_uni` cluster univariate and multivariate time series with common change points. Finally `cluster_cp_EPI` perform clustering of survival functions with common change points. 
 
 Additional functions are included: 
 
@@ -33,11 +33,11 @@ Additional functions are included:
 ``` r
 library(BayesCPs)
 
-# detect_cp_univariate
+# detect_cp_uni
 
 data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 
-out <- detect_cp_univariate(data = data_vec,                             
+out <- detect_cp_uni(data = data_vec,                             
                             n_iterations = 2500,
                             q = 0.25,
                             phi = 0.1, a = 1, b = 1, c = 0.1)
@@ -45,7 +45,7 @@ out <- detect_cp_univariate(data = data_vec,
 get_clust_VI(out$order)
 
 
-# detect_cp_multivariate
+# detect_cp_multi
 
 data_mat <- matrix(NA, nrow = 3, ncol = 100)
 
@@ -53,7 +53,7 @@ data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
 data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
 data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 
-out <- detect_cp_multivariate(data = data_mat,
+out <- detect_cp_multi(data = data_mat,
                               n_iterations = 2500,
                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)

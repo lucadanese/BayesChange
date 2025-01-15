@@ -2474,12 +2474,12 @@ Rcpp::List DoobGillespieAlg(double S0,
 //' @return TO DO
 //'
 // [[Rcpp::export]]
-arma::vec SimEpiData(double S0,
-                   double I0,
-                   double MaxTime,
-                   arma::vec beta_vec,
-                   double gamma_0,
-                   unsigned long user_seed = 1234){
+arma::vec sim_epi_data(double S0,
+                       double I0,
+                       double MaxTime,
+                       arma::vec beta_vec,
+                       double gamma_0,
+                       unsigned long user_seed = 1234){
 
 // set seed for gsl random distribution generator
 const gsl_rng_type * T;
@@ -2592,7 +2592,7 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //'                             q = 0.25,
 //'                             phi = 0.1, a = 1, b = 1, c = 0.1)
 //'
-//' get_order_VI(out$order)
+//' get_clust_VI(out$order)
 //' @export
 //[[Rcpp::export]]
 Rcpp::List detect_cp_univariate(arma::vec data,
@@ -2804,7 +2804,7 @@ Rcpp::List detect_cp_univariate(arma::vec data,
 //'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
 //'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
 //'
-//' get_order_VI(out$order)
+//' get_clust_VI(out$order)
 //' @export
 // [[Rcpp::export]]
 Rcpp::List detect_cp_multivariate(arma::mat data,
@@ -3037,7 +3037,7 @@ Rcpp::List detect_cp_multivariate(arma::mat data,
 //'
 //'  for(i in 1:5){
 //'
-//'    inf_times[[i]] <- SimEpiData(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
+//'    inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
 //'
 //'    vec <- rep(0,50)
 //'    names(vec) <- as.character(1:50)
@@ -3052,7 +3052,7 @@ Rcpp::List detect_cp_multivariate(arma::mat data,
 //'
 //'  out <- cluster_cp_EPI(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
 //'
-//'  get_order_VI(out$clust[1000:5000,])
+//'  get_clust_VI(out$clust[1000:5000,])
 //' @export
 // [[Rcpp::export]]
 Rcpp::List cluster_cp_epi(arma::mat data,
@@ -3265,7 +3265,7 @@ Rcpp::List cluster_cp_epi(arma::mat data,
 //'
 //' out <- cluster_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
 //'
-//' get_order_VI(out$clust[2500:5000,])
+//' get_clust_VI(out$clust[2500:5000,])
 //'
 //' @export
 // [[Rcpp::export]]
@@ -3660,7 +3660,7 @@ return out_list;
 //' out <- cluster_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
 //'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 //'
-//' get_order_VI(out$clust[2500:5000,])
+//' get_clust_VI(out$clust[2500:5000,])
 //'
 //' @export
 // [[Rcpp::export]]
@@ -3986,9 +3986,15 @@ Rcpp::List cluster_cp_multi(arma::cube data,
     }
     Rcpp::checkUserInterrupt();
 
+    // DELETE
+    //Rcpp::Rcout << table_cpp(partition_temp) << "\n";
+
+    //
   }
 
   //double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+
+
 
   Rcpp::List out_list;
   out_list["clust"] = res_clust;

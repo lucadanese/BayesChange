@@ -22,7 +22,12 @@ devtools::install_github("lucadanese/BayesCPs")
 
 ## Example
 
-The package contains five main functions: `detect_cp_uni` and `detect_cp_multi` perform change points detection on univariate and multivariate time series data, `cluster_cp_uni` and `cluster_cp_uni` cluster univariate and multivariate time series with common change points. Finally `cluster_cp_EPI` perform clustering of survival functions with common change points. 
+The package contains five main functions: 
+
+* `detect_cp_uni` and `detect_cp_multi` perform change points detection on univariate and multivariate time series data.
+
+* `cluster_cp_uni` and `cluster_cp_uni` cluster univariate and multivariate time series with common change points. 
+* `cluster_cp_EPI` perform clustering of survival functions with common change points. 
 
 Additional functions are included: 
 

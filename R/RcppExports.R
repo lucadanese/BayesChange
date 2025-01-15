@@ -11,8 +11,8 @@
 #' @param user_seed Prova
 #' @return TO DO
 #'
-SimEpiData <- function(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L) {
-    .Call(`_BayesCPs_SimEpiData`, S0, I0, MaxTime, beta_vec, gamma_0, user_seed)
+sim_epi_data <- function(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L) {
+    .Call(`_BayesCPs_sim_epi_data`, S0, I0, MaxTime, beta_vec, gamma_0, user_seed)
 }
 
 #' Compute the posterior similarity matrix
@@ -44,7 +44,7 @@ get_clust_VI <- function(orders_mat) {
 #' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{detect_cp_univariate} returns a list containing the following components: \itemize{
+#' @return Function \code{gdetect_cp_uni} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 #' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
@@ -55,15 +55,15 @@ get_clust_VI <- function(orders_mat) {
 #'
 #' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 #'
-#' out <- detect_cp_univariate(data = data_vec,
+#' out <- gdetect_cp_uni(data = data_vec,
 #'                             n_iterations = 2500,
 #'                             q = 0.25,
 #'                             phi = 0.1, a = 1, b = 1, c = 0.1)
 #'
-#' get_order_VI(out$order)
+#' get_clust_VI(out$order)
 #' @export
-detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_detect_cp_univariate`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
+gdetect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_gdetect_cp_uni`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
 }
 
 #' Detect Change Points on multivariate time series
@@ -76,7 +76,7 @@ detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_
 #' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{detect_cp_multivariate} returns a list containing the following components: \itemize{
+#' @return Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
 #' \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
@@ -93,15 +93,15 @@ detect_cp_univariate <- function(data, n_iterations, q, phi, a, b, c, par_theta_
 #' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
 #' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 #'
-#' out <- detect_cp_multivariate(data = data_mat,
+#' out <- detect_cp_multi(data = data_mat,
 #'                               n_iterations = 2500,
 #'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
 #'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
 #'
-#' get_order_VI(out$order)
+#' get_clust_VI(out$order)
 #' @export
-detect_cp_multivariate <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_gamma = 0.1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_detect_cp_multivariate`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)
+detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_gamma = 0.1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)
 }
 
 #' Clustering Epidemiological survival functions with common changes in time
@@ -142,7 +142,7 @@ detect_cp_multivariate <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0,
 #'
 #'  for(i in 1:5){
 #'
-#'    inf_times[[i]] <- SimEpiData(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
+#'    inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
 #'
 #'    vec <- rep(0,50)
 #'    names(vec) <- as.character(1:50)
@@ -157,7 +157,7 @@ detect_cp_multivariate <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0,
 #'
 #'  out <- cluster_cp_EPI(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
 #'
-#'  get_order_VI(out$clust[1000:5000,])
+#'  get_clust_VI(out$clust[1000:5000,])
 #' @export
 cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coars = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesCPs_cluster_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed)
@@ -193,7 +193,7 @@ cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, 
 #'
 #' out <- cluster_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
 #'
-#' get_order_VI(out$clust[2500:5000,])
+#' get_clust_VI(out$clust[2500:5000,])
 #'
 #' @export
 cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
@@ -245,7 +245,7 @@ cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1,
 #' out <- cluster_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
 #'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 #'
-#' get_order_VI(out$clust[2500:5000,])
+#' get_clust_VI(out$clust[2500:5000,])
 #'
 #' @export
 cluster_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {

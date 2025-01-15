@@ -49,6 +49,9 @@ out <- detect_cp_uni(data = data_vec,
 
 get_clust_VI(out$order)
 
+``` 
+
+``` r
 
 # detect_cp_multi
 
@@ -65,6 +68,10 @@ out <- detect_cp_multi(data = data_mat,
 
 get_order_VI(out$order)
 
+``` 
+
+``` r
+
 # cluster_cp_uni
 
 data_mat <- matrix(NA, nrow = 5, ncol = 100)
@@ -78,6 +85,10 @@ data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 out <- cluster_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
 
 get_clust_VI(out$clust[2500:5000,])
+
+``` 
+
+``` r
 
 # cluster_cp_multi
 
@@ -107,6 +118,10 @@ out <- cluster_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 
 get_clust_VI(out$clust[2500:5000,])
+
+``` 
+
+``` r
 
 # cluster_cp_EPI
 

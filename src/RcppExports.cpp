@@ -50,9 +50,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// gdetect_cp_uni
-Rcpp::List gdetect_cp_uni(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_gdetect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+// detect_cp_uni
+Rcpp::List detect_cp_uni(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_detect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -67,7 +67,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type par_theta_d(par_theta_dSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(gdetect_cp_uni(data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(detect_cp_uni(data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -175,7 +175,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesCPs_sim_epi_data", (DL_FUNC) &_BayesCPs_sim_epi_data, 6},
     {"_BayesCPs_psm", (DL_FUNC) &_BayesCPs_psm, 1},
     {"_BayesCPs_get_clust_VI", (DL_FUNC) &_BayesCPs_get_clust_VI, 1},
-    {"_BayesCPs_gdetect_cp_uni", (DL_FUNC) &_BayesCPs_gdetect_cp_uni, 11},
+    {"_BayesCPs_detect_cp_uni", (DL_FUNC) &_BayesCPs_detect_cp_uni, 11},
     {"_BayesCPs_detect_cp_multi", (DL_FUNC) &_BayesCPs_detect_cp_multi, 12},
     {"_BayesCPs_cluster_cp_epi", (DL_FUNC) &_BayesCPs_cluster_cp_epi, 20},
     {"_BayesCPs_cluster_cp_uni", (DL_FUNC) &_BayesCPs_cluster_cp_uni, 13},

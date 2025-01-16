@@ -2576,7 +2576,7 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{gdetect_cp_uni} returns a list containing the following components: \itemize{
+//' @return Function \code{detect_cp_uni} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 //' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
@@ -2587,7 +2587,7 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //'
 //' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 //'
-//' out <- gdetect_cp_uni(data = data_vec,
+//' out <- detect_cp_uni(data = data_vec,
 //'                             n_iterations = 2500,
 //'                             q = 0.25,
 //'                             phi = 0.1, a = 1, b = 1, c = 0.1)
@@ -2595,7 +2595,7 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //' get_clust_VI(out$order)
 //' @export
 //[[Rcpp::export]]
-Rcpp::List gdetect_cp_uni(arma::vec data,
+Rcpp::List detect_cp_uni(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
                                 double par_theta_c = 1, double par_theta_d = 1, bool print_progress = true, unsigned long user_seed = 1234){
 

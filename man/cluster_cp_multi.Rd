@@ -79,6 +79,6 @@ data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 out <- cluster_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 
-get_order_VI(out$clust[2500:5000,])
+get_clust_VI(out$clust[2500:5000,])
 
 }

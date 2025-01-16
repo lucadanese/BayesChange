@@ -44,7 +44,7 @@ get_clust_VI <- function(orders_mat) {
 #' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{gdetect_cp_uni} returns a list containing the following components: \itemize{
+#' @return Function \code{detect_cp_uni} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 #' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
@@ -55,15 +55,15 @@ get_clust_VI <- function(orders_mat) {
 #'
 #' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 #'
-#' out <- gdetect_cp_uni(data = data_vec,
+#' out <- detect_cp_uni(data = data_vec,
 #'                             n_iterations = 2500,
 #'                             q = 0.25,
 #'                             phi = 0.1, a = 1, b = 1, c = 0.1)
 #'
 #' get_clust_VI(out$order)
 #' @export
-gdetect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_gdetect_cp_uni`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
+detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_detect_cp_uni`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
 }
 
 #' Detect Change Points on multivariate time series

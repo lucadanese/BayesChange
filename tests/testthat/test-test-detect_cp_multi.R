@@ -1,4 +1,4 @@
-test_that("detect_cp_multivariate works", {
+test_that("detect_cp_multi works", {
 
 
   data_mat <- matrix(NA, nrow = 3, ncol = 100)
@@ -11,7 +11,7 @@ test_that("detect_cp_multivariate works", {
 
   for(i in 1:10){
 
-    out_test <- detect_cp_multivariate(data = data_mat,
+    out_test <- detect_cp_multi(data = data_mat,
                                        n_iterations = 2500, q = 0.25,
                                        k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
                                        par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1, print_progress = FALSE)

@@ -63,6 +63,6 @@ data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
 out <- cluster_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
 
-get_order_VI(out$clust[2500:5000,])
+get_clust_VI(out$clust[2500:5000,])
 
 }

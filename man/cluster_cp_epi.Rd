@@ -83,7 +83,7 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
 
  for(i in 1:5){
 
-   inf_times[[i]] <- SimEpiData(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
+   inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
 
    vec <- rep(0,50)
    names(vec) <- as.character(1:50)
@@ -98,5 +98,5 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
 
  out <- cluster_cp_EPI(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
 
- get_order_VI(out$clust[1000:5000,])
+ get_clust_VI(out$clust[1000:5000,])
 }

@@ -323,7 +323,7 @@ arma::mat ExtractSubData(arma::mat data, arma::vec order, int index){
 // LIKELIHOOD PRIOR AND POSTERIOR
 //---------------------------------
 
-double LogLikelihood_TS(arma::mat data, arma::mat order,
+double Likelihood_UniTS(arma::mat data, arma::mat order,
                         double gamma_par, double a, double b, double c){
   // Return a vector with the likelihood computed for each time series
   // Args;
@@ -469,74 +469,6 @@ double Prior_TS(arma::vec order,
   double res = a1 + a2 + a3;
 
   return res;
-}
-
-double Likelihood_UniTS(arma::mat data, arma::vec order,
-                        double phi, double a, double b, double c){
-
-  double k = max(order) + 1;
-  arma::vec res_vec, table_order = table_cpp(order), vec_likelihood(k);
-
-  for(int i = 0; i < k; i++){
-
-    double n_i = table_order(i);
-
-    arma::mat gamma_k(1,n_i);
-
-    if(i == 0){
-      gamma_k = data.row(0).cols(0, n_i-1);
-    } else if (i == k) {
-      gamma_k = data.row(0).cols(data.n_cols - 1 - n_i, data.n_cols - 1);
-    } else {
-      arma::vec table_order_temp = table_order.subvec(0,i-1);
-      gamma_k = data.row(0).cols(sum(table_order_temp), sum(table_order_temp) + n_i - 1);
-
-    }
-
-
-
-
-
-    if((n_i != 1) & (n_i != 2)){
-
-      arma::mat S_i(n_i,n_i,arma::fill::zeros);
-      S_i(0,0) = 1;
-      for(int j = 1; j < n_i; j++){
-        S_i(j,j) = 1 + std::pow(phi,2);
-        S_i(j,j-1) = -phi;
-        S_i(j-1,j) = -phi;
-      }
-
-      S_i(n_i-1,n_i-1) = 1;
-
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1+std::pow(phi,2)) - std::log(c) - std::log(n_i) + std::log(phi) + std::log(n_i-c-2)) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).cols(1,gamma_k.n_cols - 2)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
-    } else if (n_i == 1) {
-
-      arma::mat S_i(1,1,arma::fill::zeros);
-      S_i(0,0) = 1;
-
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1+std::pow(phi,2)) - std::log(c) - std::log(n_i) + std::log(phi) + std::log(n_i-c-2)) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
-    } else if (n_i == 2) {
-
-      arma::mat S_i(n_i,n_i,arma::fill::zeros);
-      S_i(0,0) = 1;
-      for(int j = 1; j < n_i; j++){
-        S_i(j,j) = 1 + std::pow(phi,2);
-        S_i(j,j-1) = -phi;
-        S_i(j-1,j) = -phi;
-      }
-
-      S_i(n_i-1,n_i-1) = 1;
-
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1+std::pow(phi,2)) - std::log(c) - std::log(n_i) + std::log(phi) + std::log(n_i-c-2)) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).col(1)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
-
-    }
-
-
-  }
-
-  return sum(vec_likelihood);
-
 }
 
 double Posterior_MultiTS(arma::mat data, arma::vec order,
@@ -688,7 +620,7 @@ double AlphaSplitOrder_TS(arma::mat data, arma::vec new_order, arma::vec old_ord
   arma::vec lkl_vec(data.n_rows);
 
   for(arma::uword i = 0; i < data.n_rows; i++){
-    lkl_vec(i) = LogLikelihood_TS(data.row(i), new_order.t(), gamma, a, b, c) - LogLikelihood_TS(data.row(i), old_order.t(), gamma, a, b, c);
+    lkl_vec(i) = Likelihood_UniTS(data.row(i), new_order.t(), gamma, a, b, c) - Likelihood_UniTS(data.row(i), old_order.t(), gamma, a, b, c);
   }
 
   double a11 = old_order.n_elem - std::count(freq_temp.begin(),freq_temp.end(),1);
@@ -711,7 +643,7 @@ double AlphaMergeOrder_TS(arma::mat data, arma::vec new_order, arma::vec old_ord
   arma::vec lkl_vec(data.n_rows);
 
   for(arma::uword i = 0; i < data.n_rows; i++){
-    lkl_vec(i) = LogLikelihood_TS(data.row(i), new_order.t(), gamma, a, b, c) - LogLikelihood_TS(data.row(i), old_order.t(), gamma, a, b, c);
+    lkl_vec(i) = Likelihood_UniTS(data.row(i), new_order.t(), gamma, a, b, c) - Likelihood_UniTS(data.row(i), old_order.t(), gamma, a, b, c);
   }
 
   double a11 = max(old_order) + 1 - 1;
@@ -733,7 +665,7 @@ double AlphaShuffleOrder_TS(arma::mat data, arma::vec new_order, arma::vec old_o
   arma::vec lkl_vec(data.n_rows);
 
   for(arma::uword i = 0; i < data.n_rows; i++){
-    lkl_vec(i) = LogLikelihood_TS(data.row(i), new_order.t(), gamma, a, b, c) - LogLikelihood_TS(data.row(i), old_order.t(), gamma, a, b, c);
+    lkl_vec(i) = Likelihood_UniTS(data.row(i), new_order.t(), gamma, a, b, c) - Likelihood_UniTS(data.row(i), old_order.t(), gamma, a, b, c);
   }
 
   double a1 = sum(lkl_vec);
@@ -1426,7 +1358,7 @@ arma::vec norm_constant_uni(arma::mat data,
     new_order_mat.row(0) = new_order_vec.t();
 
     for(arma::uword i = 0; i < data.n_rows; i++){
-      temp_llik_mat(r,i) = LogLikelihood_TS(data.row(i),new_order_mat.row(0),gamma_par,a,b,c) - ord_lprob;
+      temp_llik_mat(r,i) = Likelihood_UniTS(data.row(i),new_order_mat.row(0),gamma_par,a,b,c) - ord_lprob;
     }
 
     // print time
@@ -3359,7 +3291,7 @@ arma::vec lkl_temp(data.n_rows);
 
 for(arma::uword i = 0; i < data.n_rows; i++){
 
-  lkl_temp(i) = LogLikelihood_TS(data.row(i), orders_temp.row(partition_temp(i)), gamma,a,b,c);
+  lkl_temp(i) = Likelihood_UniTS(data.row(i), orders_temp.row(partition_temp(i)), gamma,a,b,c);
 
 }
 
@@ -3428,9 +3360,9 @@ for(int iter = 0; iter < n_iterations; iter++){
     lkl_old_j_m = lkl_temp;
 
     for(int i = 0; i < n; i++){
-      lkl_old_i_m(i) = LogLikelihood_TS(data.row(i), order_i.t(), gamma,a,b,c);
-      lkl_old_j_m(i) = LogLikelihood_TS(data.row(i), order_j.t(), gamma,a,b,c);
-      lkl_proposal_m(i) = LogLikelihood_TS(data.row(i), proposed_order.t(), gamma,a,b,c);
+      lkl_old_i_m(i) = Likelihood_UniTS(data.row(i), order_i.t(), gamma,a,b,c);
+      lkl_old_j_m(i) = Likelihood_UniTS(data.row(i), order_j.t(), gamma,a,b,c);
+      lkl_proposal_m(i) = Likelihood_UniTS(data.row(i), proposed_order.t(), gamma,a,b,c);
     }
 
 
@@ -3468,7 +3400,7 @@ for(int iter = 0; iter < n_iterations; iter++){
       partition_temp = proposed_partition_clean;
 
       for(int i = 0; i < n; i++){
-        lkl_temp(i) = LogLikelihood_TS(data.row(i), orders_temp.row(partition_temp(i)).t(),gamma,a,b,c);
+        lkl_temp(i) = Likelihood_UniTS(data.row(i), orders_temp.row(partition_temp(i)).t(),gamma,a,b,c);
       }
 
     }
@@ -3527,9 +3459,9 @@ for(int iter = 0; iter < n_iterations; iter++){
     lkl_proposal_j_s = lkl_temp;
 
     for(int i = 0; i < n; i++){
-      lkl_proposal_i_s(i) = LogLikelihood_TS(data.row(i), proposed_order_i.t(), gamma,a,b,c);
-      lkl_proposal_j_s(i) = LogLikelihood_TS(data.row(i), proposed_order_j.t(), gamma,a,b,c);
-      lkl_old_s(i) = LogLikelihood_TS(data.row(i), old_order.t(), gamma,a,b,c);
+      lkl_proposal_i_s(i) = Likelihood_UniTS(data.row(i), proposed_order_i.t(), gamma,a,b,c);
+      lkl_proposal_j_s(i) = Likelihood_UniTS(data.row(i), proposed_order_j.t(), gamma,a,b,c);
+      lkl_old_s(i) = Likelihood_UniTS(data.row(i), old_order.t(), gamma,a,b,c);
     }
 
     // evaluate the proposed new partition
@@ -3568,7 +3500,7 @@ for(int iter = 0; iter < n_iterations; iter++){
       orders_temp = orders_temp_clean;
 
       for(int i = 0; i < n; i++){
-        lkl_temp(i) = LogLikelihood_TS(data.row(i), orders_temp.row(partition_temp(i)).t(),gamma,a,b,c);
+        lkl_temp(i) = Likelihood_UniTS(data.row(i), orders_temp.row(partition_temp(i)).t(),gamma,a,b,c);
       }
 
     }

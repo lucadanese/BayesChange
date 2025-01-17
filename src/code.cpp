@@ -3922,10 +3922,6 @@ Rcpp::List cluster_cp_multi(arma::cube data,
     }
     Rcpp::checkUserInterrupt();
 
-    // DELETE
-    Rcpp::Rcout << "prova" << "\n";
-
-    //
   }
 
   //double time = double(current_s-start_s)/CLOCKS_PER_SEC;

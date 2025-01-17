@@ -3923,7 +3923,7 @@ Rcpp::List cluster_cp_multi(arma::cube data,
     Rcpp::checkUserInterrupt();
 
     // DELETE
-    //Rcpp::Rcout << table_cpp(partition_temp) << "\n";
+    Rcpp::Rcout << "prova" << "\n";
 
     //
   }

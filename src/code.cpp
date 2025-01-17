@@ -323,6 +323,7 @@ arma::mat ExtractSubData(arma::mat data, arma::vec order, int index){
 // LIKELIHOOD PRIOR AND POSTERIOR
 //---------------------------------
 
+
 double Likelihood_UniTS(arma::mat data, arma::mat order,
                         double gamma_par, double a, double b, double c){
   // Return a vector with the likelihood computed for each time series
@@ -370,6 +371,7 @@ double Likelihood_UniTS(arma::mat data, arma::mat order,
   }
   return(sum(lkl));
 }
+
 
 double Likelihood_MultiTS(arma::mat data, arma::vec order,
                           double gamma, double k_0, double nu_0,
@@ -1307,6 +1309,7 @@ void SplitMergeAccMultivariateTS(arma::cube data,
 // NORMALISATION CONSTANT
 // ------------------------
 
+
 arma::vec norm_constant_uni(arma::mat data,
                             double gamma_par,
                             int R,
@@ -1376,6 +1379,7 @@ arma::vec norm_constant_uni(arma::mat data,
 
   return temp_llik_vec;
 }
+
 
 arma::vec norm_constant_multi(arma::cube data,
                                 double gamma_par,

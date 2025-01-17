@@ -12,6 +12,76 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// Likelihood_UniTS
+double Likelihood_UniTS(arma::mat data, arma::mat order, double gamma_par, double a, double b, double c);
+RcppExport SEXP _BayesCPs_Likelihood_UniTS(SEXP dataSEXP, SEXP orderSEXP, SEXP gamma_parSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma_par(gamma_parSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    rcpp_result_gen = Rcpp::wrap(Likelihood_UniTS(data, order, gamma_par, a, b, c));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Likelihood_MultiTS
+double Likelihood_MultiTS(arma::mat data, arma::vec order, double gamma, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0);
+RcppExport SEXP _BayesCPs_Likelihood_MultiTS(SEXP dataSEXP, SEXP orderSEXP, SEXP gammaSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< double >::type k_0(k_0SEXP);
+    Rcpp::traits::input_parameter< double >::type nu_0(nu_0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type phi_0(phi_0SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type m_0(m_0SEXP);
+    rcpp_result_gen = Rcpp::wrap(Likelihood_MultiTS(data, order, gamma, k_0, nu_0, phi_0, m_0));
+    return rcpp_result_gen;
+END_RCPP
+}
+// norm_constant_uni
+arma::vec norm_constant_uni(arma::mat data, double gamma_par, int R, double a, double b, double c, double p, bool print_progress);
+RcppExport SEXP _BayesCPs_norm_constant_uni(SEXP dataSEXP, SEXP gamma_parSEXP, SEXP RSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP pSEXP, SEXP print_progressSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma_par(gamma_parSEXP);
+    Rcpp::traits::input_parameter< int >::type R(RSEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    Rcpp::traits::input_parameter< double >::type p(pSEXP);
+    Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
+    rcpp_result_gen = Rcpp::wrap(norm_constant_uni(data, gamma_par, R, a, b, c, p, print_progress));
+    return rcpp_result_gen;
+END_RCPP
+}
+// norm_constant_multi
+arma::vec norm_constant_multi(arma::cube data, double gamma_par, int R, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0, double p, bool print_progress);
+RcppExport SEXP _BayesCPs_norm_constant_multi(SEXP dataSEXP, SEXP gamma_parSEXP, SEXP RSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP pSEXP, SEXP print_progressSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::cube >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma_par(gamma_parSEXP);
+    Rcpp::traits::input_parameter< int >::type R(RSEXP);
+    Rcpp::traits::input_parameter< double >::type k_0(k_0SEXP);
+    Rcpp::traits::input_parameter< double >::type nu_0(nu_0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type phi_0(phi_0SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type m_0(m_0SEXP);
+    Rcpp::traits::input_parameter< double >::type p(pSEXP);
+    Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
+    rcpp_result_gen = Rcpp::wrap(norm_constant_multi(data, gamma_par, R, k_0, nu_0, phi_0, m_0, p, print_progress));
+    return rcpp_result_gen;
+END_RCPP
+}
 // sim_epi_data
 arma::vec sim_epi_data(double S0, double I0, double MaxTime, arma::vec beta_vec, double gamma_0, unsigned long user_seed);
 RcppExport SEXP _BayesCPs_sim_epi_data(SEXP S0SEXP, SEXP I0SEXP, SEXP MaxTimeSEXP, SEXP beta_vecSEXP, SEXP gamma_0SEXP, SEXP user_seedSEXP) {
@@ -172,6 +242,10 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_BayesCPs_Likelihood_UniTS", (DL_FUNC) &_BayesCPs_Likelihood_UniTS, 6},
+    {"_BayesCPs_Likelihood_MultiTS", (DL_FUNC) &_BayesCPs_Likelihood_MultiTS, 7},
+    {"_BayesCPs_norm_constant_uni", (DL_FUNC) &_BayesCPs_norm_constant_uni, 8},
+    {"_BayesCPs_norm_constant_multi", (DL_FUNC) &_BayesCPs_norm_constant_multi, 9},
     {"_BayesCPs_sim_epi_data", (DL_FUNC) &_BayesCPs_sim_epi_data, 6},
     {"_BayesCPs_psm", (DL_FUNC) &_BayesCPs_psm, 1},
     {"_BayesCPs_get_clust_VI", (DL_FUNC) &_BayesCPs_get_clust_VI, 1},

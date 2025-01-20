@@ -2409,6 +2409,7 @@ Rcpp::List DoobGillespieAlg(double S0,
 //' @param user_seed Prova
 //' @return TO DO
 //'
+//' @export
 // [[Rcpp::export]]
 arma::vec sim_epi_data(double S0,
                        double I0,
@@ -2714,7 +2715,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //' @param n_iterations number of MCMC iterations.
 //' @param q probability of permorming a split at each iteration.
 //' @param k_0,nu_0,phi_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-//' @param prior_theta_c,prior_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
+//' @param par_theta_c,par_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
 //' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
@@ -2973,7 +2974,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'
 //'  for(i in 1:5){
 //'
-//'    inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
+//'    inf_times[[i]] <- sim_epi_data(10000, 10, 50, betas[[i]], 1/8)
 //'
 //'    vec <- rep(0,50)
 //'    names(vec) <- as.character(1:50)
@@ -3102,10 +3103,12 @@ Rcpp::List cluster_cp_epi(arma::mat data,
  arma::mat orders(data.n_rows, data.n_cols);
  orders.fill(0);
 
- arma::vec norm_vec = norm_constant_epi(data, gamma, B, a0, b0, rho, M, dt, r, print_progress = print_progress);
+ arma::vec norm_vec = norm_constant_epi(data, gamma, B, a0, b0, rho, M, dt,
+                                        r, print_progress = print_progress);
 
  for(arma::uword i = 0; i < clust.n_elem; i++){
-   arma::mat curve_mat = integrated_curves_mat(dt, orders.row(0).t(), a0, b0, gamma, rho(i), M, S0, R0);
+   arma::mat curve_mat = integrated_curves_mat(dt, orders.row(0).t(),
+                                               a0, b0, gamma, rho(i), M, S0, R0);
    llik(i) = log_sum_exp(curve_mat.cols(0,data.n_cols-1) * data.row(i).t() - curve_mat.col(data.n_cols)) - log(M);
  }
 

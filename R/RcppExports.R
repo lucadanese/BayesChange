@@ -122,7 +122,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #' @param coars coarsening parameter.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{cluster_cp_EPI} returns a list containing the following components: \itemize{
+#' @return Function \code{cluster_cp_epi} returns a list containing the following components: \itemize{
 #' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 #' \item{\code{$orders}} a multidimensional matrix where each slice is a matrix with the orders associated to the output cluster of that iteration.
 #' \item{\code{$llik}} a matrix containing the log-likelihood of each population at each iteration.
@@ -156,7 +156,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #'    data_mat[i,] <- vec
 #'  }
 #'
-#'  out <- cluster_cp_EPI(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
+#'  out <- cluster_cp_epi(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
 #'
 #'  get_clust_VI(out$clust[1000:5000,])
 #' @export

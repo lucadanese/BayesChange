@@ -11,6 +11,7 @@
 #' @param user_seed Prova
 #' @return TO DO
 #'
+#' @export
 sim_epi_data <- function(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L) {
     .Call(`_BayesCPs_sim_epi_data`, S0, I0, MaxTime, beta_vec, gamma_0, user_seed)
 }
@@ -72,7 +73,7 @@ detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, 
 #' @param n_iterations number of MCMC iterations.
 #' @param q probability of permorming a split at each iteration.
 #' @param k_0,nu_0,phi_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-#' @param prior_theta_c,prior_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
+#' @param par_theta_c,par_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
 #' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
@@ -142,7 +143,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #'
 #'  for(i in 1:5){
 #'
-#'    inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
+#'    inf_times[[i]] <- sim_epi_data(10000, 10, 50, betas[[i]], 1/8)
 #'
 #'    vec <- rep(0,50)
 #'    names(vec) <- as.character(1:50)

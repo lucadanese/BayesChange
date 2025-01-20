@@ -28,13 +28,13 @@ detect_cp_multi(
 
 \item{k_0, nu_0, phi_0, m_0}{parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.}
 
+\item{par_theta_c, par_theta_d}{parameters for the shifted Gamma priod for \eqn{\theta}.}
+
 \item{prior_var_gamma}{parameters for the Gamma prior for \eqn{\gamma}.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
 \item{user_seed}{seed for random distribution generation.}
-
-\item{prior_theta_c, prior_theta_d}{parameters for the shifted Gamma priod for \eqn{\theta}.}
 }
 \value{
 Function \code{detect_cp_multi} returns a list containing the following components: \itemize{

@@ -83,7 +83,7 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
 
  for(i in 1:5){
 
-   inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, MaxTime = 50, beta_vec = betas[[i]], gamma_0 = 1/8)
+   inf_times[[i]] <- sim_epi_data(10000, 10, 50, betas[[i]], 1/8)
 
    vec <- rep(0,50)
    names(vec) <- as.character(1:50)

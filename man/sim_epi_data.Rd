@@ -4,23 +4,23 @@
 \alias{sim_epi_data}
 \title{Simulate epidemiological data}
 \usage{
-sim_epi_data(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L)
+sim_epi_data(S0, I0, max_time, beta_vec, gamma_0, user_seed = 1234L)
 }
 \arguments{
-\item{S0}{First value}
+\item{S0}{number of individuals in the population.}
 
-\item{I0}{Second value}
+\item{I0}{number of infected individuals at time 0.}
 
-\item{MaxTime}{Prova}
+\item{max_time}{maximum observed time.}
 
-\item{beta_vec}{Prova}
+\item{beta_vec}{vector with the infection rate for each discrete time.}
 
-\item{gamma_0}{Prova}
+\item{gamma_0}{the recovery rate. for the population, must be in \eqn{(0,1)}.}
 
-\item{user_seed}{Prova}
+\item{user_seed}{seed for random distribution generation.}
 }
 \value{
-TO DO
+Function \code{sim_epi_data} returns a vector with the simulated infection times.
 }
 \description{
 Simulate epidemiological data

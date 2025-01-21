@@ -13,18 +13,18 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // sim_epi_data
-arma::vec sim_epi_data(double S0, double I0, double MaxTime, arma::vec beta_vec, double gamma_0, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_sim_epi_data(SEXP S0SEXP, SEXP I0SEXP, SEXP MaxTimeSEXP, SEXP beta_vecSEXP, SEXP gamma_0SEXP, SEXP user_seedSEXP) {
+arma::vec sim_epi_data(double S0, double I0, double max_time, arma::vec beta_vec, double gamma_0, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_sim_epi_data(SEXP S0SEXP, SEXP I0SEXP, SEXP max_timeSEXP, SEXP beta_vecSEXP, SEXP gamma_0SEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type S0(S0SEXP);
     Rcpp::traits::input_parameter< double >::type I0(I0SEXP);
-    Rcpp::traits::input_parameter< double >::type MaxTime(MaxTimeSEXP);
+    Rcpp::traits::input_parameter< double >::type max_time(max_timeSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type beta_vec(beta_vecSEXP);
     Rcpp::traits::input_parameter< double >::type gamma_0(gamma_0SEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(sim_epi_data(S0, I0, MaxTime, beta_vec, gamma_0, user_seed));
+    rcpp_result_gen = Rcpp::wrap(sim_epi_data(S0, I0, max_time, beta_vec, gamma_0, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }

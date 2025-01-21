@@ -3,17 +3,17 @@
 
 #' Simulate epidemiological data
 #'
-#' @param S0 First value
-#' @param I0 Second value
-#' @param MaxTime Prova
-#' @param beta_vec Prova
-#' @param gamma_0 Prova
-#' @param user_seed Prova
-#' @return TO DO
+#' @param S0 number of individuals in the population.
+#' @param I0 number of infected individuals at time 0.
+#' @param max_time maximum observed time.
+#' @param beta_vec vector with the infection rate for each discrete time.
+#' @param gamma_0 the recovery rate. for the population, must be in \eqn{(0,1)}.
+#' @param user_seed seed for random distribution generation.
+#' @return Function \code{sim_epi_data} returns a vector with the simulated infection times.
 #'
 #' @export
-sim_epi_data <- function(S0, I0, MaxTime, beta_vec, gamma_0, user_seed = 1234L) {
-    .Call(`_BayesCPs_sim_epi_data`, S0, I0, MaxTime, beta_vec, gamma_0, user_seed)
+sim_epi_data <- function(S0, I0, max_time, beta_vec, gamma_0, user_seed = 1234L) {
+    .Call(`_BayesCPs_sim_epi_data`, S0, I0, max_time, beta_vec, gamma_0, user_seed)
 }
 
 #' Compute the posterior similarity matrix

@@ -2401,19 +2401,19 @@ Rcpp::List DoobGillespieAlg(double S0,
 
 //' Simulate epidemiological data
 //'
-//' @param S0 First value
-//' @param I0 Second value
-//' @param MaxTime Prova
-//' @param beta_vec Prova
-//' @param gamma_0 Prova
-//' @param user_seed Prova
-//' @return TO DO
+//' @param S0 number of individuals in the population.
+//' @param I0 number of infected individuals at time 0.
+//' @param max_time maximum observed time.
+//' @param beta_vec vector with the infection rate for each discrete time.
+//' @param gamma_0 the recovery rate. for the population, must be in \eqn{(0,1)}.
+//' @param user_seed seed for random distribution generation.
+//' @return Function \code{sim_epi_data} returns a vector with the simulated infection times.
 //'
 //' @export
 // [[Rcpp::export]]
 arma::vec sim_epi_data(double S0,
                        double I0,
-                       double MaxTime,
+                       double max_time,
                        arma::vec beta_vec,
                        double gamma_0,
                        unsigned long user_seed = 1234){
@@ -2427,7 +2427,31 @@ r = gsl_rng_alloc (T);
 gsl_rng_set(r, user_seed);
 //
 
-Rcpp::List list_simtimes = DoobGillespieAlg(S0,I0,MaxTime,beta_vec,gamma_0,r);
+// WARNINGS //
+if(S0 < 1){
+  Rcpp::stop("'S0' must be at least equal to 1.");
+}
+
+if(I0 > S0){
+  Rcpp::stop("'I0' must be smaller than 'S0'.");
+}
+
+if((gamma_0 > 1) | (gamma_0 < 0)){
+  Rcpp::stop("'gamma_0' must be in (0,1).");
+}
+
+if(beta_vec.n_elem != max_time){
+  Rcpp::stop("number of elements in 'beta_vec' must be equal to 'max_time'.");
+}
+
+if(beta_vec.n_elem  != max_time){
+  Rcpp::stop("number of elements in 'beta_vec' must be equal to 'max_time'.");
+}
+
+
+// ------- //
+
+Rcpp::List list_simtimes = DoobGillespieAlg(S0,I0,max_time,beta_vec,gamma_0,r);
 
 arma::vec list_times = list_simtimes[0];
 arma::vec list_flags = list_simtimes[1];
@@ -3304,7 +3328,7 @@ for(arma::uword i = 0; i < data.n_rows; i++){
 
 // COMPUTE NORMALISATION CONSTANT
 
-arma::vec norm_const = norm_constant_uni(data, gamma, B, a, b, c, 2.0/data.n_cols, print_progress = print_progress);
+arma::vec norm_const = norm_constant_uni(data, gamma, B, a, b, c, 5.0/data.n_cols, print_progress = print_progress);
 
 if(print_progress == true){
   Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
@@ -3687,7 +3711,7 @@ Rcpp::List cluster_cp_multi(arma::cube data,
   double num_groups_temp = max(partition_temp) + 1;
 
   for(int i = 0; i < num_groups_temp; i++){
-    orders_temp.row(i) = generate_random_order(data.slice(0).n_cols, 2.0/data.slice(0).n_cols, r).t();
+    orders_temp.row(i) = generate_random_order(data.slice(0).n_cols, 5.0/data.slice(0).n_cols, r).t();
   }
 
   // computing starting likelihood
@@ -3698,7 +3722,7 @@ Rcpp::List cluster_cp_multi(arma::cube data,
   }
   // COMPUTE NORMALISATION CONSTANT
 
-  arma::vec norm_const = norm_constant_multi(data, gamma, B, k_0, nu_0, phi_0, m_0, 2.0/data.slice(0).n_cols,print_progress = print_progress);
+  arma::vec norm_const = norm_constant_multi(data, gamma, B, k_0, nu_0, phi_0, m_0, 5.0/data.slice(0).n_cols,print_progress = print_progress);
 
   if(print_progress == true){
     Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";

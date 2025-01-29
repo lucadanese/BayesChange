@@ -3644,7 +3644,7 @@ for(int iter = 0; iter < n_iterations; iter++){
 Rcpp::List out_list;
 out_list["clust"] = res_clust;
 out_list["orders"] = res_orders;
-out_list["lkl"] = lkl;
+out_list["lkl"] = res_lkl;
 //out_list["time"] = time;
 out_list["norm_vec"] = norm_const;
 

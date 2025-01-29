@@ -3357,7 +3357,7 @@ if((coars <= 0) | (coars > 1)){
 
 // ------- //
 
-arma::mat res_clust(n_iterations, data.n_rows), orders_temp_clean;
+arma::mat res_clust(n_iterations, data.n_rows), res_lkl(n_iterations, data.n_rows), orders_temp_clean;
 arma::cube res_orders(data.n_rows, data.n_cols, n_iterations);
 arma::vec freq_temp(data.n_rows), prob_temp(data.n_rows), proposed_order_i(data.n_cols), proposed_order_j(data.n_cols), order_i(data.n_cols), order_j(data.n_cols),
 proposed_order(data.n_cols), proposed_partition(data.n_rows), prob_temp_j(data.n_rows), prob_temp_i(data.n_rows), proposed_partition_clean(data.n_cols),
@@ -3621,8 +3621,13 @@ for(int iter = 0; iter < n_iterations; iter++){
 
   }
 
+  for(int i = 0; i < n; i++){
+        lkl_temp(i) = LogLikelihood_TS(data.row(i), orders_temp.row(partition_temp(i)).t(),gamma,a,b,c);
+      }
+
   res_clust.row(iter) = partition_temp.t();
   res_orders.slice(iter) = orders_temp;
+  res_lkl.row(iter) = lkl_temp.t();
 
   // print time
   if(((iter + 1) % nupd == 0) & (print_progress == true)){
@@ -3639,6 +3644,7 @@ for(int iter = 0; iter < n_iterations; iter++){
 Rcpp::List out_list;
 out_list["clust"] = res_clust;
 out_list["orders"] = res_orders;
+out_list["lkl"] = lkl;
 //out_list["time"] = time;
 out_list["norm_vec"] = norm_const;
 
@@ -3707,7 +3713,7 @@ Rcpp::List cluster_cp_multi(arma::cube data,
                             double q = 0.5,
                             double alpha_SM = 0.1, double coars = 1, bool print_progress = true, unsigned long user_seed = 1234){
 
-  arma::mat res_clust(n_iterations, data.n_slices), orders_temp_clean;
+  arma::mat res_clust(n_iterations, data.n_slices), res_lkl(n_iterations,data.n_slices), orders_temp_clean;
   arma::cube res_orders(data.n_slices, data.slice(0).n_cols, n_iterations);
   arma::vec freq_temp(data.n_slices), prob_temp(data.n_slices), proposed_order_i(data.slice(0).n_cols), proposed_order_j(data.slice(0).n_cols), order_i(data.slice(0).n_cols), order_j(data.slice(0).n_cols),
   proposed_order(data.slice(0).n_cols), proposed_partition(data.n_slices), prob_temp_j(data.n_slices), prob_temp_i(data.n_slices), proposed_partition_clean(data.slice(0).n_cols),
@@ -4006,8 +4012,13 @@ Rcpp::List cluster_cp_multi(arma::cube data,
       orders_temp.row(min(find(partition_temp == i))) = proposed_order.t();
     }
 
+    for(arma::uword i = 0; i < data.n_slices; i++){
+          lkl_temp(i) = Likelihood_MultiTS(data.slice(i), orders_temp.row(partition_temp(i)).t(), gamma, k_0, nu_0, phi_0, m_0);
+        }
+
     res_clust.row(iter) = partition_temp.t();
     res_orders.slice(iter) = orders_temp;
+    res_lkl.row(iter) = lkl_temp.t();
 
     // print time
     if(((iter + 1) % nupd == 0) & (print_progress == true)){
@@ -4026,6 +4037,7 @@ Rcpp::List cluster_cp_multi(arma::cube data,
   Rcpp::List out_list;
   out_list["clust"] = res_clust;
   out_list["orders"] = res_orders;
+  out_list["lkl"] = res_lkl;
   //out_list["time"] = time;
   out_list["norm_vec"] = norm_const;
 

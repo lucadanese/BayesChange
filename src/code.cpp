@@ -387,7 +387,6 @@ double Likelihood_UniTS(arma::mat data, arma::vec order,
 
 }
 
-// [[Rcpp::export]]
 double LogLikelihood_TS(arma::mat data, arma::mat order,
                         double gamma_par, double a, double b, double c){
   // Return a vector with the likelihood computed for each time series

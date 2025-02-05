@@ -24,11 +24,11 @@ detect_cp_multi(
 
 \item{n_iterations}{number of MCMC iterations.}
 
-\item{q}{probability of permorming a split at each iteration.}
+\item{q}{probability of performing a split at each iteration.}
 
 \item{k_0, nu_0, phi_0, m_0}{parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.}
 
-\item{par_theta_c, par_theta_d}{parameters for the shifted Gamma priod for \eqn{\theta}.}
+\item{par_theta_c, par_theta_d}{parameters for the shifted Gamma prior for \eqn{\theta}.}
 
 \item{prior_var_gamma}{parameters for the Gamma prior for \eqn{\gamma}.}
 
@@ -39,6 +39,7 @@ detect_cp_multi(
 \value{
 Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
 \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
+\item{\code{time}} computational time in seconds.
 \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
 \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
 \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.

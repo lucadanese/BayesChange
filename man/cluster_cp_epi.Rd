@@ -62,6 +62,7 @@ cluster_cp_epi(
 Function \code{cluster_cp_epi} returns a list containing the following components: \itemize{
 \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 \item{\code{$orders}} a multidimensional matrix where each slice is a matrix with the orders associated to the output cluster of that iteration.
+\item{\code{time}} computational time in seconds.
 \item{\code{$llik}} a matrix containing the log-likelihood of each population at each iteration.
 \item{\code{$rho}} traceplot for the proportion of infected individuals at time 0.
 }

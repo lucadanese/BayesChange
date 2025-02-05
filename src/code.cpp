@@ -210,13 +210,9 @@ double log_sum_exp(arma::vec log_vals){
 }
 
 arma::vec generate_random_partition(int n, gsl_rng *r ){
-  // Randomly generate a random partition for n observations
-  // Args:
-  // 	n: number of observations
   arma::vec random_order(n);
 
   int num_groups = gsl_rng_uniform_int(r, n) + 1;
-  //int num_groups = randi(1,distr_param(1,n))(0);
   int counter = 0;
 
   for(int i = 0; i < (num_groups-1); i++){
@@ -235,9 +231,6 @@ arma::vec generate_random_partition(int n, gsl_rng *r ){
 }
 
 arma::vec clean_partition_cpp(arma::vec partition){
-  // Fix a partition such that clusters' indexes are from 0 to number of clusters
-  // Args:
-  // 	partition: a vec with the partition to fix
   arma::vec partition_temp = partition;
   double index, counter = 0;
   arma::uvec uni_clust = find_unique(partition, true);
@@ -254,10 +247,6 @@ arma::vec clean_partition_cpp(arma::vec partition){
 }
 
 arma::vec generate_random_order(double t, double p, gsl_rng *r){
-  // Randomly generate an order of T time points
-  // Args:
-  // 	t: number of times
-  //  p: p = x/t where x is the average number of blocks
   arma::vec freqs, temp_probs, new_order, cfreq;
   int k;
 
@@ -323,7 +312,6 @@ arma::mat ExtractSubData(arma::mat data, arma::vec order, int index){
 // LIKELIHOOD PRIOR AND POSTERIOR
 //---------------------------------
 
-// [[Rcpp::export]]
 double Likelihood_UniTS(arma::mat data, arma::vec order,
                         double phi, double a, double b, double c){
 
@@ -387,13 +375,10 @@ double Likelihood_UniTS(arma::mat data, arma::vec order,
 
 }
 
+
 double LogLikelihood_TS(arma::mat data, arma::mat order,
                         double gamma_par, double a, double b, double c){
-  // Return a vector with the likelihood computed for each time series
-  // Args;
-  //  data:  matrix with one row corresponding to the time set
-  //  order: matrix with one row corresponding to the order associated to the time series
-  //  gamma_par,a,b,c: parameter gamma
+
   arma::vec lkl(max(order.row(0))+1);
   double length_block;
 
@@ -436,10 +421,6 @@ double LogLikelihood_TS(arma::mat data, arma::mat order,
 }
 
 
-
-
-
-
 double Likelihood_MultiTS(arma::mat data, arma::vec order,
                           double gamma, double k_0, double nu_0,
                           arma::mat phi_0, arma::vec m_0){
@@ -450,8 +431,8 @@ double Likelihood_MultiTS(arma::mat data, arma::vec order,
 
     double n_i = table_order(j);
 
-    arma::mat vettore_m_n(d, n_i - 1, arma::fill::zeros); // inizializziamo la matrice m_n
-    arma::mat vettore_phi_n(d, d, arma::fill::zeros);     // inizializziamo la matrice Phi_n
+    arma::mat vettore_m_n(d, n_i - 1, arma::fill::zeros);
+    arma::mat vettore_phi_n(d, d, arma::fill::zeros);
     arma::vec m_n(d);
     arma::mat phi_n(d,d, arma::fill::zeros);
     arma::mat gamma_k(d,n_i);
@@ -631,7 +612,6 @@ Rcpp::List SIR_curve(double dt,
       j = j + 1;
     }
   }
-
 
   return Rcpp::List::create(
     Rcpp::Named("st") = out,
@@ -949,7 +929,6 @@ double AlphaSplitOrder_UniTS(arma::mat data, arma::vec new_order, arma::vec old_
                              double q, double index, double theta, double sigma, double phi,
                              double a, double b, double c){
 
-  //double k = max(new_order) + 1;
   double k = max(old_order) + 1, a11 = 0, a12 = 0, a13 = 0;
   arma::vec table_oldorder = table_cpp(old_order);
 
@@ -1862,7 +1841,6 @@ void update_single_order(arma::mat data,
       new_order(i) += 1;
     }
 
-    //curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho, M, S0 = 1, R0 = 0);
     for(arma::uword i = 0; i < clust.n_elem; i++){
       if(clust(i) == clust_id){
         curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho(i), M, S0 = 1, R0 = 0);
@@ -1895,7 +1873,6 @@ void update_single_order(arma::mat data,
       }
     }
 
-    //curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho, M, S0 = 1, R0 = 0);
     for(arma::uword i = 0; i < clust.n_elem; i++){
       if(clust(i) == clust_id){
         curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho(i), M, S0 = 1, R0 = 0);
@@ -1948,7 +1925,6 @@ void update_single_order(arma::mat data,
       }
     }
 
-    //curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho, M, S0, R0);
     for(arma::uword i = 0; i < clust.n_elem; i++){
       if(clust(i) == clust_id){
         curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho(i), M, S0, R0);
@@ -2433,8 +2409,6 @@ Rcpp::List DoobGillespieAlg(double S0,
     double E1 = gsl_ran_exponential(r, (S0 /(beta_t * St * It)));
     double E2 = gsl_ran_exponential(r, 1/(gamma_t * It));
 
-    //double t_star = my_min(E1,E2);
-
     if(E1 < E2){     // Infection event
       t_star = E1;
       St = St - 1;
@@ -2454,7 +2428,6 @@ Rcpp::List DoobGillespieAlg(double S0,
 
     infection_01.resize(infection_01.n_elem + 1);
     infection_01(infection_01.n_elem - 1) = flag;
-
 
   }
 
@@ -2606,6 +2579,7 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{detect_cp_uni} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
+//' \item{\code{time}} computational time in seconds.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 //' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 //' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
@@ -2788,8 +2762,11 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
  }
 
+ double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+
  Rcpp::List out_list;
  out_list["orders"] = res_mat;
+ out_list["time"] = time;
  out_list["sigma_MCMC"] = sigma_inf;
  out_list["sigma_MCMC_01"] = sigma_inf_10;
  out_list["theta_MCMC"] = theta_inf;
@@ -2805,14 +2782,15 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //'
 //' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
 //' @param n_iterations number of MCMC iterations.
-//' @param q probability of permorming a split at each iteration.
+//' @param q probability of performing a split at each iteration.
 //' @param k_0,nu_0,phi_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-//' @param par_theta_c,par_theta_d parameters for the shifted Gamma priod for \eqn{\theta}.
+//' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
 //' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
+//' \item{\code{time}} computational time in seconds.
 //' \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
 //' \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
@@ -2842,53 +2820,47 @@ Rcpp::List detect_cp_multi(arma::mat data,
                                   double par_theta_c = 1, double par_theta_d = 1, double prior_var_gamma = 0.1,
                                   bool print_progress = true, unsigned long user_seed = 1234){
 
-  // WARNINGS //
-  if(n_iterations < 1){
-    Rcpp::stop("number of iterations must be at least 1.");
-  }
+    // WARNINGS //
+    if(n_iterations < 1){
+      Rcpp::stop("number of iterations must be at least 1.");
+    }
 
-  if((q > 1) | (q < 0)){
-    Rcpp::stop("'q' must be included in (0,1).");
-  }
+    if((q > 1) | (q < 0)){
+      Rcpp::stop("'q' must be included in (0,1).");
+    }
 
-  if(k_0 < 0){
-    Rcpp::stop("'k_0' must be positive.");
-  }
+    if(k_0 < 0){
+      Rcpp::stop("'k_0' must be positive.");
+    }
 
-  if(nu_0 < 0){
-    Rcpp::stop("'nu_0' must be positive.");
-  }
+    if(nu_0 < 0){
+      Rcpp::stop("'nu_0' must be positive.");
+    }
 
-  if(phi_0.n_rows != data.n_rows){
-    Rcpp::stop("number of rows in 'phi_0' must equal number of observations.");
-  }
+    if(phi_0.n_rows != data.n_rows){
+      Rcpp::stop("number of rows in 'phi_0' must equal number of observations.");
+    }
 
-  if(phi_0.n_cols != data.n_rows){
-    Rcpp::stop("number of columns in 'phi_0' must equal number of observations.");
-  }
+    if(phi_0.n_cols != data.n_rows){
+      Rcpp::stop("number of columns in 'phi_0' must equal number of observations.");
+    }
 
-  if(m_0.n_elem != data.n_rows){
-    Rcpp::stop("number of elements in 'm_0' must equal number of observations.");
-  }
+    if(m_0.n_elem != data.n_rows){
+      Rcpp::stop("number of elements in 'm_0' must equal number of observations.");
+    }
 
-  if(par_theta_c < 0){
-    Rcpp::stop("'par_theta_c' must be positive.");
-  }
+    if(par_theta_c < 0){
+      Rcpp::stop("'par_theta_c' must be positive.");
+    }
 
-  if(par_theta_d < 0){
-    Rcpp::stop("'par_theta_d' must be positive.");
-  }
+    if(par_theta_d < 0){
+      Rcpp::stop("'par_theta_d' must be positive.");
+    }
 
-  if(prior_var_gamma < 0){
-    Rcpp::stop("'prior_var_gamma' must be positive.");
-  }
-  // ------- //
-
-
-
-   int start_s = clock();
-   int current_s;
-   int nupd = round(n_iterations / 10);
+    if(prior_var_gamma < 0){
+      Rcpp::stop("'prior_var_gamma' must be positive.");
+    }
+    // ------- //
 
    // set seed for gsl random distribution generator
    const gsl_rng_type * T;
@@ -2910,6 +2882,10 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
    //generate random starting order
    arma::vec order = generate_random_order(data.n_cols, 2/data.n_cols, r);
+
+   int start_s = clock();
+   int current_s;
+   int nupd = round(n_iterations / 10);
 
    for(int iter = 0; iter < n_iterations; iter++){
 
@@ -3012,8 +2988,11 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
    }
 
+   double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+
    Rcpp::List out_list;
    out_list["orders"] = res_mat;
+   out_list["time"] = time;
    out_list["gamma_MCMC"] = gamma_inf;
    out_list["gamma_MCMC_01"] = gamma_inf_10;
    out_list["sigma_MCMC"] = sigma_inf;
@@ -3045,9 +3024,10 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @param coars coarsening parameter.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{cluster_cp_epi} returns a list containing the following components: \itemize{
+//' @return Function \code{clust_cp_epi} returns a list containing the following components: \itemize{
 //' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 //' \item{\code{$orders}} a multidimensional matrix where each slice is a matrix with the orders associated to the output cluster of that iteration.
+//' \item{\code{time}} computational time in seconds.
 //' \item{\code{$llik}} a matrix containing the log-likelihood of each population at each iteration.
 //' \item{\code{$rho}} traceplot for the proportion of infected individuals at time 0.
 //' }
@@ -3079,12 +3059,12 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'    data_mat[i,] <- vec
 //'  }
 //'
-//'  out <- cluster_cp_epi(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
+//'  out <- clust_cp_epi(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
 //'
 //'  get_clust_VI(out$clust[1000:5000,])
 //' @export
 // [[Rcpp::export]]
-Rcpp::List cluster_cp_epi(arma::mat data,
+Rcpp::List clust_cp_epi(arma::mat data,
                           int n_iterations,
                           int M,
                           int B,
@@ -3254,11 +3234,16 @@ Rcpp::List cluster_cp_epi(arma::mat data,
    }
    Rcpp::checkUserInterrupt();
 
+
+
  }
+
+ double time = double(current_s-start_s)/CLOCKS_PER_SEC;
 
  Rcpp::List results;
  results["clust"] = res_clust;
  results["orders"] = res_orders;
+ results["time"] = time;
  results["llik"] = res_llik;
  results["rho"] = res_rho;
  return results;
@@ -3278,9 +3263,10 @@ Rcpp::List cluster_cp_epi(arma::mat data,
 //' @param coars coarsening coefficient, must be in (0,1].
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{cluster_cp_uni} returns a list containing the following components: \itemize{
+//' @return Function \code{clust_cp_uni} returns a list containing the following components: \itemize{
 //' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 //' \item{\code{$orders}} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
+//' \item{\code{time}} computational time in seconds.
 //' \item{\code{$norm_vec}} a vector containing the normalisation constant computed at the beginning of the algorithm.
 //' }
 //'
@@ -3294,13 +3280,13 @@ Rcpp::List cluster_cp_epi(arma::mat data,
 //' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
 //' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 //'
-//' out <- cluster_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
+//' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
 //'
 //' get_clust_VI(out$clust[2500:5000,])
 //'
 //' @export
 // [[Rcpp::export]]
-Rcpp::List cluster_cp_uni(arma::mat data,
+Rcpp::List clust_cp_uni(arma::mat data,
                           int n_iterations,
                           int B,
                           int L,
@@ -3639,13 +3625,13 @@ for(int iter = 0; iter < n_iterations; iter++){
 
 }
 
-//double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+double time = double(current_s-start_s)/CLOCKS_PER_SEC;
 
 Rcpp::List out_list;
 out_list["clust"] = res_clust;
 out_list["orders"] = res_orders;
+out_list["time"] = time;
 out_list["lkl"] = res_lkl;
-//out_list["time"] = time;
 out_list["norm_vec"] = norm_const;
 
 return out_list;
@@ -3664,9 +3650,10 @@ return out_list;
 //' @param coars coarsening coefficient, must be in (0,1].
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{cluster_cp_multi} returns a list containing the following components: \itemize{
+//' @return Function \code{clust_cp_multi} returns a list containing the following components: \itemize{
 //' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 //' \item{\code{$orders}} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
+//' \item{\code{time}} computational time in seconds.
 //' \item{\code{$norm_vec}} a vector containing the normalisation constant computed at the beginning of the algorithm.
 //' }
 //'
@@ -3694,14 +3681,14 @@ return out_list;
 //' data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 //' data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 //'
-//' out <- cluster_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
+//' out <- clust_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
 //'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 //'
 //' get_clust_VI(out$clust[2500:5000,])
 //'
 //' @export
 // [[Rcpp::export]]
-Rcpp::List cluster_cp_multi(arma::cube data,
+Rcpp::List clust_cp_multi(arma::cube data,
                             int n_iterations,
                             int B,
                             int L,
@@ -4030,15 +4017,15 @@ Rcpp::List cluster_cp_multi(arma::cube data,
 
   }
 
-  //double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+  double time = double(current_s-start_s)/CLOCKS_PER_SEC;
 
 
 
   Rcpp::List out_list;
   out_list["clust"] = res_clust;
   out_list["orders"] = res_orders;
+  out_list["time"] = time;
   out_list["lkl"] = res_lkl;
-  //out_list["time"] = time;
   out_list["norm_vec"] = norm_const;
 
   return out_list;

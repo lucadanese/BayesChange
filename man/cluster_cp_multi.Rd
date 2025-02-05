@@ -46,6 +46,7 @@ cluster_cp_multi(
 Function \code{cluster_cp_multi} returns a list containing the following components: \itemize{
 \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 \item{\code{$orders}} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
+\item{\code{time}} computational time in seconds.
 \item{\code{$norm_vec}} a vector containing the normalisation constant computed at the beginning of the algorithm.
 }
 }

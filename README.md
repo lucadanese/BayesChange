@@ -1,23 +1,23 @@
 
-# BayesCPs
+# BayesChange
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-`BayesCPs` provides C++ functions to perform Bayesian Change Points analysis. 
+`BayesChange` provides C++ functions to perform Bayesian Change Points analysis. 
 
 ## Installation
 
-To install `BayesCPs` the package `devtools` is needed. 
+To install `BayesChange` the package `devtools` is needed. 
 
 ``` r
 install.packages("devtools")
 ```
 
-Now `BayesCPs` can be installed through the [GitHub repository](https://github.com/lucadanese/BayesCPs) of the package:
+Now `BayesChange` can be installed through the [GitHub repository](https://github.com/lucadanese/BayesCPs) of the package:
 
 ``` r
-devtools::install_github("lucadanese/BayesCPs")
+devtools::install_github("lucadanese/BayesChange")
 ```
 
 ## Example
@@ -26,8 +26,8 @@ The package contains five main functions:
 
 * `detect_cp_uni` and `detect_cp_multi` perform change points detection on univariate and multivariate time series data.
 
-* `cluster_cp_uni` and `cluster_cp_uni` cluster univariate and multivariate time series with common change points. 
-* `cluster_cp_EPI` perform clustering of survival functions with common change points. 
+* `clust_cp_uni` and `clust_cp_multi` cluster univariate and multivariate time series with common change points. 
+* `clust_cp_epi` perform clustering of survival functions with common change points. 
 
 Additional functions are included: 
 
@@ -36,7 +36,7 @@ Additional functions are included:
 
 
 ``` r
-library(BayesCPs)
+library(BayesChange)
 
 # detect_cp_uni
 
@@ -72,7 +72,7 @@ get_order_VI(out$order)
 
 ``` r
 
-# cluster_cp_uni
+# clust_cp_uni
 
 data_mat <- matrix(NA, nrow = 5, ncol = 100)
 
@@ -82,7 +82,7 @@ data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
 data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
-out <- cluster_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
+out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
 
 get_clust_VI(out$clust[2500:5000,])
 
@@ -90,7 +90,7 @@ get_clust_VI(out$clust[2500:5000,])
 
 ``` r
 
-# cluster_cp_multi
+# clust_cp_multi
 
 data_array <- array(data = NA, dim = c(3,100,5))
 
@@ -114,7 +114,7 @@ data_array[1,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
-out <- cluster_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
+out <- clust_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 
 get_clust_VI(out$clust[2500:5000,])
@@ -123,7 +123,7 @@ get_clust_VI(out$clust[2500:5000,])
 
 ``` r
 
-# cluster_cp_EPI
+# clust_cp_EPI
 
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 
@@ -150,7 +150,7 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
     data_mat[i,] <- vec
   }
 
-  out <- cluster_cp_EPI(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
+  out <- clust_cp_EPI(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
 
 get_clust_VI(out$clust[1000:5000,])
 

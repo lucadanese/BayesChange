@@ -7,6 +7,6 @@
 NULL
 
 ## usethis namespace: start
-#' @useDynLib BayesCPs, .registration = TRUE
+#' @useDynLib BayesChange, .registration = TRUE
 ## usethis namespace: end
 NULL

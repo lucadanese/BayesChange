@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(BayesCPs)
+library(BayesChange)
 
-test_check("BayesCPs")
+test_check("BayesChange")

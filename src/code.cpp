@@ -2637,7 +2637,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
   // ------- //
 
  int start_s = clock();
- int current_s;
+ int current_s = start_s;
  int nupd = round(n_iterations / 10);
 
  // set seed for gsl random distribution generator
@@ -2884,7 +2884,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
    arma::vec order = generate_random_order(data.n_cols, 2/data.n_cols, r);
 
    int start_s = clock();
-   int current_s;
+   int current_s = start_s;
    int nupd = round(n_iterations / 10);
 
    for(int iter = 0; iter < n_iterations; iter++){
@@ -3197,7 +3197,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
 
  //loop
  int start_s = clock();
- int current_s;
+ int current_s = start_s;
  int nupd = round(n_iterations / 10);
 
  if(print_progress == true){
@@ -3391,7 +3391,7 @@ if(print_progress == true){
 // MAIN LOOP
 
 int start_s = clock();
-int current_s;
+int current_s = start_s;
 int nupd = round(n_iterations / 10);
 
 for(int iter = 0; iter < n_iterations; iter++){
@@ -3792,7 +3792,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
   // MAIN LOOP
 
   int start_s = clock();
-  int current_s;
+  int current_s = start_s;
   int nupd = round(n_iterations / 10);
 
   for(int iter = 0; iter < n_iterations; iter++){

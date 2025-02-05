@@ -124,7 +124,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #' @param coars coarsening parameter.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{cluster_cp_epi} returns a list containing the following components: \itemize{
+#' @return Function \code{clust_cp_epi} returns a list containing the following components: \itemize{
 #' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 #' \item{\code{$orders}} a multidimensional matrix where each slice is a matrix with the orders associated to the output cluster of that iteration.
 #' \item{\code{time}} computational time in seconds.
@@ -159,12 +159,12 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #'    data_mat[i,] <- vec
 #'  }
 #'
-#'  out <- cluster_cp_epi(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
+#'  out <- clust_cp_epi(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
 #'
 #'  get_clust_VI(out$clust[1000:5000,])
 #' @export
-cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coars = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_cluster_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed)
+clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coars = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_clust_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed)
 }
 
 #' Clustering univariate times series with common changes in time
@@ -179,7 +179,7 @@ cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, 
 #' @param coars coarsening coefficient, must be in (0,1].
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{cluster_cp_uni} returns a list containing the following components: \itemize{
+#' @return Function \code{clust_cp_uni} returns a list containing the following components: \itemize{
 #' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 #' \item{\code{$orders}} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
 #' \item{\code{time}} computational time in seconds.
@@ -196,13 +196,13 @@ cluster_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, 
 #' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
-#' out <- cluster_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
+#' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
 #'
 #' get_clust_VI(out$clust[2500:5000,])
 #'
 #' @export
-cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_cluster_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, coars, print_progress, user_seed)
+clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_clust_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, coars, print_progress, user_seed)
 }
 
 #' Clustering multivariate times series with common changes in time
@@ -217,7 +217,7 @@ cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1,
 #' @param coars coarsening coefficient, must be in (0,1].
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @return Function \code{cluster_cp_multi} returns a list containing the following components: \itemize{
+#' @return Function \code{clust_cp_multi} returns a list containing the following components: \itemize{
 #' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 #' \item{\code{$orders}} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
 #' \item{\code{time}} computational time in seconds.
@@ -248,13 +248,13 @@ cluster_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1,
 #' data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #' data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
-#' out <- cluster_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
+#' out <- clust_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
 #'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 #'
 #' get_clust_VI(out$clust[2500:5000,])
 #'
 #' @export
-cluster_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_cluster_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, coars, print_progress, user_seed)
+clust_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesCPs_clust_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, coars, print_progress, user_seed)
 }
 

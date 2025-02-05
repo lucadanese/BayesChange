@@ -1,4 +1,4 @@
-test_that("cluster_cp_epi works", {
+test_that("clust_cp_epi works", {
 
   length_orders <- as.numeric()
 
@@ -26,7 +26,7 @@ test_that("cluster_cp_epi works", {
   }
 
   for(i in 1:5){
-    out_test <-  cluster_cp_epi(data = data_mat, n_iterations = 250, M = 100, B = 500, L = 1, print_progress = FALSE)
+    out_test <-  clust_cp_epi(data = data_mat, n_iterations = 250, M = 100, B = 500, L = 1, print_progress = FALSE)
     length_orders[i] <- length(table(get_clust_VI(out_test$clust[50:250,])))
   }
 

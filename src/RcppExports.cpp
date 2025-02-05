@@ -93,9 +93,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cluster_cp_epi
-Rcpp::List cluster_cp_epi(arma::mat data, int n_iterations, int M, int B, int L, double gamma, double alpha, double q, double dt, double a0, double b0, double c0, double d0, double MH_var, double S0, double R0, double p, double coars, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_cluster_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP alphaSEXP, SEXP qSEXP, SEXP dtSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP c0SEXP, SEXP d0SEXP, SEXP MH_varSEXP, SEXP S0SEXP, SEXP R0SEXP, SEXP pSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+// clust_cp_epi
+Rcpp::List clust_cp_epi(arma::mat data, int n_iterations, int M, int B, int L, double gamma, double alpha, double q, double dt, double a0, double b0, double c0, double d0, double MH_var, double S0, double R0, double p, double coars, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_clust_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP alphaSEXP, SEXP qSEXP, SEXP dtSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP c0SEXP, SEXP d0SEXP, SEXP MH_varSEXP, SEXP S0SEXP, SEXP R0SEXP, SEXP pSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -119,13 +119,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type coars(coarsSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(cluster_cp_epi(data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(clust_cp_epi(data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
-// cluster_cp_uni
-Rcpp::List cluster_cp_uni(arma::mat data, int n_iterations, int B, int L, double gamma, double a, double b, double c, double q, double alpha_SM, double coars, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_cluster_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP qSEXP, SEXP alpha_SMSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+// clust_cp_uni
+Rcpp::List clust_cp_uni(arma::mat data, int n_iterations, int B, int L, double gamma, double a, double b, double c, double q, double alpha_SM, double coars, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_clust_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP qSEXP, SEXP alpha_SMSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -142,13 +142,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type coars(coarsSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(cluster_cp_uni(data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, coars, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(clust_cp_uni(data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, coars, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
-// cluster_cp_multi
-Rcpp::List cluster_cp_multi(arma::cube data, int n_iterations, int B, int L, double gamma, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0, double q, double alpha_SM, double coars, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_cluster_cp_multi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP qSEXP, SEXP alpha_SMSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+// clust_cp_multi
+Rcpp::List clust_cp_multi(arma::cube data, int n_iterations, int B, int L, double gamma, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0, double q, double alpha_SM, double coars, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesCPs_clust_cp_multi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP qSEXP, SEXP alpha_SMSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -166,7 +166,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type coars(coarsSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(cluster_cp_multi(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, coars, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(clust_cp_multi(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, coars, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -177,9 +177,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesCPs_get_clust_VI", (DL_FUNC) &_BayesCPs_get_clust_VI, 1},
     {"_BayesCPs_detect_cp_uni", (DL_FUNC) &_BayesCPs_detect_cp_uni, 11},
     {"_BayesCPs_detect_cp_multi", (DL_FUNC) &_BayesCPs_detect_cp_multi, 12},
-    {"_BayesCPs_cluster_cp_epi", (DL_FUNC) &_BayesCPs_cluster_cp_epi, 20},
-    {"_BayesCPs_cluster_cp_uni", (DL_FUNC) &_BayesCPs_cluster_cp_uni, 13},
-    {"_BayesCPs_cluster_cp_multi", (DL_FUNC) &_BayesCPs_cluster_cp_multi, 14},
+    {"_BayesCPs_clust_cp_epi", (DL_FUNC) &_BayesCPs_clust_cp_epi, 20},
+    {"_BayesCPs_clust_cp_uni", (DL_FUNC) &_BayesCPs_clust_cp_uni, 13},
+    {"_BayesCPs_clust_cp_multi", (DL_FUNC) &_BayesCPs_clust_cp_multi, 14},
     {NULL, NULL, 0}
 };
 

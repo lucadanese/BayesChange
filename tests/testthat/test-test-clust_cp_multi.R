@@ -1,4 +1,4 @@
-test_that("cluster_cp_multi works", {
+test_that("clust_cp_multi works", {
 
   data_array <- array(data = NA, dim = c(3,100,5))
 
@@ -27,7 +27,7 @@ test_that("cluster_cp_multi works", {
 
   for(i in 1:5){
 
-    out_test <- cluster_cp_multi(data = data_array, n_iterations = 500, B = 500, L = 1,
+    out_test <- clust_cp_multi(data = data_array, n_iterations = 500, B = 500, L = 1,
                             gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3), print_progress = FALSE)
 
     length_orders[i] <- length(table(get_clust_VI(out_test$clust[100:500,])))

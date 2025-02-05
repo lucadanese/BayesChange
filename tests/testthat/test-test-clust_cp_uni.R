@@ -1,4 +1,4 @@
-test_that("cluster_cp_uni works", {
+test_that("clust_cp_uni works", {
 
   data_mat <- matrix(NA, nrow = 5, ncol = 100)
 
@@ -13,7 +13,7 @@ test_that("cluster_cp_uni works", {
 
   for(i in 1:5){
 
-    out_test <- cluster_cp_uni(data = data_mat,
+    out_test <- clust_cp_uni(data = data_mat,
                                n_iterations = 5000,
                                B = 1000, L = 1, gamma = 0.1, print_progress = FALSE)
 

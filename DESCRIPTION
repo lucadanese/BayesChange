@@ -1,4 +1,4 @@
-Package: BayesCPs
+Package: BayesChange
 Title: Tools for Bayesian Change Points Analysis
 Version: 0.0.0.9000
 Authors@R: 

@@ -13,7 +13,7 @@
 #'
 #' @export
 sim_epi_data <- function(S0, I0, max_time, beta_vec, gamma_0, user_seed = 1234L) {
-    .Call(`_BayesCPs_sim_epi_data`, S0, I0, max_time, beta_vec, gamma_0, user_seed)
+    .Call(`_BayesChange_sim_epi_data`, S0, I0, max_time, beta_vec, gamma_0, user_seed)
 }
 
 #' Compute the posterior similarity matrix
@@ -22,7 +22,7 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, gamma_0, user_seed = 1234L)
 #' @return Function \code{psm} returns an \eqn{n}\eqn{\times}\eqn{n} posterior similarity matrix.
 #'
 psm <- function(M) {
-    .Call(`_BayesCPs_psm`, M)
+    .Call(`_BayesChange_psm`, M)
 }
 
 #' Estimate order
@@ -32,7 +32,7 @@ psm <- function(M) {
 #'
 #' @export
 get_clust_VI <- function(orders_mat) {
-    .Call(`_BayesCPs_get_clust_VI`, orders_mat)
+    .Call(`_BayesChange_get_clust_VI`, orders_mat)
 }
 
 #' Detect Change Points on an univariate time series.
@@ -65,7 +65,7 @@ get_clust_VI <- function(orders_mat) {
 #' get_clust_VI(out$order)
 #' @export
 detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_detect_cp_uni`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
+    .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
 }
 
 #' Detect Change Points on multivariate time series
@@ -104,7 +104,7 @@ detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, 
 #' get_clust_VI(out$order)
 #' @export
 detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_gamma = 0.1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)
+    .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)
 }
 
 #' Clustering Epidemiological survival functions with common changes in time
@@ -164,7 +164,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #'  get_clust_VI(out$clust[1000:5000,])
 #' @export
 clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coars = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_clust_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed)
+    .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed)
 }
 
 #' Clustering univariate times series with common changes in time
@@ -202,7 +202,7 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q 
 #'
 #' @export
 clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_clust_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, coars, print_progress, user_seed)
+    .Call(`_BayesChange_clust_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, coars, print_progress, user_seed)
 }
 
 #' Clustering multivariate times series with common changes in time
@@ -255,6 +255,6 @@ clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q
 #'
 #' @export
 clust_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesCPs_clust_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, coars, print_progress, user_seed)
+    .Call(`_BayesChange_clust_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, coars, print_progress, user_seed)
 }
 

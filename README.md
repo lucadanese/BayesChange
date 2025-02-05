@@ -123,7 +123,7 @@ get_clust_VI(out$clust[2500:5000,])
 
 ``` r
 
-# clust_cp_EPI
+# clust_cp_epi
 
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 

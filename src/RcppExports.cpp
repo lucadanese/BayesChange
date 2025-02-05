@@ -14,7 +14,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // sim_epi_data
 arma::vec sim_epi_data(double S0, double I0, double max_time, arma::vec beta_vec, double gamma_0, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_sim_epi_data(SEXP S0SEXP, SEXP I0SEXP, SEXP max_timeSEXP, SEXP beta_vecSEXP, SEXP gamma_0SEXP, SEXP user_seedSEXP) {
+RcppExport SEXP _BayesChange_sim_epi_data(SEXP S0SEXP, SEXP I0SEXP, SEXP max_timeSEXP, SEXP beta_vecSEXP, SEXP gamma_0SEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -30,7 +30,7 @@ END_RCPP
 }
 // psm
 arma::mat psm(arma::mat M);
-RcppExport SEXP _BayesCPs_psm(SEXP MSEXP) {
+RcppExport SEXP _BayesChange_psm(SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -41,7 +41,7 @@ END_RCPP
 }
 // get_clust_VI
 arma::vec get_clust_VI(arma::mat orders_mat);
-RcppExport SEXP _BayesCPs_get_clust_VI(SEXP orders_matSEXP) {
+RcppExport SEXP _BayesChange_get_clust_VI(SEXP orders_matSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -52,7 +52,7 @@ END_RCPP
 }
 // detect_cp_uni
 Rcpp::List detect_cp_uni(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_detect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+RcppExport SEXP _BayesChange_detect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -73,7 +73,7 @@ END_RCPP
 }
 // detect_cp_multi
 Rcpp::List detect_cp_multi(arma::mat data, int n_iterations, double q, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0, double par_theta_c, double par_theta_d, double prior_var_gamma, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_detect_cp_multi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP prior_var_gammaSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+RcppExport SEXP _BayesChange_detect_cp_multi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP prior_var_gammaSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -95,7 +95,7 @@ END_RCPP
 }
 // clust_cp_epi
 Rcpp::List clust_cp_epi(arma::mat data, int n_iterations, int M, int B, int L, double gamma, double alpha, double q, double dt, double a0, double b0, double c0, double d0, double MH_var, double S0, double R0, double p, double coars, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_clust_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP alphaSEXP, SEXP qSEXP, SEXP dtSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP c0SEXP, SEXP d0SEXP, SEXP MH_varSEXP, SEXP S0SEXP, SEXP R0SEXP, SEXP pSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+RcppExport SEXP _BayesChange_clust_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP alphaSEXP, SEXP qSEXP, SEXP dtSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP c0SEXP, SEXP d0SEXP, SEXP MH_varSEXP, SEXP S0SEXP, SEXP R0SEXP, SEXP pSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -125,7 +125,7 @@ END_RCPP
 }
 // clust_cp_uni
 Rcpp::List clust_cp_uni(arma::mat data, int n_iterations, int B, int L, double gamma, double a, double b, double c, double q, double alpha_SM, double coars, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_clust_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP qSEXP, SEXP alpha_SMSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+RcppExport SEXP _BayesChange_clust_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP qSEXP, SEXP alpha_SMSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -148,7 +148,7 @@ END_RCPP
 }
 // clust_cp_multi
 Rcpp::List clust_cp_multi(arma::cube data, int n_iterations, int B, int L, double gamma, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0, double q, double alpha_SM, double coars, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesCPs_clust_cp_multi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP qSEXP, SEXP alpha_SMSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+RcppExport SEXP _BayesChange_clust_cp_multi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP BSEXP, SEXP LSEXP, SEXP gammaSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP phi_0SEXP, SEXP m_0SEXP, SEXP qSEXP, SEXP alpha_SMSEXP, SEXP coarsSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -172,18 +172,18 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_BayesCPs_sim_epi_data", (DL_FUNC) &_BayesCPs_sim_epi_data, 6},
-    {"_BayesCPs_psm", (DL_FUNC) &_BayesCPs_psm, 1},
-    {"_BayesCPs_get_clust_VI", (DL_FUNC) &_BayesCPs_get_clust_VI, 1},
-    {"_BayesCPs_detect_cp_uni", (DL_FUNC) &_BayesCPs_detect_cp_uni, 11},
-    {"_BayesCPs_detect_cp_multi", (DL_FUNC) &_BayesCPs_detect_cp_multi, 12},
-    {"_BayesCPs_clust_cp_epi", (DL_FUNC) &_BayesCPs_clust_cp_epi, 20},
-    {"_BayesCPs_clust_cp_uni", (DL_FUNC) &_BayesCPs_clust_cp_uni, 13},
-    {"_BayesCPs_clust_cp_multi", (DL_FUNC) &_BayesCPs_clust_cp_multi, 14},
+    {"_BayesChange_sim_epi_data", (DL_FUNC) &_BayesChange_sim_epi_data, 6},
+    {"_BayesChange_psm", (DL_FUNC) &_BayesChange_psm, 1},
+    {"_BayesChange_get_clust_VI", (DL_FUNC) &_BayesChange_get_clust_VI, 1},
+    {"_BayesChange_detect_cp_uni", (DL_FUNC) &_BayesChange_detect_cp_uni, 11},
+    {"_BayesChange_detect_cp_multi", (DL_FUNC) &_BayesChange_detect_cp_multi, 12},
+    {"_BayesChange_clust_cp_epi", (DL_FUNC) &_BayesChange_clust_cp_epi, 20},
+    {"_BayesChange_clust_cp_uni", (DL_FUNC) &_BayesChange_clust_cp_uni, 13},
+    {"_BayesChange_clust_cp_multi", (DL_FUNC) &_BayesChange_clust_cp_multi, 14},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_BayesCPs(DllInfo *dll) {
+RcppExport void R_init_BayesChange(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

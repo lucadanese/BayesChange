@@ -2,7 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom Rcpp sourceCpp
+#' @importFrom Rcpp sourceCpp RcppArmadillo RcppGSL
 ## usethis namespace: end
 NULL
 

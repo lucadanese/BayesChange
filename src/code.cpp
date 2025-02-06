@@ -3174,7 +3174,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
  orders.fill(0);
 
  arma::vec norm_vec = norm_constant_epi(data, gamma, B, a0, b0, rho, M, dt,
-                                        r, print_progress = print_progress);
+                                        r, print_progress);
 
  for(arma::uword i = 0; i < clust.n_elem; i++){
    arma::mat curve_mat = integrated_curves_mat(dt, orders.row(0).t(),
@@ -3380,7 +3380,7 @@ for(arma::uword i = 0; i < data.n_rows; i++){
 
 // COMPUTE NORMALISATION CONSTANT
 
-arma::vec norm_const = norm_constant_uni(data, gamma, B, a, b, c, 5.0/data.n_cols, print_progress = print_progress);
+arma::vec norm_const = norm_constant_uni(data, gamma, B, a, b, c, 5.0/data.n_cols,print_progress);
 
 if(print_progress == true){
   Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
@@ -3457,7 +3457,7 @@ for(int iter = 0; iter < n_iterations; iter++){
                                     k, data.n_cols, n, alpha_SM,
                                     merge_i,
                                     merge_j,
-                                    norm_const, coars = coars);
+                                    norm_const, coars);
 
     if(log(arma::randu()) <= alpha){
 
@@ -3781,7 +3781,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
   }
   // COMPUTE NORMALISATION CONSTANT
 
-  arma::vec norm_const = norm_constant_multi(data, gamma, B, k_0, nu_0, phi_0, m_0, 5.0/data.slice(0).n_cols,print_progress = print_progress);
+  arma::vec norm_const = norm_constant_multi(data, gamma, B, k_0, nu_0, phi_0, m_0, 5.0/data.slice(0).n_cols,print_progress);
 
   if(print_progress == true){
     Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
@@ -3855,7 +3855,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
                                       k, data.n_cols, data.n_slices, alpha_SM,
                                       merge_i,
                                       merge_j,
-                                      norm_const, coars = coars);
+                                      norm_const, coars);
 
       if(log(arma::randu()) <= alpha){
 
@@ -3953,7 +3953,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
                                       k, data.n_cols, data.n_slices, alpha_SM,
                                       prob_temp_i,
                                       prob_temp_j,
-                                      norm_const, coars = coars);
+                                      norm_const, coars);
 
       if(log(arma::randu()) <= alpha){
 

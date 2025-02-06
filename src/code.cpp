@@ -6,6 +6,8 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
+// [[Rcpp::depends(RcppArmadillo)]]
+
 using namespace Rcpp;
 using namespace RcppGSL;
 
@@ -2448,7 +2450,6 @@ Rcpp::List DoobGillespieAlg(double S0,
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{sim_epi_data} returns a vector with the simulated infection times.
 //'
-//' @importFrom RcppArmadillo RcppGSL
 //' @export
 // [[Rcpp::export]]
 arma::vec sim_epi_data(double S0,
@@ -2596,7 +2597,6 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //'
 //' get_clust_VI(out$order)
 //'
-//' @importFrom RcppArmadillo RcppGSL
 //' @export
 //[[Rcpp::export]]
 Rcpp::List detect_cp_uni(arma::vec data,
@@ -2815,7 +2815,6 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //'
 //' get_clust_VI(out$order)
 //'
-//' @importFrom RcppArmadillo RcppGSL
 //' @export
 // [[Rcpp::export]]
 Rcpp::List detect_cp_multi(arma::mat data,
@@ -3067,7 +3066,6 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'
 //'  get_clust_VI(out$clust[1000:3000,])
 //'
-//' @importFrom RcppArmadillo RcppGSL
 //' @export
 // [[Rcpp::export]]
 Rcpp::List clust_cp_epi(arma::mat data,
@@ -3290,7 +3288,6 @@ Rcpp::List clust_cp_epi(arma::mat data,
 //'
 //' get_clust_VI(out$clust[2500:5000,])
 //'
-//' @importFrom RcppArmadillo RcppGSL
 //' @export
 // [[Rcpp::export]]
 Rcpp::List clust_cp_uni(arma::mat data,
@@ -3693,7 +3690,6 @@ return out_list;
 //'
 //' get_clust_VI(out$clust[2500:5000,])
 //'
-//' @importFrom RcppArmadillo RcppGSL
 //' @export
 // [[Rcpp::export]]
 Rcpp::List clust_cp_multi(arma::cube data,

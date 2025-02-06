@@ -12,14 +12,12 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     RcppGSL  
-Imports:  
-    Rcpp,
-    RcppArmadillo,
-    RcppGSL  
-Depends: 
-    Rcpp,
-    RcppArmadillo,
-    RcppGSL  
+Imports: 
+    Rcpp
+Depends: R (>= 3.5.0)
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr

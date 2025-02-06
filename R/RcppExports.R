@@ -11,7 +11,6 @@
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{sim_epi_data} returns a vector with the simulated infection times.
 #'
-#' @importFrom RcppArmadillo RcppGSL
 #' @export
 sim_epi_data <- function(S0, I0, max_time, beta_vec, gamma_0, user_seed = 1234L) {
     .Call(`_BayesChange_sim_epi_data`, S0, I0, max_time, beta_vec, gamma_0, user_seed)
@@ -65,7 +64,6 @@ get_clust_VI <- function(orders_mat) {
 #'
 #' get_clust_VI(out$order)
 #'
-#' @importFrom RcppArmadillo RcppGSL
 #' @export
 detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
@@ -106,7 +104,6 @@ detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, 
 #'
 #' get_clust_VI(out$order)
 #'
-#' @importFrom RcppArmadillo RcppGSL
 #' @export
 detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_gamma = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)
@@ -168,7 +165,6 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #'
 #'  get_clust_VI(out$clust[1000:3000,])
 #'
-#' @importFrom RcppArmadillo RcppGSL
 #' @export
 clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coars = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed)
@@ -207,7 +203,6 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q 
 #'
 #' get_clust_VI(out$clust[2500:5000,])
 #'
-#' @importFrom RcppArmadillo RcppGSL
 #' @export
 clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, coars, print_progress, user_seed)
@@ -261,7 +256,6 @@ clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q
 #'
 #' get_clust_VI(out$clust[2500:5000,])
 #'
-#' @importFrom RcppArmadillo RcppGSL
 #' @export
 clust_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, coars, print_progress, user_seed)

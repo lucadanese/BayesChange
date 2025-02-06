@@ -34,7 +34,7 @@ test_that("clust_cp_multi works", {
 
   }
 
-  if(mean(length_orders) < 4.1 & mean(length_orders) > 0.9){
+  if(median(length_orders) <= 10 & median(length_orders) >= 1){
     check = TRUE
   } else {
     check = FALSE

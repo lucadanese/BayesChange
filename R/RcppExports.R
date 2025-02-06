@@ -159,9 +159,9 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #'    data_mat[i,] <- vec
 #'  }
 #'
-#'  out <- clust_cp_epi(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
+#'  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
 #'
-#'  get_clust_VI(out$clust[1000:5000,])
+#'  get_clust_VI(out$clust[1000:3000,])
 #' @export
 clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coars = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, coars, print_progress, user_seed)

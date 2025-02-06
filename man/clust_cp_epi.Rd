@@ -97,7 +97,7 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
    data_mat[i,] <- vec
  }
 
- out <- clust_cp_epi(data = data_mat, n_iterations = 5000, M = 500, B = 1000, L = 1)
+ out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
 
- get_clust_VI(out$clust[1000:5000,])
+ get_clust_VI(out$clust[1000:3000,])
 }

@@ -13,13 +13,9 @@ LinkingTo:
     RcppArmadillo,
     RcppGSL 
 Imports: 
-    Rcpp,
-    RcppArmadillo,
-    RcppGSL 
+    Rcpp 
 Depends: 
-    Rcpp,
-    RcppArmadillo,
-    RcppGSL 
+    Rcpp 
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

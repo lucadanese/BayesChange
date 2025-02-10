@@ -1,6 +1,10 @@
-CXX_STD = CXX11
+PKG_CPPFLAGS= -I../windows/gsl-2.7/include -I../inst/include
+PKG_LIBS= -L../windows/gsl-2.7/lib${R_ARCH}${CRT} -lgsl -lgslcblas
 
-GSL_LIBS = -L$(R_HOME)/lib -lgsl -lgslcblas
+all: clean winlibs
 
-PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS) $(LIBHGWR_CXXFLAGS)
-PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(GSL_LIBS)
+winlibs:
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R"
+
+clean:
+	rm -f $(SHLIB) $(OBJECTS)

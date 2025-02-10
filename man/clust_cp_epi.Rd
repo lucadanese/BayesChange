@@ -71,7 +71,7 @@ Function \code{clust_cp_epi} returns a list containing the following components:
 Clustering Epidemiological survival functions with common changes in time
 }
 \examples{
-
+\dontrun{
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 
 betas <- list(c(rep(0.45, 25),rep(0.14,25)),
@@ -100,5 +100,5 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
 
  get_clust_VI(out$clust[1000:3000,])
-
+}
 }

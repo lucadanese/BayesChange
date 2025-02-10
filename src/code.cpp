@@ -3036,7 +3036,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' }
 //'
 //'@examples
-//'
+//'\dontrun{
 //' data_mat <- matrix(NA, nrow = 5, ncol = 50)
 //'
 //' betas <- list(c(rep(0.45, 25),rep(0.14,25)),
@@ -3065,7 +3065,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
 //'
 //'  get_clust_VI(out$clust[1000:3000,])
-//'
+//'}
 //' @export
 // [[Rcpp::export]]
 Rcpp::List clust_cp_epi(arma::mat data,
@@ -3685,10 +3685,10 @@ return out_list;
 //' data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 //' data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 //'
-//' out <- clust_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
+//' out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
 //'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 //'
-//' get_clust_VI(out$clust[2500:5000,])
+//' get_clust_VI(out$clust[1000:3000,])
 //'
 //' @export
 // [[Rcpp::export]]

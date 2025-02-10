@@ -1,5 +1,5 @@
 Package: BayesChange
-Title: Bayesian Methods for Change Points Analysis.
+Title: Bayesian Methods for Change Points Analysis
 Version: 0.0.0.9000
 Authors@R: c(
     person("Luca", "Danese", role = c("aut", "cre", "cph"), email = "l.danese1@campus.unimib.com", comment = c(ORCID = "0000-0001-8444-8563")), 

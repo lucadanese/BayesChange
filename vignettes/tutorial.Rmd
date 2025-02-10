@@ -142,7 +142,7 @@ Functions `clust_cp_epi` provide a method for clustering survival functions with
 
 Data are a matrix where each row is the number of infected at each time. Inside this package is included the function `sim_epi_data` that simulates infection times. 
 
-```{r}
+```{r, eval  = FALSE}
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 
 betas <- list(c(rep(0.45, 25),rep(0.14,25)),
@@ -173,7 +173,7 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
 
 In `clust_cp_epi` we need to specify, besides the usual parameters, the number of Monte Carlo replications `M` for the approximation of the integrated likelihood and the recovery rate `gamma`. 
 
-```{r}
+```{r, eval = FALSE}
 out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1, q = 0.1, gamma = 1/8)
 
 get_clust_VI(out$clust[1000:3000,])

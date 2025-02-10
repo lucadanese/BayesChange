@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
 ---
 
 ```{r, include = FALSE}
@@ -14,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Here we provide a brief tutorial of the `BayesChange` package. 
+Here we provide a brief tutorial of the `BayesChange` package. The `BayesChange` package contains functions that perform change points detection on univariate and multivariate time series and functions that perform clustering of time series and survival functions with common change points. Here we briefly show how to implement the main functions. 
 
 ```{r setup}
 library(BayesChange)
@@ -22,38 +23,62 @@ library(BayesChange)
 
 ## Detecting change points on time series
 
-Functions `detect_cp_uni` and `detect_cp_multi` provide a method for detecting change points respectively on univariate and multivariate time series. 
+Two functions of the package, `detect_cp_uni` and `detect_cp_multi`, provide respectively a method for detecting change points on univariate and multivariate time series. The function `detect_cp_uni` is based on the work @MM2014 and the function `detect_cp_multi` on the work @CORRADIN202226.
+
+In order to use the function `detect_cp_uni` we need a vector of observations. For example we can create a vector of 100 observations where the first 50 observations are sampled from a normal distribution with mean 0 and variance 0.1 and the other 50 observations still from a normal distribution with mean 0 but variance 0.25. 
 
 ```{r}
-data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+data_uni <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+```
 
-out <- detect_cp_uni(data = data_vec,                             
+Now we can run the function `detect_cp_uni`, as arguments of the function we need to specify the number of iterations, the probability `q` of performing a split at each step, the autoregressive coefficient `phi` for the likelihood of the data and the parameters `a`, `b`, `c` for the priors. 
+
+```{r}
+out <- detect_cp_uni(data = data_uni,                             
                             n_iterations = 2500,
                             q = 0.25,
                             phi = 0.1, a = 1, b = 1, c = 0.1)
 
-get_clust_VI(out$order)
+
 ```
 
+In order to get a point estimate of the final partition we can use the function `get_clust_VI` that choose as final estimate for the partition the visited partition that minimizes the Variation of Information loss function. 
+
+The function correctly detect a change point at time 50. 
+
 ```{r}
-data_mat <- matrix(NA, nrow = 3, ncol = 100)
+table(get_clust_VI(out$order))
+```
 
-data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+_Remark_: the function `get_clust_VI` has been included inside the package in order to give the user an easy way to obtain a final estimate of the partition. In literature there are many other methods based on other loss functions and other algorithms that estimate a final partition from  a sequence of visited partition by an MCMC algorithm. See for example @Dahl02102022
 
-out <- detect_cp_multi(data = data_mat,
+Function `detect_cp_multi` work similarly to its univariate counterpart. Data must be a matrix where each row is a time series. 
+
+```{r}
+data_multi <- matrix(NA, nrow = 3, ncol = 100)
+
+data_multi[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+data_multi[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
+data_multi[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+```
+
+Arguments `k_0`, `nu_0`, `phi_0`, `m_0`, `par_theta_c`, `par_theta_d` and `prior_var_gamma` correspond to the parameters of the prior distirbutions for the multivariate likelihood. 
+
+```{r}
+out <- detect_cp_multi(data = data_multi,
                               n_iterations = 2500,
-                              q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
+                              q = 0.25, k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
 
-get_clust_VI(out$order)
+table(get_clust_VI(out$order))
 ```
 
 
 ## Cluster time series with common change points
 
-Functions `clust_cp_uni` and `clust_cp_multi` provide a method for clustering respectively univariate and multivariate time series with common change points. 
+`BayesChange` contains two functions, `clust_cp_uni` and `clust_cp_multi`, that cluster respectively univariate and multivariate time series with common change points. Details about this methods can be found in @corradin2024.
+
+In `clust_cp_uni` data are a matrix where each row is a time series.
 
 ```{r}
 data_mat <- matrix(NA, nrow = 5, ncol = 100)
@@ -64,10 +89,17 @@ data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
 data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
+```
+
+Arguments that need to be specified in `clust_cp_uni` are the number of iterations `n_iterations`, the number of elements in the normalisation constant `B`, the split-and-merge step `L` performed when a new partition is proposed and the autoregressive coefficient `gamma` for the likelihood of the time series.
+
+```{r}
 out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
 
 get_clust_VI(out$clust[2500:5000,])
 ```
+
+In `clust_cp_multi` data must be an array, where each element is a multivariate time series represented by a matrix. Each row of the matrix is a component of the time series. 
 
 ```{r}
 data_array <- array(data = NA, dim = c(3,100,5))
@@ -92,15 +124,23 @@ data_array[1,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
+```
+
+Parameters for the algorithm are the same of `clust_cp_uni`, parameters of the multivariate likelihood correspond to those in `detect_cp_multi`
+
+```{r}
 out <- clust_cp_multi(data = data_array, n_iterations = 5000, B = 1000, L = 1,
                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 
 get_clust_VI(out$clust[2500:5000,])
 ```
 
+
 ## Cluster survival functions with common change points
 
-Functions `clust_cp_epi` provide a method for clustering survival functions with common change points. 
+Functions `clust_cp_epi` provide a method for clustering survival functions with common change points. Also here details can be found in @corradin2024.
+
+Data are a matrix where each row is the number of infected at each time. Inside this package is included the function `sim_epi_data` that simulates infection times. 
 
 ```{r}
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
@@ -128,7 +168,13 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
     data_mat[i,] <- vec
   }
 
-  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
+
+```
+
+In `clust_cp_epi` we need to specify, besides the usual parameters, the number of Monte Carlo replications `M` for the approximation of the integrated likelihood and the recovery rate `gamma`. 
+
+```{r}
+out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1, q = 0.1, gamma = 1/8)
 
 get_clust_VI(out$clust[1000:3000,])
 ```

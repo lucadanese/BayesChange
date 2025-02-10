@@ -1,3 +1,3 @@
-# BayesChange (development version)
+# BayesChange 1.0.0
 
-* Initial CRAN submission.
+Initial submission to CRAN.

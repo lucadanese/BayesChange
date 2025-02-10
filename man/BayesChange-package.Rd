@@ -4,7 +4,7 @@
 \name{BayesChange-package}
 \alias{BayesChange}
 \alias{BayesChange-package}
-\title{BayesChange: Tools for Bayesian Change Points Analysis}
+\title{BayesChange: Bayesian methods for Change Points Analysis.}
 \description{
 This package containts functions for performing Change Points Detection both on univariate and multivariate time series. It also contains functions to cluster time series (either univariate or multivariate) and survival functions with common change points.
 }

@@ -9,7 +9,7 @@
 This package containts functions for performing Change Points Detection both on univariate and multivariate time series. It also contains functions to cluster time series (either univariate or multivariate) and survival functions with common change points.
 }
 \author{
-\strong{Maintainer}: Luca Danese \email{l.danese1@campus.unimib.com} (\href{https://orcid.org/0000-0001-8444-8563}{ORCID})
+\strong{Maintainer}: Luca Danese \email{l.danese1@campus.unimib.com} (\href{https://orcid.org/0000-0001-8444-8563}{ORCID}) [copyright holder]
 
 Authors:
 \itemize{

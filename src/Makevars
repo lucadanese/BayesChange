@@ -1,3 +1,5 @@
-PKG_CPPFLAGS = -I. -I../inst/include
+#PKG_CPPFLAGS = -I. -I../inst/include
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = `$(R_HOME)/bin/Rscript -e "RcppGSL:::LdFlags()"`
+#PKG_LIBS = `$(R_HOME)/bin/Rscript -e "RcppGSL:::LdFlags()"`
+PKG_CPPFLAGS = -I. -I../inst/include -DARMA_USE_LAPACK -DARMA_USE_BLAS
+PKG_LIBS = `$(R_HOME)/bin/Rscript -e "RcppGSL:::LdFlags()"` -llapack -lblas -lgfortran

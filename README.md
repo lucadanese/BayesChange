@@ -14,7 +14,7 @@ To install `BayesChange` the package `devtools` is needed.
 install.packages("devtools")
 ```
 
-Now `BayesChange` can be installed through the [GitHub repository](https://github.com/lucadanese/BayesCPs) of the package:
+Now `BayesChange` can be installed through the [GitHub repository](https://github.com/lucadanese/BayesChange) of the package:
 
 ``` r
 devtools::install_github("lucadanese/BayesChange")

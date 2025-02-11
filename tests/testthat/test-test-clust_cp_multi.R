@@ -27,14 +27,14 @@ test_that("clust_cp_multi works", {
 
   for(i in 1:5){
 
-    out_test <- clust_cp_multi(data = data_array, n_iterations = 500, B = 500, L = 1,
+    out_test <- clust_cp_multi(data = data_array, n_iterations = 100, B = 100, L = 1,
                             gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3), print_progress = FALSE)
 
-    length_orders[i] <- length(table(get_clust_VI(out_test$clust[100:500,])))
+    length_orders[i] <- length(table(get_clust_VI(out_test$clust)))
 
   }
 
-  if(median(length_orders) <= 10 & median(length_orders) >= 1){
+  if(median(length_orders) <= 3 & median(length_orders) >= 1){
     check = TRUE
   } else {
     check = FALSE

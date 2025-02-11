@@ -1,5 +1,5 @@
 ## Resubmission
-This is a resubmission. In this version I made sure that the package can be uploaded on all platforms. 
+This is a resubmission. In this version I fixed all the tests. 
 
 ## R CMD check results
 

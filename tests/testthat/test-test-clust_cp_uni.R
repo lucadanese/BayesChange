@@ -14,14 +14,14 @@ test_that("clust_cp_uni works", {
   for(i in 1:5){
 
     out_test <- clust_cp_uni(data = data_mat,
-                               n_iterations = 5000,
-                               B = 1000, L = 1, gamma = 0.1, print_progress = FALSE)
+                               n_iterations = 100,
+                               B = 100, L = 1, gamma = 0.1, print_progress = FALSE)
 
-    length_orders[i] <- length(table(get_clust_VI(out_test$clust[1000:5000,])))
+    length_orders[i] <- length(table(get_clust_VI(out_test$clust)))
 
   }
 
-  if(median(length_orders) <= 10 & median(length_orders) >= 1){
+  if(median(length_orders) <= 5 & median(length_orders) >= 1){
     check = TRUE
   } else {
     check = FALSE

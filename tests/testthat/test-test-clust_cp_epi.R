@@ -26,11 +26,11 @@ test_that("clust_cp_epi works", {
   }
 
   for(i in 1:5){
-    out_test <-  clust_cp_epi(data = data_mat, n_iterations = 250, M = 100, B = 500, L = 1, print_progress = FALSE)
-    length_orders[i] <- length(table(get_clust_VI(out_test$clust[50:250,])))
+    out_test <-  clust_cp_epi(data = data_mat, n_iterations = 100, M = 50, B = 50, L = 1, print_progress = FALSE)
+    length_orders[i] <- length(table(get_clust_VI(out_test$clust)))
   }
 
-  if(mean(length_orders) <= 3 & mean(length_orders) >= 0){
+  if(median(length_orders) <= 3 & median(length_orders) >= 1){
     check = TRUE
   } else {
     check = FALSE

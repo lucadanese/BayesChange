@@ -3036,7 +3036,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' }
 //'
 //'@examples
-//'\dontrun{
+//'\donttest{
 //' data_mat <- matrix(NA, nrow = 5, ncol = 50)
 //'
 //' betas <- list(c(rep(0.45, 25),rep(0.14,25)),

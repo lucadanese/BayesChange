@@ -216,13 +216,14 @@ arma::vec generate_random_partition(int n, gsl_rng *r ){
   int num_groups = gsl_rng_uniform_int(r, n) + 1;
   int counter = 0;
 
-  for(int i = 0; i < (num_groups-1); i++){
+  //for(int i = 0; i < (num_groups-1); i++){
+  for(int i = 0; i < (num_groups+1); i++){
     random_order(i) = counter;
     counter = counter + 1;
   }
 
   if((num_groups - n) != 0){
-    for(int i = num_groups; i < n; i++){
+    for(int i = (num_groups+1); i < n; i++){
       random_order(i) = randi(1,arma::distr_param(0,num_groups-1))(0);
     }
   }
@@ -3364,17 +3365,12 @@ r = gsl_rng_alloc (T);
 gsl_rng_set(r, user_seed);
 //
 
-
 // generate starting partition and starting orders
 arma::vec partition_temp = generate_random_partition(data.n_rows, r);
 arma::mat orders_temp(data.n_rows, data.n_cols);
-
-double num_groups_temp = max(partition_temp) + 1;
-
-for(int i = 0; i < num_groups_temp; i++){
+for(int i = 0; i < (max(partition_temp) + 1); i++){
   orders_temp.row(i) = generate_random_order(data.n_cols, 2.0/data.n_cols, r).t();
 }
-
 // computing starting likelihood
 arma::vec lkl_temp(data.n_rows);
 
@@ -3386,7 +3382,7 @@ for(arma::uword i = 0; i < data.n_rows; i++){
 
 // COMPUTE NORMALISATION CONSTANT
 
-arma::vec norm_const = norm_constant_uni(data, gamma, B, a, b, c, 5.0/data.n_cols,print_progress);
+arma::vec norm_const = norm_constant_uni(data, gamma, B, a, b, c, 2.0/data.n_cols,print_progress);
 
 if(print_progress == true){
   Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
@@ -3776,7 +3772,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
   double num_groups_temp = max(partition_temp) + 1;
 
   for(int i = 0; i < num_groups_temp; i++){
-    orders_temp.row(i) = generate_random_order(data.slice(0).n_cols, 5.0/data.slice(0).n_cols, r).t();
+    orders_temp.row(i) = generate_random_order(data.slice(0).n_cols, 2.0/data.slice(0).n_cols, r).t();
   }
 
   // computing starting likelihood
@@ -3787,7 +3783,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
   }
   // COMPUTE NORMALISATION CONSTANT
 
-  arma::vec norm_const = norm_constant_multi(data, gamma, B, k_0, nu_0, phi_0, m_0, 5.0/data.slice(0).n_cols,print_progress);
+  arma::vec norm_const = norm_constant_multi(data, gamma, B, k_0, nu_0, phi_0, m_0, 2.0/data.slice(0).n_cols,print_progress);
 
   if(print_progress == true){
     Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
@@ -3802,7 +3798,8 @@ Rcpp::List clust_cp_multi(arma::cube data,
   for(int iter = 0; iter < n_iterations; iter++){
 
     //define k
-    int k = max(partition_temp) + 1;
+    //int k = max(partition_temp) + 1;
+    double k = max(partition_temp) + 1;
     //
 
     // select two random obs

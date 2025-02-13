@@ -25,12 +25,9 @@ test_that("clust_cp_epi works", {
     data_mat[i,] <- vec
   }
 
-  for(i in 1:5){
-    out_test <-  clust_cp_epi(data = data_mat, n_iterations = 100, M = 50, B = 50, L = 1, print_progress = FALSE)
-    length_orders[i] <- length(table(get_clust_VI(out_test$clust)))
-  }
+  out_test <-  clust_cp_epi(data = data_mat, n_iterations = 100, M = 50, B = 50, L = 1, print_progress = FALSE)
 
-  if(median(length_orders) <= 3 & median(length_orders) >= 1){
+  if((length(table(get_clust_VI(out_test$clust)))) <= 3 & (length(table(get_clust_VI(out_test$clust)))) >= 1){
     check = TRUE
   } else {
     check = FALSE

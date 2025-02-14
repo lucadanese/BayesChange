@@ -1,6 +1,7 @@
 GSL_LIBS = -L/opt/homebrew/lib -lgsl -lgslcblas
 LAPACK_LIBS = -llapack
 BLAS_LIBS = -lblas
-FLIBS = -L/opt/homebrew/lib/gcc/current -lgfortran -lquadmath -lemutls_w
+#FLIBS = -L/opt/homebrew/lib/gcc/current -lgfortran -lquadmath -lemutls_w
+FLIBS =  -L/opt/R/arm64/gfortran/lib/gcc/aarch64-apple-darwin20.6.0/12.0.1 -L/opt/R/arm64/gfortran/lib -lgfortran -lemutls_w -lm
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
 PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(GSL_LIBS)

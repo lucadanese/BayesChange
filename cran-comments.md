@@ -1,8 +1,7 @@
 ## Resubmission
 This is a resubmission. In this version I fixed the following:
 
-* Add references in the DESCRIPTION
-* Replaces \dontrun{} with \donttest{} for the example of clust_cp_epi. The reason is that it takes more than 5 seconds to run. 
+* I fixed the problems with the vignettes. Hopefully now it works well. 
 
 ## R CMD check results
 

@@ -1,4 +1,4 @@
-# BayesChange (development version)
+# BayesChange 1.1.1
 
 # BayesChange 1.1.0
 

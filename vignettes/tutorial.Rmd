@@ -27,13 +27,13 @@ Two functions of the package, `detect_cp_uni` and `detect_cp_multi`, provide res
 
 In order to use the function `detect_cp_uni` we need a vector of observations. For example we can create a vector of 100 observations where the first 50 observations are sampled from a normal distribution with mean 0 and variance 0.1 and the other 50 observations still from a normal distribution with mean 0 but variance 0.25. 
 
-```{r}
+```{r, eval = FALSE}
 data_uni <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 ```
 
 Now we can run the function `detect_cp_uni`, as arguments of the function we need to specify the number of iterations, the probability `q` of performing a split at each step, the autoregressive coefficient `phi` for the likelihood of the data and the parameters `a`, `b`, `c` for the priors. 
 
-```{r}
+```{r, eval = FALSE}
 out <- detect_cp_uni(data = data_uni,                             
                             n_iterations = 1000,
                             q = 0.25,
@@ -46,7 +46,7 @@ In order to get a point estimate of the final partition we can use the function 
 
 The function correctly detect a change point at time 50. 
 
-```{r}
+```{r, eval = FALSE}
 table(get_clust_VI(out$order))
 ```
 
@@ -54,7 +54,7 @@ _Remark_: the function `get_clust_VI` has been included inside the package in or
 
 Function `detect_cp_multi` work similarly to its univariate counterpart. Data must be a matrix where each row is a time series. 
 
-```{r}
+```{r, eval = FALSE}
 data_multi <- matrix(NA, nrow = 3, ncol = 100)
 
 data_multi[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
@@ -64,7 +64,7 @@ data_multi[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 
 Arguments `k_0`, `nu_0`, `phi_0`, `m_0`, `par_theta_c`, `par_theta_d` and `prior_var_gamma` correspond to the parameters of the prior distributions for the multivariate likelihood. 
 
-```{r}
+```{r, eval = FALSE}
 out <- detect_cp_multi(data = data_multi,
                               n_iterations = 1000,
                               q = 0.25, k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
@@ -80,7 +80,7 @@ table(get_clust_VI(out$order))
 
 In `clust_cp_uni` data are a matrix where each row is a time series.
 
-```{r}
+```{r, eval = FALSE}
 data_mat <- matrix(NA, nrow = 5, ncol = 100)
 
 data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
@@ -93,7 +93,7 @@ data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
 Arguments that need to be specified in `clust_cp_uni` are the number of iterations `n_iterations`, the number of elements in the normalisation constant `B`, the split-and-merge step `L` performed when a new partition is proposed and the autoregressive coefficient `gamma` for the likelihood of the time series.
 
-```{r}
+```{r, eval = FALSE}
 out <- clust_cp_uni(data = data_mat, n_iterations = 1000, B = 1000, L = 1, gamma = 0.5)
 
 get_clust_VI(out$clust)
@@ -101,7 +101,7 @@ get_clust_VI(out$clust)
 
 In `clust_cp_multi` data must be an array, where each element is a multivariate time series represented by a matrix. Each row of the matrix is a component of the time series. 
 
-```{r}
+```{r, eval = FALSE}
 data_array <- array(data = NA, dim = c(3,100,5))
 
 data_array[1,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
@@ -128,7 +128,7 @@ data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
 Parameters for the algorithm are the same of `clust_cp_uni`, parameters of the multivariate likelihood correspond to those in `detect_cp_multi`
 
-```{r}
+```{r, eval = FALSE}
 out <- clust_cp_multi(data = data_array, n_iterations = 1000, B = 1000, L = 1,
                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
 

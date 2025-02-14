@@ -1,3 +1,2 @@
-GSL_LIBS = -L$(R_HOME)/lib -lgsl -lgslcblas
-PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
-PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(GSL_LIBS)
+PKG_CPPFLAGS=$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppGSL:::CFlags()")
+PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppGSL:::LdFlags()")

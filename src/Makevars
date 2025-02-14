@@ -1,6 +1,3 @@
-GSL_LIBS = -L/opt/homebrew/lib -lgsl -lgslcblas
-LAPACK_LIBS = -llapack
-BLAS_LIBS = -lblas
-FLIBS = -L/opt/homebrew/lib/gcc/current -lgfortran -lquadmath
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
-PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(GSL_LIBS)
+PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) `$(R_HOME)/bin/Rscript -e "RcppGSL:::LdFlags()"`
+PKG_CPPFLAGS = `$(R_HOME)/bin/Rscript -e "RcppGSL:::CFlags()"`

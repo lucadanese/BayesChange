@@ -1,7 +1,6 @@
-## Resubmission
-This is a resubmission. In this version I fixed the following:
+## Version 1.1.2
 
-* I fixed the problems with the vignettes. Hopefully now it works well. 
+A problem with the function that computes the marginal likelihood of the epidemiological clustering model was fixed. 
 
 ## R CMD check results
 

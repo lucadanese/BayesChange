@@ -205,8 +205,9 @@ double my_max(double a,
 }
 
 double log_sum_exp(arma::vec log_vals){
-  double M = max(log_vals);
-  double lse = M + log(sum(exp(log_vals - M)));
+  arma::vec log_vals_nona = log_vals.elem(find_finite(log_vals));
+  double M = max(log_vals_nona);
+  double lse = M + log(sum(exp(log_vals_nona - M)));
   return lse;
 }
 
@@ -1345,8 +1346,6 @@ void SplitMergeAccMultivariateTS(arma::cube data,
         res_order = order;
       }
     }
-
-    //Rcpp::Rcout << table_cpp(res_order).t() << "\t";
 
     order = res_order;
   }

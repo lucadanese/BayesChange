@@ -63,6 +63,5 @@ out <- detect_cp_multi(data = data_mat,
                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
 
-get_clust_VI(out$order)
 
 }

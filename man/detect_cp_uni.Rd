@@ -56,6 +56,5 @@ out <- detect_cp_uni(data = data_vec,
                             q = 0.25,
                             phi = 0.1, a = 1, b = 1, c = 0.1)
 
-get_clust_VI(out$order)
 
 }

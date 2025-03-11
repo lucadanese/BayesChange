@@ -28,28 +28,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// psm
-arma::mat psm(arma::mat M);
-RcppExport SEXP _BayesChange_psm(SEXP MSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type M(MSEXP);
-    rcpp_result_gen = Rcpp::wrap(psm(M));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_clust_VI
-arma::vec get_clust_VI(arma::mat orders_mat);
-RcppExport SEXP _BayesChange_get_clust_VI(SEXP orders_matSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type orders_mat(orders_matSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_clust_VI(orders_mat));
-    return rcpp_result_gen;
-END_RCPP
-}
 // detect_cp_uni
 Rcpp::List detect_cp_uni(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, bool print_progress, unsigned long user_seed);
 RcppExport SEXP _BayesChange_detect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
@@ -173,8 +151,6 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesChange_sim_epi_data", (DL_FUNC) &_BayesChange_sim_epi_data, 6},
-    {"_BayesChange_psm", (DL_FUNC) &_BayesChange_psm, 1},
-    {"_BayesChange_get_clust_VI", (DL_FUNC) &_BayesChange_get_clust_VI, 1},
     {"_BayesChange_detect_cp_uni", (DL_FUNC) &_BayesChange_detect_cp_uni, 11},
     {"_BayesChange_detect_cp_multi", (DL_FUNC) &_BayesChange_detect_cp_multi, 12},
     {"_BayesChange_clust_cp_epi", (DL_FUNC) &_BayesChange_clust_cp_epi, 20},

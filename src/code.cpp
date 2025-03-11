@@ -2502,73 +2502,15 @@ return infection_times;
 
 }
 
-//---------------------
-// PARTITION ESTIMATE
-//---------------------
-
-//' Compute the posterior similarity matrix
-//'
-//' @param M A matrix where each row corresponds to the output cluster of the corresponding iteration.
-//' @return Function \code{psm} returns an \eqn{n}\eqn{\times}\eqn{n} posterior similarity matrix.
-//'
-//[[Rcpp::export]]
-arma::mat psm(arma::mat M){
-  // initialize results
-  arma::mat result(M.n_cols, M.n_cols, arma::fill::zeros);
-
-  for(arma::uword i = 0; i < M.n_cols; i++){
-    for(arma::uword j = 0; j <= i; j++){
-      result(i,j) = sum(M.col(i) == M.col(j));
-
-      result(j,i) = result(i,j);
-    }
-    Rcpp::checkUserInterrupt();
-  }
-  return(result / M.n_rows);
-}
-
-//' Estimate order
-//'
-//' @param orders_mat A matrix where each row corresponds to the output cluster of the corresponding iteration.
-//' @return Function \code{get_clust_VI} returns a point estimate for the clustering of the data.
-//'
-//' @export
-//[[Rcpp::export]]
-arma::vec get_clust_VI(arma::mat orders_mat){
-
-  arma::vec out_res(orders_mat.n_cols);
-  arma::vec result(orders_mat.n_rows);
-  arma::mat psm_mat = psm(orders_mat);
-
-  double f = 0.0;
-  int n = psm_mat.n_cols;
-  arma::vec tvec(n);
-
-  for(arma::uword j = 0; j < orders_mat.n_rows; j++){
-    f = 0.0;
-    for(int i = 0; i < n; i++){
-      tvec = psm_mat.col(i);
-      f += (log2(sum(orders_mat.row(j) == orders_mat(j,i))) +
-        log2(sum(tvec)) -
-        2 * log2(sum(tvec.elem(find(orders_mat.row(j).t() == orders_mat(j,i))))))/n;
-    }
-    result(j) = f;
-    Rcpp::checkUserInterrupt();
-  }
-
-
-  int index_min = which_min_cpp(result);
-
-  out_res = orders_mat.row(index_min).t();
-
-  return(out_res);
-}
-
 //-----------------
 // MAIN FUNCTIONS
 //-----------------
 
-//' Detect Change Points on an univariate time series.
+//' @name detect_cp_uni
+//' @export detect_cp_uni
+//'
+//' @title Detect Change Points on an univariate time series.
+//' @description Detect Change Points on an univariate time series.
 //'
 //' @param data vector of observations.
 //' @param n_iterations number of MCMC iteration.
@@ -2595,47 +2537,45 @@ arma::vec get_clust_VI(arma::mat orders_mat){
 //'                             q = 0.25,
 //'                             phi = 0.1, a = 1, b = 1, c = 0.1)
 //'
-//' get_clust_VI(out$order)
 //'
-//' @export
-//[[Rcpp::export]]
+// [[Rcpp::export]]
 Rcpp::List detect_cp_uni(arma::vec data,
                                 int n_iterations, double q, double phi, double a, double b, double c,
                                 double par_theta_c = 1, double par_theta_d = 1, bool print_progress = true, unsigned long user_seed = 1234){
 
 
   // WARNINGS //
-  if(n_iterations < 1){
-    Rcpp::stop("number of iterations must be at least 1.");
-  }
+  //if(n_iterations < 1){
+  //  Rcpp::stop("number of iterations must be at least 1.");
+  //}
 
-  if((q > 1) | (q < 0)){
-    Rcpp::stop("'q' must be included in (0,1).");
-  }
+  //if((q > 1) | (q < 0)){
+  //  Rcpp::stop("'q' must be included in (0,1).");
+  //}
 
-  if((phi > 1) | (phi < 0)){
-    Rcpp::stop("'phi' must be included in (0,1).");
-  }
+  //if((phi > 1) | (phi < 0)){
+  //  Rcpp::stop("'phi' must be included in (0,1).");
+  //}
 
-  if(a < 0){
-    Rcpp::stop("'a' must be positive.");
-  }
+  //if(a < 0){
+  //  Rcpp::stop("'a' must be positive.");
+  //}
 
-  if(b < 0){
-    Rcpp::stop("'b' must be positive.");
-  }
+  //if(b < 0){
+  //  Rcpp::stop("'b' must be positive.");
+  //}
 
-  if(c < 0){
-    Rcpp::stop("'c' must be positive.");
-  }
+  //if(c < 0){
+  //  Rcpp::stop("'c' must be positive.");
+  //}
 
-  if(par_theta_c < 0){
-    Rcpp::stop("'par_theta_c' must be positive.");
-  }
+  //if(par_theta_c < 0){
+  //  Rcpp::stop("'par_theta_c' must be positive.");
+  //}
 
-  if(par_theta_d < 0){
-    Rcpp::stop("'par_theta_d' must be positive.");
-  }
+  //if(par_theta_d < 0){
+  //  Rcpp::stop("'par_theta_d' must be positive.");
+  //}
   // ------- //
 
  int start_s = clock();
@@ -2780,7 +2720,12 @@ Rcpp::List detect_cp_uni(arma::vec data,
 }
 
 
-//' Detect Change Points on multivariate time series
+
+//' @name detect_cp_multi
+//' @export detect_cp_multi
+//'
+//' @title Detect Change Points on multivariate time series
+//' @description Detect Change Points on multivariate time series
 //'
 //' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
 //' @param n_iterations number of MCMC iterations.
@@ -2813,9 +2758,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
 //'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
 //'
-//' get_clust_VI(out$order)
 //'
-//' @export
 // [[Rcpp::export]]
 Rcpp::List detect_cp_multi(arma::mat data,
                                   int n_iterations, double q, double k_0, double nu_0,
@@ -2824,45 +2767,45 @@ Rcpp::List detect_cp_multi(arma::mat data,
                                   bool print_progress = true, unsigned long user_seed = 1234){
 
     // WARNINGS //
-    if(n_iterations < 1){
-      Rcpp::stop("number of iterations must be at least 1.");
-    }
+    //if(n_iterations < 1){
+    //  Rcpp::stop("number of iterations must be at least 1.");
+    //}
 
-    if((q > 1) | (q < 0)){
-      Rcpp::stop("'q' must be included in (0,1).");
-    }
+    //if((q > 1) | (q < 0)){
+    //  Rcpp::stop("'q' must be included in (0,1).");
+    //}
 
-    if(k_0 < 0){
-      Rcpp::stop("'k_0' must be positive.");
-    }
+    //if(k_0 < 0){
+    //  Rcpp::stop("'k_0' must be positive.");
+    //}
 
-    if(nu_0 < 0){
-      Rcpp::stop("'nu_0' must be positive.");
-    }
+    //if(nu_0 < 0){
+    //  Rcpp::stop("'nu_0' must be positive.");
+    //}
 
-    if(phi_0.n_rows != data.n_rows){
-      Rcpp::stop("number of rows in 'phi_0' must equal number of observations.");
-    }
+    //if(phi_0.n_rows != data.n_rows){
+    //  Rcpp::stop("number of rows in 'phi_0' must equal number of observations.");
+    //}
 
-    if(phi_0.n_cols != data.n_rows){
-      Rcpp::stop("number of columns in 'phi_0' must equal number of observations.");
-    }
+    //if(phi_0.n_cols != data.n_rows){
+    //  Rcpp::stop("number of columns in 'phi_0' must equal number of observations.");
+    //}
 
-    if(m_0.n_elem != data.n_rows){
-      Rcpp::stop("number of elements in 'm_0' must equal number of observations.");
-    }
+    //if(m_0.n_elem != data.n_rows){
+    //  Rcpp::stop("number of elements in 'm_0' must equal number of observations.");
+    //}
 
-    if(par_theta_c < 0){
-      Rcpp::stop("'par_theta_c' must be positive.");
-    }
+    //if(par_theta_c < 0){
+    //  Rcpp::stop("'par_theta_c' must be positive.");
+    //}
 
-    if(par_theta_d < 0){
-      Rcpp::stop("'par_theta_d' must be positive.");
-    }
+    //if(par_theta_d < 0){
+    //  Rcpp::stop("'par_theta_d' must be positive.");
+    //}
 
-    if(prior_var_gamma < 0){
-      Rcpp::stop("'prior_var_gamma' must be positive.");
-    }
+    //if(prior_var_gamma < 0){
+    //  Rcpp::stop("'prior_var_gamma' must be positive.");
+    //}
     // ------- //
 
    // set seed for gsl random distribution generator
@@ -3064,7 +3007,6 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'
 //'  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
 //'
-//'  get_clust_VI(out$clust[1000:3000,])
 //'}
 //' @export
 // [[Rcpp::export]]
@@ -3270,7 +3212,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
 //' @return Function \code{clust_cp_uni} returns a list containing the following components: \itemize{
 //' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 //' \item{\code{$orders}} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
-//' \item{\code{time}} computational time in seconds.
+//' \item{\code{$time}} computational time in seconds.
 //' \item{\code{$norm_vec}} a vector containing the normalisation constant computed at the beginning of the algorithm.
 //' }
 //'
@@ -3285,8 +3227,6 @@ Rcpp::List clust_cp_epi(arma::mat data,
 //' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 //'
 //' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
-//'
-//' get_clust_VI(out$clust[2500:5000,])
 //'
 //' @export
 // [[Rcpp::export]]
@@ -3682,8 +3622,6 @@ return out_list;
 //'
 //' out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
 //'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
-//'
-//' get_clust_VI(out$clust[1000:3000,])
 //'
 //' @export
 // [[Rcpp::export]]

@@ -16,26 +16,11 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, gamma_0, user_seed = 1234L)
     .Call(`_BayesChange_sim_epi_data`, S0, I0, max_time, beta_vec, gamma_0, user_seed)
 }
 
-#' Compute the posterior similarity matrix
+#' @name detect_cp_uni
+#' @export detect_cp_uni
 #'
-#' @param M A matrix where each row corresponds to the output cluster of the corresponding iteration.
-#' @return Function \code{psm} returns an \eqn{n}\eqn{\times}\eqn{n} posterior similarity matrix.
-#'
-psm <- function(M) {
-    .Call(`_BayesChange_psm`, M)
-}
-
-#' Estimate order
-#'
-#' @param orders_mat A matrix where each row corresponds to the output cluster of the corresponding iteration.
-#' @return Function \code{get_clust_VI} returns a point estimate for the clustering of the data.
-#'
-#' @export
-get_clust_VI <- function(orders_mat) {
-    .Call(`_BayesChange_get_clust_VI`, orders_mat)
-}
-
-#' Detect Change Points on an univariate time series.
+#' @title Detect Change Points on an univariate time series.
+#' @description Detect Change Points on an univariate time series.
 #'
 #' @param data vector of observations.
 #' @param n_iterations number of MCMC iteration.
@@ -62,14 +47,16 @@ get_clust_VI <- function(orders_mat) {
 #'                             q = 0.25,
 #'                             phi = 0.1, a = 1, b = 1, c = 0.1)
 #'
-#' get_clust_VI(out$order)
 #'
-#' @export
 detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
 }
 
-#' Detect Change Points on multivariate time series
+#' @name detect_cp_multi
+#' @export detect_cp_multi
+#'
+#' @title Detect Change Points on multivariate time series
+#' @description Detect Change Points on multivariate time series
 #'
 #' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
 #' @param n_iterations number of MCMC iterations.
@@ -102,9 +89,7 @@ detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, 
 #'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
 #'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
 #'
-#' get_clust_VI(out$order)
 #'
-#' @export
 detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_gamma = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)
 }
@@ -163,7 +148,6 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #'
 #'  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
 #'
-#'  get_clust_VI(out$clust[1000:3000,])
 #'}
 #' @export
 clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, coars = 1, print_progress = TRUE, user_seed = 1234L) {
@@ -185,7 +169,7 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q 
 #' @return Function \code{clust_cp_uni} returns a list containing the following components: \itemize{
 #' \item{\code{$clust}} a matrix where each row corresponds to the output cluster of the corresponding iteration.
 #' \item{\code{$orders}} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
-#' \item{\code{time}} computational time in seconds.
+#' \item{\code{$time}} computational time in seconds.
 #' \item{\code{$norm_vec}} a vector containing the normalisation constant computed at the beginning of the algorithm.
 #' }
 #'
@@ -200,8 +184,6 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q 
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
-#'
-#' get_clust_VI(out$clust[2500:5000,])
 #'
 #' @export
 clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {
@@ -253,8 +235,6 @@ clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q
 #'
 #' out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
 #'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
-#'
-#' get_clust_VI(out$clust[1000:3000,])
 #'
 #' @export
 clust_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, coars = 1, print_progress = TRUE, user_seed = 1234L) {

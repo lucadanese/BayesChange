@@ -1,0 +1,396 @@
+#' ClustCpObj class constructor
+#'
+#' @description A constructor for the \code{ClustCpObj} class. The class \code{ClustCpObj} contains...
+#'
+#' @param data a vector or a matrix containing the values of the time series;
+#' @param n_iterations number of iterations of the MCMC algorithm;
+#' @param n_burnin number of MCMC iterations to exclude in the posterior estimate;
+#' @param orders a matrix where each row corresponds to the output order of the corresponding iteration;
+#' @param time computational time in seconds;
+#' @param gamma_MCMC traceplot for \eqn{\gamma};
+#' @param gamma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise;
+#' @param sigma_MCMC traceplot for \eqn{\sigma};
+#' @param sigma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise;
+#' @param theta_MCMC traceplot for \eqn{\theta};
+#' @param univariate_ts TRUE/FALSE if time series is univariate or not;
+#'
+#' @examples
+#'
+#' ## put example here
+#'
+#' @export
+#'
+ClustCpObj <- function(data = NULL,
+                       n_iterations = NULL,
+                       n_burnin = NULL,
+                       clust = NULL,
+                       orders = NULL,
+                       time = NULL,
+                       lkl = NULL,
+                       norm_vec = NULL,
+                       rho = NULL,
+                       kernel_ts = NULL,
+                       kernel_epi = NULL,
+                       univariate_ts = NULL){
+
+  value <- list(data = data,
+                n_iterations = n_iterations,
+                n_burnin = n_burnin,
+                clust = clust,
+                orders = orders,
+                time = time,
+                lkl = lkl,
+                norm_vec = norm_vec,
+                rho = rho,
+                kernel_ts = kernel_ts,
+                kernel_epi = kernel_epi,
+                univariate_ts = univariate_ts)
+  attr(value, "class") <- "ClustCpObj"
+  value
+}
+
+
+#' ClustCpObj print method
+#'
+#' @description The \code{ClustCpObj} method prints which algorithm was run.
+#' @param x an object of class \code{ClustCpObj};
+#' @param ... additional arguments.
+#' @rdname print.ClustCpObj
+#' @examples
+#'
+#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
+#'
+#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
+#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
+#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+#'
+#' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
+#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'
+#' print(out)
+#'
+#' @export
+#'
+print.ClustCpObj <- function(x, ...) {
+  cat("ClustCpObj object\n")
+  if(x$kernel_ts){
+    if(x$univariate){
+      cat("Type: clustering univariate time series with common change points")
+    } else {
+      cat("Type: clustering multivariate time series with common change points")
+    }
+  } else if(x$kernel_epi){
+    cat("Type: clustering survival functions with common change points")
+  }
+}
+
+
+#' ClustCpObj summary method
+#'
+#' @description The \code{ClustCpObj} method returns a summary of the algorithm.
+#' @param x an object of class \code{ClustCpObj};
+#' @param ... additional arguments.
+#' @rdname summary.ClustCpObj
+#' @examples
+#'
+#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
+#'
+#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
+#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
+#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+#'
+#' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
+#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'
+#' summary(out)
+#'
+#' @export
+#'
+summary.ClustCpObj <- function(x, ...) {
+  cat("ClustCpObj object\n")
+  if(x$kernel_ts){
+    if(x$univariate){
+      cat("Clustering univariate time series:\n",
+          "Number of burn-in iterations:", x$n_burnin, "\n",
+          "Number of MCMC iterations:", x$n_iterations - x$n_burnin, "\n",
+          "Computational time:", round(x$time, digits = 2), "seconds\n")
+    } else {
+      cat("Clustering ", paste0(nrow(x$data[,,1]),"-dimensional time series:\n"),
+          "Number of burn-in iterations:", x$n_burnin, "\n",
+          "Number of MCMC iterations:", x$n_iterations - x$n_burnin, "\n",
+          "Computational time:", round(x$time, digits = 2), "seconds\n")
+    }
+  } else if (x$kernel_epi){
+
+    cat("Clustering survival functions:\n",
+        "Number of burn-in iterations:", x$n_burnin, "\n",
+        "Number of MCMC iterations:", x$n_iterations - x$n_burnin, "\n",
+        "Computational time:", round(x$time, digits = 2), "seconds\n")
+
+  }
+}
+
+
+
+#' Estimate the change points of the data
+#'
+#' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
+#'
+#' @param object an object of class \code{ClustCpObj}.
+#' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
+#' @param maxNClusters maximum number of clusters in salso procedure.
+#' @param nRuns number of runs in salso procedure.
+#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#'
+#' @rdname posterior_estimate.ClustCpObj
+#'
+#' @details
+#'
+#' put details here
+#'
+#' @return
+#'
+#' The function returns a vector with the cluster assignment of each observation.
+#'
+#' @references
+#' Dahl, D. B., Johnson, D. J., & Müller, P. (2022).
+#' "Search Algorithms and Loss Functions for Bayesian Clustering."
+#' \emph{Journal of Computational and Graphical Statistics}, 31(2), 445-457.
+#' \doi{10.1080/10618600.2021.1950685}
+#'
+#' @examples
+#'
+#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
+#'
+#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
+#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
+#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+#'
+#' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
+#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'
+#' posterior_estimate(out)
+#'
+#' @export
+#'
+posterior_estimate.ClustCpObj <- function(x,
+                               loss = "VI",
+                               maxNClusters = 0,
+                               nRuns = 16,
+                               maxZealousAttempts = 10) {
+
+  mcmc_chain <- x$clust[(x$n_burnin + 1):x$n_iterations,]
+
+  if(loss == "VI"){
+
+    est_cp <- salso::salso(mcmc_chain, loss = "VI",
+                           maxNClusters = maxNClusters,
+                           nRuns = nRuns,
+                           maxZealousAttempts = maxZealousAttempts)
+
+    output <- as.numeric(est_cp)
+
+    return(output)
+
+  } else if(loss == "binder"){
+
+    est_cp <- salso::salso(mcmc_chain, loss = "binder",
+                           maxNClusters = maxNClusters,
+                           nRuns = nRuns,
+                           maxZealousAttempts = maxZealousAttempts)
+
+    output <- as.numeric(est_cp)
+
+    return(output)
+  } else if (loss == "omARI"){
+    est_cp <- salso::salso(mcmc_chain, loss = "omARI",
+                           maxNClusters = maxNClusters,
+                           nRuns = nRuns,
+                           maxZealousAttempts = maxZealousAttempts)
+
+    output <- as.numeric(est_cp)
+
+    return(output)
+
+  } else if (loss == "NVI"){
+    est_cp <- salso::salso(mcmc_chain, loss = "NVI",
+                           maxNClusters = maxNClusters,
+                           nRuns = nRuns,
+                           maxZealousAttempts = maxZealousAttempts)
+
+    output <- as.numeric(est_cp)
+
+    return(output)
+
+  } else if (loss == "ID"){
+    est_cp <- salso::salso(mcmc_chain, loss = "ID",
+                           maxNClusters = maxNClusters,
+                           nRuns = nRuns,
+                           maxZealousAttempts = maxZealousAttempts)
+
+    output <- as.numeric(est_cp)
+
+    return(output)
+
+  } else if (loss == "NID"){
+    est_cp <- salso::salso(mcmc_chain, loss = "NID",
+                           maxNClusters = maxNClusters,
+                           nRuns = nRuns,
+                           maxZealousAttempts = maxZealousAttempts)
+
+    output <- as.numeric(est_cp)
+
+    return(output)
+
+  }
+}
+
+
+#' Plot estimated partition
+#'
+#' @description  The \code{plot} method plots the estimates partition through the salso algorithm, for a \code{ClustCpObj} class object.
+#'
+#' @param object an object of class \code{ClustCpObj}.
+#' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
+#' @param maxNClusters maximum number of clusters in salso procedure.
+#' @param nRuns number of runs in salso procedure.
+#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#'
+#' @rdname plot.ClustCpObj
+#'
+#' @return
+#'
+#' The function returns a ggplot object representing the time series or the survival functions colored according to the final partition.
+#'
+#' @examples
+#'
+#'
+#' ## Time series
+#'
+#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
+#'
+#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
+#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
+#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+#'
+#' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
+#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'
+#' plot(out)
+#'
+#'
+#' ## Survival functions
+#'
+#' data_mat <- matrix(NA, nrow = 5, ncol = 50)
+#'
+#' betas <- list(c(rep(0.45, 25),rep(0.14,25)),
+#'               c(rep(0.55, 25),rep(0.11,25)),
+#'               c(rep(0.50, 25),rep(0.12,25)),
+#'               c(rep(0.52, 10),rep(0.15,40)),
+#'               c(rep(0.53, 10),rep(0.13,40)))
+#'
+#' inf_times <- list()
+#'
+#' for(i in 1:5){
+#'   inf_times[[i]] <- sim_epi_data(10000, 10, 50, betas[[i]], 1/8)
+#'   vec <- rep(0,50)
+#'   names(vec) <- as.character(1:50)
+#'   for(j in 1:50){
+#'     if(as.character(j) %in% names(table(floor(inf_times[[i]])))){
+#'       vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
+#'     }
+#'   }
+#'   data_mat[i,] <- vec
+#' }
+#'
+#' out <- clust_cp(data = data_mat, n_iterations = 250, n_burnin = 100,
+#'                 params = list(M = 250, L = 1, B = 100), kernel = "epi")
+#'
+#' plot(out)
+#'
+#' @export
+#'
+plot.ClustCpObj <- function(x,
+                             loss = "VI",
+                             maxNClusters = 0,
+                             nRuns = 16,
+                             maxZealousAttempts = 10) {
+
+
+  if(x$kernel_ts){
+    if(x$univariate_ts){
+
+      est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
+                                  nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
+
+      data_plot <- x$data
+
+      data_plot <- as.data.frame(t(x$data))
+      data_plot <- tidyr::pivot_longer(data_plot, cols = dplyr::everything(), names_to = "Observation", values_to = "Value")
+      data_plot <- dplyr::mutate(data_plot, Observation = as.numeric(gsub("V", "", Observation)))
+      data_plot <- dplyr::group_by(data_plot, Observation)
+      data_plot <- dplyr::mutate(data_plot, Time = dplyr::row_number())
+      data_plot <-  dplyr::ungroup(data_plot)
+
+      data_plot$Cluster <- rep(est_cp, max(data_plot$Time))
+      data_plot$Cluster <- as.factor(data_plot$Cluster)
+      data_plot$Observation <- as.factor(data_plot$Observation)
+
+      ggplot2::ggplot(data_plot) +
+        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = Observation, linetype = Observation)) +
+        ggplot2::theme_minimal()
+
+    } else {
+
+      est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
+                                  nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
+
+
+      data_plot <- data.frame(Value = numeric(0))
+
+      for (i in 1:dim(x$data)[3]) {
+        mat <- x$data[,,i]
+        data_plot <- rbind(data_plot, data.frame(Value = as.vector(mat),
+                                                 Observation = i,
+                                                 Cluster = est_cp[i],
+                                                 count = sort(rep(1:nrow(mat), ncol(mat))),
+                                                 Time = rep(1:ncol(mat),nrow(mat))))
+      }
+
+      data_plot$Observation <- as.factor(data_plot$Observation)
+      data_plot$Cluster <- as.factor(data_plot$Cluster)
+      data_plot$count <- as.factor(data_plot$count)
+
+      ggplot2::ggplot(data_plot) +
+        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = interaction(Observation,count), linetype = Observation)) +
+        ggplot2::theme_minimal()
+
+    }
+  } else if(x$kernel_epi){
+
+    est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
+                                nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
+
+    df_sf_plot <- data.frame(y = as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
+                             x = rep(1:ncol(x$data), nrow(x$data)),
+                             obs = as.factor(rep(1:nrow(x$data), each = ncol(x$data))),
+                             Cluster = as.factor(rep(est_cp, each = ncol(x$data))))
+
+
+    ggplot2::ggplot(df_sf_plot, ggplot2::aes(x = x, y = y, group = obs, colour = Cluster)) +
+      ggplot2::geom_line(lwd = 0.5) +
+      ggplot2::xlab("Time") +
+      ggplot2::ylab("Proportion of Infected Individuals") +
+      ggplot2::theme_minimal()
+
+  }
+
+}

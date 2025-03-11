@@ -25,7 +25,7 @@ The \code{plot} method plots the estimates partition through the salso algorithm
 }
 \examples{
 
-
+\donttest{
 ## Time series
 
 data_mat <- matrix(NA, nrow = 5, ncol = 100)
@@ -44,7 +44,6 @@ plot(out)
 
 ## Survival functions
 
-\donttest{
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 
 betas <- list(c(rep(0.45, 25),rep(0.14,25)),

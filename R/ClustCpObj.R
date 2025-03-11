@@ -52,10 +52,6 @@ ClustCpObj <- function(data = NULL,
 #'
 #' @description The \code{ClustCpObj} method prints which algorithm was run.
 #' @param x an object of class \code{ClustCpObj};
-#' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
-#' @param maxNClusters maximum number of clusters in salso procedure.
-#' @param nRuns number of runs in salso procedure.
-#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #' @rdname print.ClustCpObj
 #' @examples
 #'
@@ -270,7 +266,7 @@ posterior_estimate.ClustCpObj <- function(x,
 #'
 #' @examples
 #'
-#'
+#'\donttest{
 #' ## Time series
 #'
 #' data_mat <- matrix(NA, nrow = 5, ncol = 100)
@@ -289,7 +285,6 @@ posterior_estimate.ClustCpObj <- function(x,
 #'
 #' ## Survival functions
 #'
-#'\donttest{
 #' data_mat <- matrix(NA, nrow = 5, ncol = 50)
 #'
 #' betas <- list(c(rep(0.45, 25),rep(0.14,25)),

@@ -2,28 +2,11 @@
 % Please edit documentation in R/DetectCpObj.R
 \name{posterior_estimate}
 \alias{posterior_estimate}
-\title{Get a posterior estimate for a DetectCpObj or ClustCpObj.}
+\title{set generic}
 \usage{
-## Default S3 method:
-posterior_estimate(object)
-
-## S3 method for class 'DetectCpObj':
-
-posterior_estimate(x,
-                   loss = "VI",
-                   maxNClusters = 0,
-                   nRuns = 16,
-                   maxZealousAttempts = 10)
-
-## S3 method for class 'ClustCpObj':
-
-posterior_estimate(x,
-                   loss = "VI",
-                   maxNClusters = 0,
-                   nRuns = 16,
-                   maxZealousAttempts = 10)
+posterior_estimate(object, ...)
 }
 \description{
-Get a posterior estimate for the MCMC chain either from \code{detect_cp} or \code{clust_cp}.
+set generic
 }
 \keyword{internal}

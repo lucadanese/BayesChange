@@ -12,7 +12,6 @@
 #' @param n_burnin number of iterations that must be excluded when computing the posterior estimate.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
-#' @param q probability of a split in the split-merge proposal and acceleration step.
 #' @param kernel can be "ts" if data are time series or "epi" if data are survival functions.
 #'
 #' @param params a list of parameters:
@@ -73,6 +72,7 @@
 #'
 #' @examples
 #'
+#'\donttest{
 #' ## Univariate time series
 #'
 #' data_mat <- matrix(NA, nrow = 5, ncol = 100)
@@ -123,7 +123,7 @@
 #' ## Epidemiological data
 #'
 #'
-#'\donttest{
+#'
 #' data_mat <- matrix(NA, nrow = 5, ncol = 50)
 #'
 #' betas <- list(c(rep(0.45, 25),rep(0.14,25)),

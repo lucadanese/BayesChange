@@ -111,33 +111,7 @@ summary.DetectCpObj <- function(x) {
 }
 
 
-#' Get a posterior estimate for a DetectCpObj or ClustCpObj.
-#'
-#' @description
-#' Get a posterior estimate for the MCMC chain either from \code{detect_cp} or \code{clust_cp}.
-#'
-#' @usage
-#'
-#' ## Default S3 method:
-#' posterior_estimate(object)
-#'
-#' ## S3 method for class 'DetectCpObj':
-#'
-#' posterior_estimate(x,
-#'                    loss = "VI",
-#'                    maxNClusters = 0,
-#'                    nRuns = 16,
-#'                    maxZealousAttempts = 10)
-#'
-#' ## S3 method for class 'ClustCpObj':
-#'
-#' posterior_estimate(x,
-#'                    loss = "VI",
-#'                    maxNClusters = 0,
-#'                    nRuns = 16,
-#'                    maxZealousAttempts = 10)
-#'
-#'
+#' set generic
 #' @name posterior_estimate
 #' @keywords internal
 #' @export
@@ -167,10 +141,10 @@ posterior_estimate <- function (object, ...) {
 #' The function returns a vector with the cluster assignment of each observation.
 #'
 #' @references
-#' Dahl, D. B., Johnson, D. J., & Müller, P. (2022).
-#' "Search Algorithms and Loss Functions for Bayesian Clustering."
-#' \emph{Journal of Computational and Graphical Statistics}, 31(2), 445-457.
-#' \doi{10.1080/10618600.2021.1950685}
+#'
+#' D. B. Dahl, D. J. Johnson, and P. Müller (2022), Search Algorithms and Loss
+#' Functions for Bayesian Clustering, \emph{Journal of Computational and
+#' Graphical Statistics}, 31(4), 1189-1201, \doi{10.1080/10618600.2022.2069779}.
 #'
 #' @examples
 #'

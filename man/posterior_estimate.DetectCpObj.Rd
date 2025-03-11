@@ -44,8 +44,7 @@ posterior_estimate(out)
 
 }
 \references{
-Dahl, D. B., Johnson, D. J., & Müller, P. (2022).
-"Search Algorithms and Loss Functions for Bayesian Clustering."
-\emph{Journal of Computational and Graphical Statistics}, 31(2), 445-457.
-\doi{10.1080/10618600.2021.1950685}
+D. B. Dahl, D. J. Johnson, and P. Müller (2022), Search Algorithms and Loss
+Functions for Bayesian Clustering, \emph{Journal of Computational and
+Graphical Statistics}, 31(4), 1189-1201, \doi{10.1080/10618600.2022.2069779}.
 }

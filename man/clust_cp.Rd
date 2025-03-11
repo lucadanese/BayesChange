@@ -66,8 +66,6 @@ If data are survival functions:
 \item{user_seed}{seed for random distribution generation.}
 
 \item{kernel}{can be "ts" if data are time series or "epi" if data are survival functions.}
-
-\item{q}{probability of a split in the split-merge proposal and acceleration step.}
 }
 \value{
 A \code{ClustCpObj} class object containing
@@ -92,6 +90,7 @@ The \code{clust_cp} function cluster observations with common change points. Dat
 }
 \examples{
 
+\donttest{
 ## Univariate time series
 
 data_mat <- matrix(NA, nrow = 5, ncol = 100)
@@ -142,7 +141,7 @@ print(out)
 ## Epidemiological data
 
 
-\donttest{
+
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 
 betas <- list(c(rep(0.45, 25),rep(0.14,25)),

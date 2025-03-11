@@ -15,7 +15,10 @@ LinkingTo:
     RcppArmadillo,
     RcppGSL  
 Imports: 
-    Rcpp
+    Rcpp,
+    salso,
+    dplyr,
+    tidyr
 Depends: R (>= 3.5.0)
 Suggests: 
     knitr,

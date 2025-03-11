@@ -90,7 +90,7 @@ print.ClustCpObj <- function(x, ...) {
 #'
 #' @description The \code{ClustCpObj} method returns a summary of the algorithm.
 #' @param object an object of class \code{ClustCpObj}.
-#' @param ...
+#' @param ... parameter of the generic method.
 #'
 #' @examples
 #'
@@ -119,7 +119,7 @@ summary.ClustCpObj <- function(object, ...) {
           "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
           "Computational time:", round(object$time, digits = 2), "seconds\n")
     } else {
-      cat("Clustering ", paste0(nrow(x$data[,,1]),"-dimensional time series:\n"),
+      cat("Clustering ", paste0(nrow(object$data[,,1]),"-dimensional time series:\n"),
           "Number of burn-in iterations:", object$n_burnin, "\n",
           "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
           "Computational time:", round(object$time, digits = 2), "seconds\n")
@@ -140,12 +140,12 @@ summary.ClustCpObj <- function(object, ...) {
 #'
 #' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
 #'
-#' @param x an object of class \code{ClustCpObj}.
+#' @param object an object of class \code{ClustCpObj}.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
-#' @param ...
+#' @param ... parameter of the generic method.
 #'
 #' @details
 #'

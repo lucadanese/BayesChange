@@ -127,12 +127,12 @@ posterior_estimate <- function (object, ...) {
 #'
 #' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
 #'
-#' @param x an object of class \code{DetectCPObj}.
+#' @param object an object of class \code{DetectCPObj}.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
-#' @param ...
+#' @param ... parameter of the generic method.
 #'
 #'
 #'

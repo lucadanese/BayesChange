@@ -49,7 +49,6 @@
 #'   \item \code{MH_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #'   \item \code{S0},\code{R0} parameters for the SDE solver.
 #'   \item \code{p} prior average number of change points for each order.
-#'   \item \code{coars} coarsening coefficient, must be in (0,1].
 #' }
 #'
 #' @return A \code{ClustCpObj} class object containing
@@ -149,8 +148,8 @@
 #'   data_mat[i,] <- vec
 #' }
 #'
-#' out <- clust_cp(data = data_mat, n_iterations = 3000, n_burnin = 1000,
-#'                 params = list(M = 250, L = 1, B = 1000), kernel = "epi")
+#' out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
+#'                 params = list(M = 100, L = 1, B = 1000), kernel = "epi")
 #'
 #' print(out)
 #' }
@@ -202,7 +201,6 @@ clust_cp <- function(data,
       c_input = ifelse(is.null(params$c), 1, params$c)
       q_input = ifelse(is.null(params$q), 0.5, params$q)
       alpha_SM_input = ifelse(is.null(params$alpha_SM), 0.1, params$alpha_SM)
-      coars_input = ifelse(is.null(params$coars), 1, params$coars)
       print_progress_input = print_progress
       user_seed_input = user_seed
       #
@@ -215,7 +213,7 @@ clust_cp <- function(data,
                           B = B_input, L = L_input,
                           gamma = gamma_input, a = a_input, b = b_input,
                           c = c_input, q = q_input,
-                          alpha_SM = alpha_SM_input, coars = coars_input,
+                          alpha_SM = alpha_SM_input,
                           print_progress = print_progress_input, user_seed = user_seed_input)
 
 
@@ -245,7 +243,6 @@ clust_cp <- function(data,
       if((!is.null(params$m_0)) && (length(params$m_0) != nrow(data))) stop("number of elements in params$m_0 must equal the number of observations")
       if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
       if((!is.null(params$alpha_SM)) && (params$alpha_SM <= 0)) stop("params$alpha_SM must be positive")
-      if((!is.null(params$coars)) && ((params$coars >= 1) | (params$coars <= 0))) stop("params$coars must be in (0,1)")
       if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
       if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
       if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
@@ -260,9 +257,6 @@ clust_cp <- function(data,
       nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
       q_input = ifelse(is.null(params$q), 0.5, params$q)
       alpha_SM_input = ifelse(is.null(params$alpha_SM), 0.1, params$alpha_SM)
-      coars_input = ifelse(is.null(params$coars), 1, params$coars)
-      #print_progress_input = ifelse(is.null(params$print_progress), TRUE, params$print_progress)
-      #user_seed_input = ifelse(is.null(params$user_seed), 1234, params$user_seed)
       print_progress_input = print_progress
       user_seed_input = user_seed
 
@@ -282,7 +276,7 @@ clust_cp <- function(data,
                             B = B_input, L = L_input, gamma = gamma_input,
                             k_0 = k_0_input, nu_0 = nu_0_input,
                             phi_0 = phi_0_input, m_0 = m_0_input, q = q_input,
-                            alpha_SM = alpha_SM_input, coars = coars_input,
+                            alpha_SM = alpha_SM_input,
                             print_progress = print_progress_input,
                             user_seed = user_seed_input)
 
@@ -320,7 +314,6 @@ clust_cp <- function(data,
     if((!is.null(params$S0)) && (params$S0 <= 0)) stop("params$S0 must be positive")
     if((!is.null(params$R0)) && (params$R0 < 0)) stop("params$R0 must be at least 0")
     if((!is.null(params$dt)) && ((params$p <= 0) | (params$p >= 1))) stop("params$p must be in (0,1)")
-    if((!is.null(params$coars)) && ((params$coars >= 1) | (params$coars <= 0))) stop("params$coars must be in (0,1)")
     if((!is.null(params) && !is.list(params))) stop("params must be a list")
     if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
     if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
@@ -343,9 +336,6 @@ clust_cp <- function(data,
     S0_input = ifelse(is.null(params$S0), 1, params$S0)
     R0_input = ifelse(is.null(params$R0), 0, params$R0)
     p_input = ifelse(is.null(params$p), 0.003, params$p)
-    coars_input = ifelse(is.null(params$coars), 1, params$coars)
-    #print_progress_input = ifelse(is.null(params$print_progress), TRUE, params$print_progress)
-    #user_seed_input = ifelse(is.null(params$user_seed), 1234, params$user_seed)
     print_progress_input = print_progress
     user_seed_input = user_seed
 
@@ -360,7 +350,7 @@ clust_cp <- function(data,
                         dt = dt_input, a0 = a0_input, b0 = b0_input,
                         c0 =  c0_input, d0 = d0_input, MH_var = MH_var_input,
                         S0 = S0_input, R0 = R0_input, p = p_input,
-                        coars = coars_input, print_progress = print_progress_input,
+                        print_progress = print_progress_input,
                         user_seed = user_seed_input)
 
     result <- ClustCpObj(data = data_input,

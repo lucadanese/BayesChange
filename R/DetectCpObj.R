@@ -50,7 +50,7 @@ DetectCpObj <- function(data = NULL,
 #'
 #' @description The \code{DetectCpObj} method prints which algorithm was run.
 #' @param x an object of class \code{DetectCpObj}.
-#' @param ...
+#' @param ... parameter of the generic method.
 #'
 #' @examples
 #' data_mat <- matrix(NA, nrow = 3, ncol = 100)
@@ -79,8 +79,8 @@ print.DetectCpObj <- function(x, ...) {
 #' DetectCpObj summary method
 #'
 #' @description The \code{DetectCpObj} method returns a summary of the algorithm.
-#' @param x an object of class \code{DetectCpObj};
-#' @param ...
+#' @param object an object of class \code{DetectCpObj};
+#' @param ... parameter of the generic method.
 #'
 #' @examples
 #'
@@ -98,7 +98,7 @@ print.DetectCpObj <- function(x, ...) {
 #' @rdname summary.DetectCpObj
 #' @export
 #'
-summary.DetectCpObj <- function(x, ...) {
+summary.DetectCpObj <- function(object, ...) {
   cat("DetectCpObj object\n")
   if(x$univariate){
     cat("Detecting change points on an univariate time series:\n",
@@ -163,7 +163,7 @@ posterior_estimate <- function (object, ...) {
 #' @rdname posterior_estimate.DetectCpObj
 #' @export
 #'
-posterior_estimate.DetectCpObj <- function(x,
+posterior_estimate.DetectCpObj <- function(object,
                                loss = "VI",
                                maxNClusters = 0,
                                nRuns = 16,

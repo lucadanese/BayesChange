@@ -4,10 +4,10 @@
 \alias{summary.ClustCpObj}
 \title{ClustCpObj summary method}
 \usage{
-\method{summary}{ClustCpObj}(x, ...)
+\method{summary}{ClustCpObj}(object, ...)
 }
 \arguments{
-\item{x}{an object of class \code{ClustCpObj}.}
+\item{object}{an object of class \code{ClustCpObj}.}
 
 \item{...}{}
 }

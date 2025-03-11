@@ -52,7 +52,8 @@ ClustCpObj <- function(data = NULL,
 #'
 #' @description The \code{ClustCpObj} method prints which algorithm was run.
 #' @param x an object of class \code{ClustCpObj}.
-#' @param y, ... parameters of the generic method.
+#' @param y parameter of the generic method.
+#' @param ... parameter of the generic method.
 #'
 #' @examples
 #'
@@ -89,7 +90,7 @@ print.ClustCpObj <- function(x, y = NULL, ...) {
 #' ClustCpObj summary method
 #'
 #' @description The \code{ClustCpObj} method returns a summary of the algorithm.
-#' @param x an object of class \code{ClustCpObj}.
+#' @param object an object of class \code{ClustCpObj}.
 #' @param ...
 #'
 #' @examples
@@ -110,7 +111,7 @@ print.ClustCpObj <- function(x, y = NULL, ...) {
 #' @rdname summary.ClustCpObj
 #' @export
 #'
-summary.ClustCpObj <- function(x, ...) {
+summary.ClustCpObj <- function(object, ...) {
   cat("ClustCpObj object\n")
   if(x$kernel_ts){
     if(x$univariate){
@@ -179,7 +180,7 @@ summary.ClustCpObj <- function(x, ...) {
 #' @rdname posterior_estimate.ClustCpObj
 #' @export
 #'
-posterior_estimate.ClustCpObj <- function(x,
+posterior_estimate.ClustCpObj <- function(object,
                                loss = "VI",
                                maxNClusters = 0,
                                nRuns = 16,
@@ -261,7 +262,8 @@ posterior_estimate.ClustCpObj <- function(x,
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
-#' @param y,... parameters of the generic method.
+#' @param y parameter of the generic method.
+#' @param ... parameter of the generic method.
 #'
 #' @return
 #'
@@ -310,8 +312,8 @@ posterior_estimate.ClustCpObj <- function(x,
 #'   data_mat[i,] <- vec
 #' }
 #'
-#' out <- clust_cp(data = data_mat, n_iterations = 250, n_burnin = 100,
-#'                 params = list(M = 250, L = 1, B = 100), kernel = "epi")
+#' out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
+#'                 params = list(M = 100, L = 1, B = 100), kernel = "epi")
 #'
 #' plot(out)
 #' }

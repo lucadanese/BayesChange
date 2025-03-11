@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{an object of class \code{DetectCpObj}.}
 
-\item{...}{}
+\item{...}{parameter of the generic method.}
 }
 \description{
 The \code{DetectCpObj} method prints which algorithm was run.

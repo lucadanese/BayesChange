@@ -5,7 +5,7 @@
 \title{Estimate the change points of the data}
 \usage{
 \method{posterior_estimate}{DetectCpObj}(
-  x,
+  object,
   loss = "VI",
   maxNClusters = 0,
   nRuns = 16,
@@ -14,8 +14,6 @@
 )
 }
 \arguments{
-\item{x}{an object of class \code{DetectCPObj}.}
-
 \item{loss}{The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".}
 
 \item{maxNClusters}{maximum number of clusters in salso procedure.}
@@ -25,6 +23,8 @@
 \item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
 
 \item{...}{}
+
+\item{x}{an object of class \code{DetectCPObj}.}
 }
 \value{
 The function returns a vector with the cluster assignment of each observation.

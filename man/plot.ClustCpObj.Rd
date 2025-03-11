@@ -17,7 +17,7 @@
 \arguments{
 \item{x}{an object of class \code{ClustCpObj}.}
 
-\item{y, ...}{parameters of the generic method.}
+\item{y}{parameter of the generic method.}
 
 \item{loss}{The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".}
 
@@ -26,6 +26,8 @@
 \item{nRuns}{number of runs in salso procedure.}
 
 \item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
+
+\item{...}{parameter of the generic method.}
 }
 \value{
 The function returns a ggplot object representing the time series or the survival functions colored according to the final partition.
@@ -76,8 +78,8 @@ for(i in 1:5){
   data_mat[i,] <- vec
 }
 
-out <- clust_cp(data = data_mat, n_iterations = 250, n_burnin = 100,
-                params = list(M = 250, L = 1, B = 100), kernel = "epi")
+out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
+                params = list(M = 100, L = 1, B = 100), kernel = "epi")
 
 plot(out)
 }

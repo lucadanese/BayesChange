@@ -58,7 +58,6 @@ If data are survival functions:
 \item \code{MH_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 \item \code{S0},\code{R0} parameters for the SDE solver.
 \item \code{p} prior average number of change points for each order.
-\item \code{coars} coarsening coefficient, must be in (0,1].
 }}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
@@ -167,8 +166,8 @@ for(i in 1:5){
   data_mat[i,] <- vec
 }
 
-out <- clust_cp(data = data_mat, n_iterations = 3000, n_burnin = 1000,
-                params = list(M = 250, L = 1, B = 1000), kernel = "epi")
+out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
+                params = list(M = 100, L = 1, B = 1000), kernel = "epi")
 
 print(out)
 }

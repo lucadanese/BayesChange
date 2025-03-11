@@ -22,7 +22,6 @@ clust_cp_epi(
   S0 = 1,
   R0 = 0,
   p = 0.003,
-  coars = 1,
   print_progress = TRUE,
   user_seed = 1234L
 )
@@ -51,8 +50,6 @@ clust_cp_epi(
 \item{S0, R0}{parameters for the SDE solver.}
 
 \item{p}{prior average number of change points for each order.}
-
-\item{coars}{coarsening parameter.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 

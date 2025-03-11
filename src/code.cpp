@@ -815,8 +815,7 @@ double AlphaMergePartition_cpp(arma::vec lkl_old_i,
                                double alpha_SM_,
                                arma::vec merge_i,
                                arma::vec merge_j,
-                               arma::vec norm_const,
-                               double coars = 1){
+                               arma::vec norm_const){
 
   double n_i_merge, n_j_merge, n_ij_merge, q_merge, p_merge,
   p_merge_1, p_merge_2, p_merge_2_1, p_merge_2_2, p_merge_2_3, l_merge,
@@ -862,7 +861,7 @@ double AlphaMergePartition_cpp(arma::vec lkl_old_i,
 
   f_merge = f_merge_n - f_merge_d;
 
-  double res = q_merge + p_merge + (coars * l_merge) + (coars * f_merge);
+  double res = q_merge + p_merge + l_merge + f_merge;
 
   return(my_min(log(1),res));
 
@@ -877,8 +876,7 @@ double AlphaSplitPartition_cpp(arma::vec lkl_proposal_i,
                                double alpha_SM_,
                                arma::vec split_i,
                                arma::vec split_j,
-                               arma::vec norm_const,
-                               double coars){
+                               arma::vec norm_const){
 
   double n_i_split = std::count(split_i.begin(),split_i.end(),1.0);
   double n_j_split = std::count(split_j.begin(),split_j.end(),1.0);
@@ -921,7 +919,7 @@ double AlphaSplitPartition_cpp(arma::vec lkl_proposal_i,
 
   double f_split = f_split_n_1 - f_split_d_1 - f_split_d_2;
 
-  double res = q_split + p_split + (coars * l_split) + (coars * f_split);
+  double res = q_split + p_split + l_split + f_split;
 
   return(my_min(log(1),res));
 
@@ -1799,8 +1797,7 @@ void update_single_order(arma::mat data,
                          arma::vec rho,
                          int M,
                          double S0 = 1,
-                         double R0 = 0,
-                         double coars = 1){
+                         double R0 = 0){
 
   int k = max(orders.row(clust_id)) + 1, temp_id, temp_obs,
     T = orders.n_cols, bound = 0, temp_count;
@@ -1850,10 +1847,10 @@ void update_single_order(arma::mat data,
     }
 
     if(k == 1){
-      acc_rate = my_min(0, log(1 - q) - log(q) + (coars * sum(temp_llik)) - (coars * sum(llik)) +
+      acc_rate = my_min(0, log(1 - q) - log(q) + sum(temp_llik) - sum(llik) +
         log(sum(freq_temp)) + log(std::count(orders.row(clust_id).begin(), orders.row(clust_id).end(), temp_id)) - log(k));
     } else {
-      acc_rate = my_min(0, log(1 - q) + log(T - 1) + (coars * sum(temp_llik)) - (coars * sum(llik)));
+      acc_rate = my_min(0, log(1 - q) + log(T - 1) + sum(temp_llik) - sum(llik));
     }
 
     u = arma::randu();
@@ -1890,10 +1887,10 @@ void update_single_order(arma::mat data,
     }
 
     if(k == 1){
-      acc_rate = my_min(0, log(q) - log(1 - q) + (coars * sum(temp_llik)) - (coars * sum(llik)) +
+      acc_rate = my_min(0, log(q) - log(1 - q) + sum(temp_llik) - sum(llik) +
         log(k - 1) - log(temp_count) - log(std::count(new_order.begin(), new_order.end(), temp_id) - 1));
     } else {
-      acc_rate = my_min(0, log(q) + log(T - 1) + (coars * sum(temp_llik)) - (coars * sum(llik)));
+      acc_rate = my_min(0, log(q) + log(T - 1) + sum(temp_llik) - sum(llik));
     }
 
     u = arma::randu();
@@ -1933,7 +1930,7 @@ void update_single_order(arma::mat data,
       }
     }
 
-    acc_rate = my_min(0, (coars * sum(temp_llik)) - (coars * sum(llik)));
+    acc_rate = my_min(0, sum(temp_llik) - sum(llik));
 
     u = arma::randu();
     if(u <= exp(acc_rate)){
@@ -1959,8 +1956,7 @@ void update_partition(arma::mat data,
                       int M,
                       int L,
                       double S0 = 1,
-                      double R0 = 0,
-                      double coars = 1){
+                      double R0 = 0){
   arma::vec temp_llik = llik, temp_clust = clust, freq_temp, prob_temp(clust.n_elem),
     temp_vec1(clust.n_elem), temp_vec2(clust.n_elem), temp_vec3(clust.n_elem);
   int id3, id4, k, u_bound;
@@ -2077,7 +2073,7 @@ void update_partition(arma::mat data,
       log_sum_exp(sum2vec) +
       lgamma(alpha + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id1)) +  std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id2))) -
       lgamma(alpha + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id1))) - lgamma(alpha + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id2))) +
-      (coars * sum(temp_llik)) - (coars * sum(llik)) +
+      sum(temp_llik) - sum(llik) +
       log_sum_exp(temp_vec1) - log_sum_exp(temp_vec2)));
 
 
@@ -2236,7 +2232,7 @@ void update_partition(arma::mat data,
       - lgamma(alpha + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id1)) + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id2))) +
       log_sum_exp(sum1vec) -
       log_sum_exp(sum3vec) +
-      (coars * sum(temp_llik)) - (coars * sum(llik)) + log_sum_exp(temp_vec1) -
+      sum(temp_llik) - sum(llik) + log_sum_exp(temp_vec1) -
       log_sum_exp(temp_vec3)));
 
     if(log(arma::randu()) < acc_rate){
@@ -2294,7 +2290,6 @@ Rcpp::List marginal_CP(arma::mat data,
                        double R0 = 0,
                        double p = 0.003,
                        int nupd = 0,
-                       double coars = 1,
                        unsigned long user_seed = 1234){
 
 
@@ -2351,7 +2346,7 @@ Rcpp::List marginal_CP(arma::mat data,
 
     for(arma::uword j = 0; j < orders.n_rows; j++){
       update_single_order(data, clust, j, orders, llik,
-                          q, dt, a0, b0, gamma, rho, M, S0, R0, coars);
+                          q, dt, a0, b0, gamma, rho, M, S0, R0);
     }
 
     if(iter >= nburn){
@@ -2967,7 +2962,6 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @param MH_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 //' @param S0,R0 parameters for the SDE solver.
 //' @param p prior average number of change points for each order.
-//' @param coars coarsening parameter.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{clust_cp_epi} returns a list containing the following components: \itemize{
@@ -3027,7 +3021,6 @@ Rcpp::List clust_cp_epi(arma::mat data,
                           double S0 = 1,
                           double R0 = 0,
                           double p = 0.003,
-                          double coars = 1,
                           bool print_progress = true,
                           unsigned long user_seed = 1234){
 
@@ -3096,11 +3089,6 @@ Rcpp::List clust_cp_epi(arma::mat data,
     Rcpp::stop("'p' must be in the interval (0,1).");
   }
 
-  if((coars < 0) | (coars > 1)){
-    Rcpp::stop("'coars' must be in the interval (0,1).");
-  }
-
-
   // ------- //
 
 
@@ -3133,7 +3121,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
  for(int l = 0; l < 1; l++){
    for(arma::uword j = 0; j < orders.n_rows; j++){
      update_single_order(data, clust, j, orders, llik,
-                         q, dt, a0, b0, gamma, rho, M, S0, R0, coars);
+                         q, dt, a0, b0, gamma, rho, M, S0, R0);
    }
  }
  arma::mat res_clust(n_iterations, data.n_rows);
@@ -3158,12 +3146,12 @@ Rcpp::List clust_cp_epi(arma::mat data,
 
 
    update_partition(data, clust, orders, llik, norm_vec, alpha, p, q,
-                    dt, a0, b0, gamma, rho, M, L, S0, R0,coars);
+                    dt, a0, b0, gamma, rho, M, L, S0, R0);
 
 
    for(arma::uword j = 0; j < orders.n_rows; j++){
      update_single_order(data, clust, j, orders, llik,
-                         q, dt, a0, b0, gamma, rho, M, S0, R0, coars);
+                         q, dt, a0, b0, gamma, rho, M, S0, R0);
    }
 
 
@@ -3206,7 +3194,6 @@ Rcpp::List clust_cp_epi(arma::mat data,
 //' @param gamma,a,b,c parameters \eqn{\gamma} of the integrated likelihood.
 //' @param q probability of a split in the split-merge proposal and acceleration step.
 //' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
-//' @param coars coarsening coefficient, must be in (0,1].
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{clust_cp_uni} returns a list containing the following components: \itemize{
@@ -3239,7 +3226,7 @@ Rcpp::List clust_cp_uni(arma::mat data,
                           double b = 1,
                           double c = 1,
                           double q = 0.5,
-                          double alpha_SM = 0.1, double coars = 1,
+                          double alpha_SM = 0.1,
                           bool print_progress = true,
                           unsigned long user_seed = 1234){
 
@@ -3281,9 +3268,6 @@ if(alpha_SM <= 0){
   Rcpp::stop("'alpha_SM' must be positive.");
 }
 
-if((coars <= 0) | (coars > 1)){
-  Rcpp::stop("'coars' must be in (0,1].");
-}
 
 // ------- //
 
@@ -3398,7 +3382,7 @@ for(int iter = 0; iter < n_iterations; iter++){
                                     k, data.n_cols, n, alpha_SM,
                                     merge_i,
                                     merge_j,
-                                    norm_const, coars);
+                                    norm_const);
 
     if(log(arma::randu()) <= alpha){
 
@@ -3496,7 +3480,7 @@ for(int iter = 0; iter < n_iterations; iter++){
                                     k, data.n_cols, n, alpha_SM,
                                     prob_temp_i,
                                     prob_temp_j,
-                                    norm_const, coars);
+                                    norm_const);
 
     if(log(arma::randu()) <= alpha){
 
@@ -3586,7 +3570,6 @@ return out_list;
 //' @param gamma,k_0,nu_0,phi_0,m_0 parameters of the integrated likelihood.
 //' @param q probability of a split in the split-merge proposal and acceleration step.
 //' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
-//' @param coars coarsening coefficient, must be in (0,1].
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{clust_cp_multi} returns a list containing the following components: \itemize{
@@ -3635,7 +3618,8 @@ Rcpp::List clust_cp_multi(arma::cube data,
                             arma::mat phi_0,
                             arma::vec m_0,
                             double q = 0.5,
-                            double alpha_SM = 0.1, double coars = 1, bool print_progress = true, unsigned long user_seed = 1234){
+                            double alpha_SM = 0.1, bool print_progress = true,
+                            unsigned long user_seed = 1234){
 
   arma::mat res_clust(n_iterations, data.n_slices), res_lkl(n_iterations,data.n_slices), orders_temp_clean;
   arma::cube res_orders(data.n_slices, data.slice(0).n_cols, n_iterations);
@@ -3684,10 +3668,6 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   if(alpha_SM <= 0){
     Rcpp::stop("'alpha_SM' must be positive.");
-  }
-
-  if((coars <= 0) | (coars > 1)){
-    Rcpp::stop("'coars' must be in (0,1].");
   }
 
   // ------- //
@@ -3795,7 +3775,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
                                       k, data.n_cols, data.n_slices, alpha_SM,
                                       merge_i,
                                       merge_j,
-                                      norm_const, coars);
+                                      norm_const);
 
       if(log(arma::randu()) <= alpha){
 
@@ -3893,7 +3873,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
                                       k, data.n_cols, data.n_slices, alpha_SM,
                                       prob_temp_i,
                                       prob_temp_j,
-                                      norm_const, coars);
+                                      norm_const);
 
       if(log(arma::randu()) <= alpha){
 

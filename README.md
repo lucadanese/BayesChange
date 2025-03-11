@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-`BayesChange` provides C++ functions to perform Bayesian Change Points analysis. 
+`BayesChange` provides C++ functions to perform Bayesian change points analysis. 
 
 ## Installation
 

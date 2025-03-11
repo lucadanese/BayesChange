@@ -4,12 +4,10 @@
 \alias{summary.DetectCpObj}
 \title{DetectCpObj summary method}
 \usage{
-\method{summary}{DetectCpObj}(x, ...)
+\method{summary}{DetectCpObj}(x)
 }
 \arguments{
 \item{x}{an object of class \code{DetectCpObj};}
-
-\item{...}{additional arguments.}
 }
 \description{
 The \code{DetectCpObj} method returns a summary of the algorithm.

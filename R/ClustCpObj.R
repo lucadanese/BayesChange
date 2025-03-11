@@ -15,9 +15,6 @@
 #' @param kernel_epi if TRUE data are survival functions.
 #' @param univariate_ts TRUE/FALSE if time series is univariate or not;
 #'
-#' @examples
-#'
-#' ## put example here
 #'
 #' @export
 #'
@@ -77,7 +74,7 @@ ClustCpObj <- function(data = NULL,
 #'
 #' @export
 #'
-print.ClustCpObj <- function(x, ...) {
+print.ClustCpObj <- function(x) {
   cat("ClustCpObj object\n")
   if(x$kernel_ts){
     if(x$univariate){
@@ -113,7 +110,7 @@ print.ClustCpObj <- function(x, ...) {
 #'
 #' @export
 #'
-summary.ClustCpObj <- function(x, ...) {
+summary.ClustCpObj <- function(x) {
   cat("ClustCpObj object\n")
   if(x$kernel_ts){
     if(x$univariate){
@@ -292,6 +289,7 @@ posterior_estimate.ClustCpObj <- function(x,
 #'
 #' ## Survival functions
 #'
+#'\donttest{
 #' data_mat <- matrix(NA, nrow = 5, ncol = 50)
 #'
 #' betas <- list(c(rep(0.45, 25),rep(0.14,25)),
@@ -318,6 +316,7 @@ posterior_estimate.ClustCpObj <- function(x,
 #'                 params = list(M = 250, L = 1, B = 100), kernel = "epi")
 #'
 #' plot(out)
+#' }
 #'
 #' @export
 #'

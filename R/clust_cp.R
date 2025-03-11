@@ -20,18 +20,26 @@
 #' If the time series is univariate the following must be specified:
 #'
 #' \itemize{
+#'   \item \code{q} probability of a split in the split-merge proposal and acceleration step.
+#'   \item \code{B} number of orders for the normalization constant.
+#'   \item \code{L} number of split-merge steps for the proposal step.
+#'   \item \code{alpha_SM} \eqn{\alpha} for the split-merge proposal and acceleration step.
 #'   \item \code{gamma},\code{a},\code{b},\code{c} parameters of the integrated likelihood.
 #' }
 #'
 #' If the time series is multivariate the following must be specified:
 #'
 #' \itemize{
+#'   \item \code{q} probability of a split in the split-merge proposal and acceleration step.
+#'   \item \code{B} number of orders for the normalization constant.
+#'   \item \code{L} number of split-merge steps for the proposal step.
 #'   \item \code{gamma},\code{k_0},\code{nu_0},\code{phi_0},\code{m_0} parameters of the integrated likelihood.
 #' }
 #'
 #' If data are survival functions:
 #'
 #' \itemize{
+#'   \item \code{q} probability of a split in the split-merge proposal and acceleration step.
 #'   \item \code{B} number of orders for the normalization constant.
 #'   \item \code{L} number of split-merge steps for the proposal step.
 #'   \item \code{alpha_SM} \eqn{\alpha} for the split-merge proposal and acceleration step.
@@ -114,6 +122,8 @@
 #'
 #' ## Epidemiological data
 #'
+#'
+#'\donttest{
 #' data_mat <- matrix(NA, nrow = 5, ncol = 50)
 #'
 #' betas <- list(c(rep(0.45, 25),rep(0.14,25)),
@@ -143,6 +153,7 @@
 #'                 params = list(M = 250, L = 1, B = 1000), kernel = "epi")
 #'
 #' print(out)
+#' }
 #'
 #' @references
 #'

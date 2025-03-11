@@ -14,6 +14,8 @@
 )
 }
 \arguments{
+\item{x}{an object of class \code{DetectCPObj}.}
+
 \item{plot_freq}{if TRUE also the histogram with the empirical frequency of each change point is plotted.}
 
 \item{loss}{The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".}
@@ -23,8 +25,6 @@
 \item{nRuns}{number of runs in salso procedure.}
 
 \item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
-
-\item{object}{an object of class \code{DetectCPObj}.}
 }
 \value{
 The function returns a ggplot object representing the detected change points. If \code{plot_freq = TRUE} is plotted also an histogram with the frequency of times that a change point has been detected in the MCMC chain.

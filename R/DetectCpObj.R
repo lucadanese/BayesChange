@@ -16,9 +16,6 @@
 #' @param theta_MCMC traceplot for \eqn{\theta};
 #' @param univariate_ts TRUE/FALSE if time series is univariate or not;
 #'
-#' @examples
-#'
-#' ## put example here
 #'
 #' @export
 #'
@@ -68,7 +65,7 @@ DetectCpObj <- function(data = NULL,
 #'
 #' @export
 #'
-print.DetectCpObj <- function(x, ...) {
+print.DetectCpObj <- function(x) {
   cat("DetectCpObj object\n")
   if(x$univariate){
     cat("Type: change points detection on univariate time series")
@@ -98,7 +95,7 @@ print.DetectCpObj <- function(x, ...) {
 #'
 #' @export
 #'
-summary.DetectCpObj <- function(x, ...) {
+summary.DetectCpObj <- function(x) {
   cat("DetectCpObj object\n")
   if(x$univariate){
     cat("Detecting change points on an univariate time series:\n",
@@ -122,7 +119,7 @@ summary.DetectCpObj <- function(x, ...) {
 #' @usage
 #'
 #' ## Default S3 method:
-#' posterior_estimate(object, ...)
+#' posterior_estimate(object)
 #'
 #' ## S3 method for class 'DetectCpObj':
 #'
@@ -145,7 +142,7 @@ summary.DetectCpObj <- function(x, ...) {
 #' @keywords internal
 #' @export
 #'
-posterior_estimate <- function (object, ...) {
+posterior_estimate <- function (object) {
   UseMethod("posterior_estimate")
 }
 
@@ -158,7 +155,6 @@ posterior_estimate <- function (object, ...) {
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
-#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #'
 #' @rdname posterior_estimate.DetectCpObj

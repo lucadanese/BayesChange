@@ -7,6 +7,8 @@
 \method{plot}{ClustCpObj}(x, loss = "VI", maxNClusters = 0, nRuns = 16, maxZealousAttempts = 10)
 }
 \arguments{
+\item{x}{an object of class \code{ClustCpObj}.}
+
 \item{loss}{The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".}
 
 \item{maxNClusters}{maximum number of clusters in salso procedure.}
@@ -14,8 +16,6 @@
 \item{nRuns}{number of runs in salso procedure.}
 
 \item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
-
-\item{object}{an object of class \code{ClustCpObj}.}
 }
 \value{
 The function returns a ggplot object representing the time series or the survival functions colored according to the final partition.
@@ -44,6 +44,7 @@ plot(out)
 
 ## Survival functions
 
+\donttest{
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 
 betas <- list(c(rep(0.45, 25),rep(0.14,25)),
@@ -70,5 +71,6 @@ out <- clust_cp(data = data_mat, n_iterations = 250, n_burnin = 100,
                 params = list(M = 250, L = 1, B = 100), kernel = "epi")
 
 plot(out)
+}
 
 }

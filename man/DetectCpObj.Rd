@@ -44,8 +44,3 @@ DetectCpObj(
 \description{
 A constructor for the \code{DetectCpObj} class. The class \code{DetectCpObj} contains...
 }
-\examples{
-
-## put example here
-
-}

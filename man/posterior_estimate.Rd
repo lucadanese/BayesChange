@@ -5,7 +5,7 @@
 \title{Get a posterior estimate for a DetectCpObj or ClustCpObj.}
 \usage{
 ## Default S3 method:
-posterior_estimate(object, ...)
+posterior_estimate(object)
 
 ## S3 method for class 'DetectCpObj':
 

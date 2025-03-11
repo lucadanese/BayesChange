@@ -26,21 +26,23 @@ ClustCpObj(
 
 \item{n_burnin}{number of MCMC iterations to exclude in the posterior estimate;}
 
+\item{clust}{a matrix with the clustering of each iteration.}
+
 \item{orders}{a matrix where each row corresponds to the output order of the corresponding iteration;}
 
 \item{time}{computational time in seconds;}
 
+\item{lkl}{a vector with the likelihood of the final clustering.}
+
+\item{norm_vec}{a vector with the estimated normalization constant.}
+
+\item{rho}{a vector with the estimated proportion of infected individuals for each observation.}
+
+\item{kernel_ts}{if TRUE data are time series.}
+
+\item{kernel_epi}{if TRUE data are survival functions.}
+
 \item{univariate_ts}{TRUE/FALSE if time series is univariate or not;}
-
-\item{gamma_MCMC}{traceplot for \eqn{\gamma};}
-
-\item{gamma_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise;}
-
-\item{sigma_MCMC}{traceplot for \eqn{\sigma};}
-
-\item{sigma_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise;}
-
-\item{theta_MCMC}{traceplot for \eqn{\theta};}
 }
 \description{
 A constructor for the \code{ClustCpObj} class. The class \code{ClustCpObj} contains...

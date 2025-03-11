@@ -40,6 +40,9 @@ If the time series is multivariate the following must be specified:
 If data are survival functions:
 
 \itemize{
+\item \code{B} number of orders for the normalization constant.
+\item \code{L} number of split-merge steps for the proposal step.
+\item \code{alpha_SM} \eqn{\alpha} for the split-merge proposal and acceleration step.
 \item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
 \item \code{gamma} recovery rate fixed constant for each population at each time.
 \item \code{alpha} \eqn{\alpha} for the acceptance ration in the split-merge procedure.
@@ -47,20 +50,14 @@ If data are survival functions:
 \item \code{MH_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 \item \code{S0},\code{R0} parameters for the SDE solver.
 \item \code{p} prior average number of change points for each order.
-
+\item \code{coars} coarsening coefficient, must be in (0,1].
 }}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
 \item{user_seed}{seed for random distribution generation.}
 
-\item{B}{number of orders for the normalization constant.}
-
-\item{L}{number of split-merge steps for the proposal step.}
-
-\item{alpha_SM}{\eqn{\alpha} for the split-merge proposal and acceleration step.}
-
-\item{coars}{coarsening coefficient, must be in (0,1].}
+\item{kernel}{can be "ts" if data are time series or "epi" if data are survival functions.}
 
 \item{q}{probability of a split in the split-merge proposal and acceleration step.}
 }

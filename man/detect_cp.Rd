@@ -31,8 +31,6 @@ If the time series is univariate the following must be specified:
 \item \code{phi} parameter \eqn{\phi} of the integrated likelihood function.
 \item \code{a}, \code{b}, \code{c} parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 \item \code{par_theta_c}, \code{par_theta_d} parameters of the shifted Gamma prior for \eqn{\theta}.
-\item \code{print_progress} If TRUE (default) print the progress bar.
-\item \code{user_seed} seed for random distribution generation.
 }
 
 If the time series is multivariate the following must be specified:
@@ -45,6 +43,10 @@ If the time series is multivariate the following must be specified:
 \item \code{print_progress} If TRUE (default) print the progress bar.
 \item \code{user_seed} seed for random distribution generation.
 }}
+
+\item{print_progress}{If TRUE (default) print the progress bar.}
+
+\item{user_seed}{seed for random distribution generation.}
 }
 \value{
 A \code{DetectCpObj} class object containing

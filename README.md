@@ -20,7 +20,7 @@ Now `BayesChange` can be installed through the [GitHub repository](https://githu
 devtools::install_github("lucadanese/BayesChange")
 ```
 
-# Example
+## Package contents
 
 The package contains two main functions: 
 

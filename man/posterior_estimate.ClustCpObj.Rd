@@ -14,6 +14,8 @@
 )
 }
 \arguments{
+\item{object}{an object of class \code{ClustCpObj}.}
+
 \item{loss}{The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".}
 
 \item{maxNClusters}{maximum number of clusters in salso procedure.}
@@ -22,9 +24,7 @@
 
 \item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
 
-\item{...}{}
-
-\item{x}{an object of class \code{ClustCpObj}.}
+\item{...}{parameter of the generic method.}
 }
 \value{
 The function returns a vector with the cluster assignment of each observation.

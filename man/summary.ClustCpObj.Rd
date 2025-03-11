@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{an object of class \code{ClustCpObj}.}
 
-\item{...}{}
+\item{...}{parameter of the generic method.}
 }
 \description{
 The \code{ClustCpObj} method returns a summary of the algorithm.

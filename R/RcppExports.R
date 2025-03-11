@@ -172,7 +172,7 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q 
 #' }
 #'
 #' @examples
-#'
+#'\donttest{
 #' data_mat <- matrix(NA, nrow = 5, ncol = 100)
 #'
 #' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
@@ -182,7 +182,7 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q 
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
-#'
+#'}
 #' @export
 clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, print_progress, user_seed)
@@ -207,7 +207,7 @@ clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q
 #' }
 #'
 #' @examples
-#'
+#'\donttest{
 #' data_array <- array(data = NA, dim = c(3,100,5))
 #'
 #' data_array[1,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
@@ -232,7 +232,7 @@ clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q
 #'
 #' out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
 #'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
-#'
+#'}
 #' @export
 clust_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, print_progress, user_seed)

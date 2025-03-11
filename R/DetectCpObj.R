@@ -53,7 +53,6 @@ DetectCpObj <- function(data = NULL,
 #'
 #' @description The \code{DetectCpObj} method prints which algorithm was run.
 #' @param x an object of class \code{DetectCpObj};
-#' @param ... additional arguments.
 #' @rdname print.DetectCpObj
 #' @examples
 #' data_mat <- matrix(NA, nrow = 3, ncol = 100)
@@ -82,7 +81,6 @@ print.DetectCpObj <- function(x, ...) {
 #'
 #' @description The \code{DetectCpObj} method returns a summary of the algorithm.
 #' @param x an object of class \code{DetectCpObj};
-#' @param ... additional arguments.
 #' @rdname summary.DetectCpObj
 #' @examples
 #'
@@ -156,10 +154,11 @@ posterior_estimate <- function (object, ...) {
 #'
 #' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
 #'
-#' @param object an object of class \code{DetectCPObj}.
+#' @param x an object of class \code{DetectCPObj}.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
+#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #'
 #' @rdname posterior_estimate.DetectCpObj
@@ -268,7 +267,7 @@ posterior_estimate.DetectCpObj <- function(x,
 #'
 #' @description  The \code{plot} method plots the estimates change points estimated through the salso algorithm, for a \code{DetectCpObj} class object.
 #'
-#' @param object an object of class \code{DetectCPObj}.
+#' @param x an object of class \code{DetectCPObj}.
 #' @param plot_freq if TRUE also the histogram with the empirical frequency of each change point is plotted.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.

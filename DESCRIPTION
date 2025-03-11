@@ -18,7 +18,9 @@ Imports:
     Rcpp,
     salso,
     dplyr,
-    tidyr
+    tidyr,
+    ggplot2,
+    ggpubr
 Depends: R (>= 3.5.0)
 Suggests: 
     knitr,

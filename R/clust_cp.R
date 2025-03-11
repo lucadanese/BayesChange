@@ -10,13 +10,10 @@
 #'
 #' @param n_iterations number of MCMC iterations.
 #' @param n_burnin number of iterations that must be excluded when computing the posterior estimate.
-#' @param B number of orders for the normalization constant.
-#' @param L number of split-merge steps for the proposal step.
-#' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
-#' @param coars coarsening coefficient, must be in (0,1].
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @param q probability of a split in the split-merge proposal and acceleration step.
+#' @param kernel can be "ts" if data are time series or "epi" if data are survival functions.
 #'
 #' @param params a list of parameters:
 #'
@@ -35,6 +32,9 @@
 #' If data are survival functions:
 #'
 #' \itemize{
+#'   \item \code{B} number of orders for the normalization constant.
+#'   \item \code{L} number of split-merge steps for the proposal step.
+#'   \item \code{alpha_SM} \eqn{\alpha} for the split-merge proposal and acceleration step.
 #'   \item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
 #'   \item \code{gamma} recovery rate fixed constant for each population at each time.
 #'   \item \code{alpha} \eqn{\alpha} for the acceptance ration in the split-merge procedure.
@@ -42,7 +42,7 @@
 #'   \item \code{MH_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #'   \item \code{S0},\code{R0} parameters for the SDE solver.
 #'   \item \code{p} prior average number of change points for each order.
-#'
+#'   \item \code{coars} coarsening coefficient, must be in (0,1].
 #' }
 #'
 #' @return A \code{ClustCpObj} class object containing

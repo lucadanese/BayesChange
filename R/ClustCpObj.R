@@ -5,13 +5,14 @@
 #' @param data a vector or a matrix containing the values of the time series;
 #' @param n_iterations number of iterations of the MCMC algorithm;
 #' @param n_burnin number of MCMC iterations to exclude in the posterior estimate;
+#' @param clust a matrix with the clustering of each iteration.
 #' @param orders a matrix where each row corresponds to the output order of the corresponding iteration;
 #' @param time computational time in seconds;
-#' @param gamma_MCMC traceplot for \eqn{\gamma};
-#' @param gamma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise;
-#' @param sigma_MCMC traceplot for \eqn{\sigma};
-#' @param sigma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise;
-#' @param theta_MCMC traceplot for \eqn{\theta};
+#' @param lkl a vector with the likelihood of the final clustering.
+#' @param norm_vec a vector with the estimated normalization constant.
+#' @param rho a vector with the estimated proportion of infected individuals for each observation.
+#' @param kernel_ts if TRUE data are time series.
+#' @param kernel_epi if TRUE data are survival functions.
 #' @param univariate_ts TRUE/FALSE if time series is univariate or not;
 #'
 #' @examples
@@ -54,7 +55,10 @@ ClustCpObj <- function(data = NULL,
 #'
 #' @description The \code{ClustCpObj} method prints which algorithm was run.
 #' @param x an object of class \code{ClustCpObj};
-#' @param ... additional arguments.
+#' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
+#' @param maxNClusters maximum number of clusters in salso procedure.
+#' @param nRuns number of runs in salso procedure.
+#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #' @rdname print.ClustCpObj
 #' @examples
 #'
@@ -91,7 +95,6 @@ print.ClustCpObj <- function(x, ...) {
 #'
 #' @description The \code{ClustCpObj} method returns a summary of the algorithm.
 #' @param x an object of class \code{ClustCpObj};
-#' @param ... additional arguments.
 #' @rdname summary.ClustCpObj
 #' @examples
 #'
@@ -140,7 +143,7 @@ summary.ClustCpObj <- function(x, ...) {
 #'
 #' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
 #'
-#' @param object an object of class \code{ClustCpObj}.
+#' @param x an object of class \code{ClustCpObj}.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
@@ -256,7 +259,7 @@ posterior_estimate.ClustCpObj <- function(x,
 #'
 #' @description  The \code{plot} method plots the estimates partition through the salso algorithm, for a \code{ClustCpObj} class object.
 #'
-#' @param object an object of class \code{ClustCpObj}.
+#' @param x an object of class \code{ClustCpObj}.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.

@@ -112,24 +112,24 @@ print.ClustCpObj <- function(x, ...) {
 #'
 summary.ClustCpObj <- function(object, ...) {
   cat("ClustCpObj object\n")
-  if(x$kernel_ts){
-    if(x$univariate){
+  if(object$kernel_ts){
+    if(object$univariate){
       cat("Clustering univariate time series:\n",
-          "Number of burn-in iterations:", x$n_burnin, "\n",
-          "Number of MCMC iterations:", x$n_iterations - x$n_burnin, "\n",
-          "Computational time:", round(x$time, digits = 2), "seconds\n")
+          "Number of burn-in iterations:", object$n_burnin, "\n",
+          "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+          "Computational time:", round(object$time, digits = 2), "seconds\n")
     } else {
       cat("Clustering ", paste0(nrow(x$data[,,1]),"-dimensional time series:\n"),
-          "Number of burn-in iterations:", x$n_burnin, "\n",
-          "Number of MCMC iterations:", x$n_iterations - x$n_burnin, "\n",
-          "Computational time:", round(x$time, digits = 2), "seconds\n")
+          "Number of burn-in iterations:", object$n_burnin, "\n",
+          "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+          "Computational time:", round(object$time, digits = 2), "seconds\n")
     }
-  } else if (x$kernel_epi){
+  } else if (object$kernel_epi){
 
     cat("Clustering survival functions:\n",
-        "Number of burn-in iterations:", x$n_burnin, "\n",
-        "Number of MCMC iterations:", x$n_iterations - x$n_burnin, "\n",
-        "Computational time:", round(x$time, digits = 2), "seconds\n")
+        "Number of burn-in iterations:", object$n_burnin, "\n",
+        "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+        "Computational time:", round(object$time, digits = 2), "seconds\n")
 
   }
 }
@@ -185,7 +185,7 @@ posterior_estimate.ClustCpObj <- function(object,
                                nRuns = 16,
                                maxZealousAttempts = 10, ...) {
 
-  mcmc_chain <- x$clust[(x$n_burnin + 1):x$n_iterations,]
+  mcmc_chain <- object$clust[(object$n_burnin + 1):object$n_iterations,]
 
   if(loss == "VI"){
 

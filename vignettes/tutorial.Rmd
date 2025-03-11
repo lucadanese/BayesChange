@@ -201,9 +201,9 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
 In `clust_cp` we need to specify, besides the usual parameters, the number of Monte Carlo replications `M` for the approximation of the integrated likelihood and the recovery rate `gamma`. 
 
 ```{r}
-out <- clust_cp(data = data_mat, n_iterations = 1000, n_burnin = 100, 
+out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10, 
                 kernel = "epi", 
-                list(M = 250, B = 1000, L = 1, q = 0.1, gamma = 1/8))
+                list(M = 100, B = 1000, L = 1, q = 0.1, gamma = 1/8))
 
 posterior_estimate(out, loss = "binder")
 ```

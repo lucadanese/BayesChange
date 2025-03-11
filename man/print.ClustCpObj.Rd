@@ -4,12 +4,10 @@
 \alias{print.ClustCpObj}
 \title{ClustCpObj print method}
 \usage{
-\method{print}{ClustCpObj}(x, y = NULL, ...)
+\method{print}{ClustCpObj}(x, ...)
 }
 \arguments{
 \item{x}{an object of class \code{ClustCpObj}.}
-
-\item{y}{parameter of the generic method.}
 
 \item{...}{parameter of the generic method.}
 }

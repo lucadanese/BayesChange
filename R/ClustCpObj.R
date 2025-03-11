@@ -52,7 +52,6 @@ ClustCpObj <- function(data = NULL,
 #'
 #' @description The \code{ClustCpObj} method prints which algorithm was run.
 #' @param x an object of class \code{ClustCpObj}.
-#' @param y parameter of the generic method.
 #' @param ... parameter of the generic method.
 #'
 #' @examples
@@ -73,7 +72,7 @@ ClustCpObj <- function(data = NULL,
 #' @rdname print.ClustCpObj
 #' @export
 #'
-print.ClustCpObj <- function(x, y = NULL, ...) {
+print.ClustCpObj <- function(x, ...) {
   cat("ClustCpObj object\n")
   if(x$kernel_ts){
     if(x$univariate){

@@ -50,7 +50,7 @@ DetectCpObj <- function(data = NULL,
 #'
 #' @description The \code{DetectCpObj} method prints which algorithm was run.
 #' @param x an object of class \code{DetectCpObj};
-#' @rdname print.DetectCpObj
+#'
 #' @examples
 #' data_mat <- matrix(NA, nrow = 3, ncol = 100)
 #'
@@ -63,6 +63,7 @@ DetectCpObj <- function(data = NULL,
 #'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1))
 #' print(out)
 #'
+#' @rdname print.DetectCpObj
 #' @export
 #'
 print.DetectCpObj <- function(x) {
@@ -78,7 +79,7 @@ print.DetectCpObj <- function(x) {
 #'
 #' @description The \code{DetectCpObj} method returns a summary of the algorithm.
 #' @param x an object of class \code{DetectCpObj};
-#' @rdname summary.DetectCpObj
+#'
 #' @examples
 #'
 #' data_mat <- matrix(NA, nrow = 3, ncol = 100)
@@ -92,7 +93,7 @@ print.DetectCpObj <- function(x) {
 #'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1))
 #' summary(out)
 #'
-#'
+#' @rdname summary.DetectCpObj
 #' @export
 #'
 summary.DetectCpObj <- function(x) {
@@ -130,7 +131,7 @@ posterior_estimate <- function (object, ...) {
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #'
-#' @rdname posterior_estimate.DetectCpObj
+#'
 #'
 #' @details
 #'
@@ -156,6 +157,7 @@ posterior_estimate <- function (object, ...) {
 #'
 #' posterior_estimate(out)
 #'
+#' @rdname posterior_estimate.DetectCpObj
 #' @export
 #'
 posterior_estimate.DetectCpObj <- function(x,
@@ -243,7 +245,7 @@ posterior_estimate.DetectCpObj <- function(x,
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #'
-#' @rdname plot.DetectCpObj
+#'
 #'
 #' @return
 #'
@@ -266,7 +268,7 @@ posterior_estimate.DetectCpObj <- function(x,
 #'
 #'
 #'
-#'
+#' @rdname plot.DetectCpObj
 #' @export
 #'
 plot.DetectCpObj <- function(x,
@@ -288,12 +290,12 @@ plot.DetectCpObj <- function(x,
 
       vec_data <- x$data
 
-      data_plot <- as.data.frame(cbind(vec_data))
-      data_plot$time <- rep(1:length(x$data))
+      .data_plot <- as.data.frame(cbind(vec_data))
+      .data_plot$time <- rep(1:length(x$data))
 
-      p1 <- ggplot2::ggplot(data_plot) +
+      p1 <- ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data),  linetype = 1) +
-        ggplot2::geom_vline(xintercept = unique(data_plot$time)[cp], linetype = 2) +
+        ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
         ggplot2::labs(x = "time",
                       y = " ",
                       color = NULL) +
@@ -316,13 +318,13 @@ plot.DetectCpObj <- function(x,
         vec_data <- c(vec_data,x$data[i,])
       }
 
-      data_plot <- as.data.frame(cbind(vec_data, sort(rep(1:nrow(x$data),ncol(x$data)))))
-      data_plot$V2 <- factor(data_plot$V2, labels = unique(paste0("obs ", data_plot$V2)) )
-      data_plot$time <- rep(1:ncol(x$data),nrow(x$data))
+      .data_plot <- as.data.frame(cbind(vec_data, sort(rep(1:nrow(x$data),ncol(x$data)))))
+      .data_plot$V2 <- factor(.data_plot$V2, labels = unique(paste0("obs ", .data_plot$V2)) )
+      .data_plot$time <- rep(1:ncol(x$data),nrow(x$data))
 
-      p1 <- ggplot2::ggplot(data_plot) +
+      p1 <- ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = V2),  linetype = 1) +
-        ggplot2::geom_vline(xintercept = unique(data_plot$time)[cp], linetype = 2) +
+        ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
         ggplot2::labs(x = "time",
                       y = " ",
                       color = NULL) +
@@ -345,12 +347,12 @@ plot.DetectCpObj <- function(x,
 
       vec_data <- x$data
 
-      data_plot <- as.data.frame(cbind(vec_data))
-      data_plot$time <- rep(1:length(x$data))
+      .data_plot <- as.data.frame(cbind(vec_data))
+      .data_plot$time <- rep(1:length(x$data))
 
-      p1 <- ggplot2::ggplot(data_plot) +
+      p1 <- ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data),  linetype = 1) +
-        ggplot2::geom_vline(xintercept = unique(data_plot$time)[cp], linetype = 2) +
+        ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
         ggplot2::labs(x = "time",
                       y = " ",
                       color = NULL) +
@@ -359,7 +361,7 @@ plot.DetectCpObj <- function(x,
 
       p1
 
-      x_unique <- unique(data_plot$time)
+      x_unique <- unique(.data_plot$time)
       b <- rep(0, length(x$data))
 
       for(i in 1:x$n_iterations){
@@ -396,13 +398,13 @@ plot.DetectCpObj <- function(x,
         vec_data <- c(vec_data,x$data[i,])
       }
 
-      data_plot <- as.data.frame(cbind(vec_data, sort(rep(1:nrow(x$data),ncol(x$data)))))
-      data_plot$V2 <- factor(data_plot$V2, labels = unique(paste0("obs ", data_plot$V2)) )
-      data_plot$time <- rep(1:ncol(x$data),nrow(x$data))
+      .data_plot <- as.data.frame(cbind(vec_data, sort(rep(1:nrow(x$data),ncol(x$data)))))
+      .data_plot$V2 <- factor(.data_plot$V2, labels = unique(paste0("obs ", .data_plot$V2)) )
+      .data_plot$time <- rep(1:ncol(x$data),nrow(x$data))
 
-      p1 <- ggplot2::ggplot(data_plot) +
+      p1 <- ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = V2),  linetype = 1) +
-        ggplot2::geom_vline(xintercept = unique(data_plot$time)[cp], linetype = 2) +
+        ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
         ggplot2::labs(x = "time",
                       y = " ",
                       color = NULL) +
@@ -410,7 +412,7 @@ plot.DetectCpObj <- function(x,
         ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
 
 
-      x_unique <- unique(data_plot$time)
+      x_unique <- unique(.data_plot$time)
       b <- rep(0, ncol(x$data))
 
       for(i in 1:x$n_iterations){

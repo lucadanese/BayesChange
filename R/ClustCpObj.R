@@ -52,7 +52,7 @@ ClustCpObj <- function(data = NULL,
 #'
 #' @description The \code{ClustCpObj} method prints which algorithm was run.
 #' @param x an object of class \code{ClustCpObj};
-#' @rdname print.ClustCpObj
+#'
 #' @examples
 #'
 #' data_mat <- matrix(NA, nrow = 5, ncol = 100)
@@ -68,6 +68,7 @@ ClustCpObj <- function(data = NULL,
 #'
 #' print(out)
 #'
+#' @rdname print.ClustCpObj
 #' @export
 #'
 print.ClustCpObj <- function(x) {
@@ -88,7 +89,7 @@ print.ClustCpObj <- function(x) {
 #'
 #' @description The \code{ClustCpObj} method returns a summary of the algorithm.
 #' @param x an object of class \code{ClustCpObj};
-#' @rdname summary.ClustCpObj
+#'
 #' @examples
 #'
 #' data_mat <- matrix(NA, nrow = 5, ncol = 100)
@@ -104,6 +105,7 @@ print.ClustCpObj <- function(x) {
 #'
 #' summary(out)
 #'
+#' @rdname summary.ClustCpObj
 #' @export
 #'
 summary.ClustCpObj <- function(x) {
@@ -142,8 +144,6 @@ summary.ClustCpObj <- function(x) {
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #'
-#' @rdname posterior_estimate.ClustCpObj
-#'
 #' @details
 #'
 #' put details here
@@ -173,6 +173,7 @@ summary.ClustCpObj <- function(x) {
 #'
 #' posterior_estimate(out)
 #'
+#' @rdname posterior_estimate.ClustCpObj
 #' @export
 #'
 posterior_estimate.ClustCpObj <- function(x,
@@ -258,8 +259,6 @@ posterior_estimate.ClustCpObj <- function(x,
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #'
-#' @rdname plot.ClustCpObj
-#'
 #' @return
 #'
 #' The function returns a ggplot object representing the time series or the survival functions colored according to the final partition.
@@ -313,6 +312,7 @@ posterior_estimate.ClustCpObj <- function(x,
 #' plot(out)
 #' }
 #'
+#' @rdname plot.ClustCpObj
 #' @export
 #'
 plot.ClustCpObj <- function(x,
@@ -328,20 +328,20 @@ plot.ClustCpObj <- function(x,
       est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                   nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-      data_plot <- x$data
+      .data_plot <- x$data
 
-      data_plot <- as.data.frame(t(x$data))
-      data_plot <- tidyr::pivot_longer(data_plot, cols = dplyr::everything(), names_to = "Observation", values_to = "Value")
-      data_plot <- dplyr::mutate(data_plot, Observation = as.numeric(gsub("V", "", Observation)))
-      data_plot <- dplyr::group_by(data_plot, Observation)
-      data_plot <- dplyr::mutate(data_plot, Time = dplyr::row_number())
-      data_plot <-  dplyr::ungroup(data_plot)
+      .data_plot <- as.data.frame(t(x$data))
+      .data_plot <- tidyr::pivot_longer(.data_plot, cols = dplyr::everything(), names_to = "Observation", values_to = "Value")
+      .data_plot <- dplyr::mutate(.data_plot, Observation = as.numeric(gsub("V", "", Observation)))
+      .data_plot <- dplyr::group_by(.data_plot, Observation)
+      .data_plot <- dplyr::mutate(.data_plot, Time = dplyr::row_number())
+      .data_plot <-  dplyr::ungroup(.data_plot)
 
-      data_plot$Cluster <- rep(est_cp, max(data_plot$Time))
-      data_plot$Cluster <- as.factor(data_plot$Cluster)
-      data_plot$Observation <- as.factor(data_plot$Observation)
+      .data_plot$Cluster <- rep(est_cp, max(.data_plot$Time))
+      .data_plot$Cluster <- as.factor(.data_plot$Cluster)
+      .data_plot$Observation <- as.factor(.data_plot$Observation)
 
-      ggplot2::ggplot(data_plot) +
+      ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = Observation, linetype = Observation)) +
         ggplot2::theme_minimal()
 
@@ -351,22 +351,22 @@ plot.ClustCpObj <- function(x,
                                   nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
 
-      data_plot <- data.frame(Value = numeric(0))
+      .data_plot <- data.frame(Value = numeric(0))
 
       for (i in 1:dim(x$data)[3]) {
         mat <- x$data[,,i]
-        data_plot <- rbind(data_plot, data.frame(Value = as.vector(mat),
+        .data_plot <- rbind(.data_plot, data.frame(Value = as.vector(mat),
                                                  Observation = i,
                                                  Cluster = est_cp[i],
                                                  count = sort(rep(1:nrow(mat), ncol(mat))),
                                                  Time = rep(1:ncol(mat),nrow(mat))))
       }
 
-      data_plot$Observation <- as.factor(data_plot$Observation)
-      data_plot$Cluster <- as.factor(data_plot$Cluster)
-      data_plot$count <- as.factor(data_plot$count)
+      .data_plot$Observation <- as.factor(.data_plot$Observation)
+      .data_plot$Cluster <- as.factor(.data_plot$Cluster)
+      .data_plot$count <- as.factor(.data_plot$count)
 
-      ggplot2::ggplot(data_plot) +
+      ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = interaction(Observation,count), linetype = Observation)) +
         ggplot2::theme_minimal()
 
@@ -376,13 +376,13 @@ plot.ClustCpObj <- function(x,
     est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                 nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-    df_sf_plot <- data.frame(y = as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
+    .df_sf_plot <- data.frame(y = as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
                              x = rep(1:ncol(x$data), nrow(x$data)),
                              obs = as.factor(rep(1:nrow(x$data), each = ncol(x$data))),
                              Cluster = as.factor(rep(est_cp, each = ncol(x$data))))
 
 
-    ggplot2::ggplot(df_sf_plot, ggplot2::aes(x = x, y = y, group = obs, colour = Cluster)) +
+    ggplot2::ggplot(.df_sf_plot, ggplot2::aes(x = x, y = y, group = obs, colour = Cluster)) +
       ggplot2::geom_line(lwd = 0.5) +
       ggplot2::xlab("Time") +
       ggplot2::ylab("Proportion of Infected Individuals") +

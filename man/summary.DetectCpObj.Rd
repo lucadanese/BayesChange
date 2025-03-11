@@ -25,5 +25,4 @@ out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1))
 summary(out)
 
-
 }

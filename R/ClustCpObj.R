@@ -51,7 +51,8 @@ ClustCpObj <- function(data = NULL,
 #' ClustCpObj print method
 #'
 #' @description The \code{ClustCpObj} method prints which algorithm was run.
-#' @param x an object of class \code{ClustCpObj};
+#' @param x an object of class \code{ClustCpObj}.
+#' @param y, ... parameters of the generic method.
 #'
 #' @examples
 #'
@@ -71,7 +72,7 @@ ClustCpObj <- function(data = NULL,
 #' @rdname print.ClustCpObj
 #' @export
 #'
-print.ClustCpObj <- function(x) {
+print.ClustCpObj <- function(x, y = NULL, ...) {
   cat("ClustCpObj object\n")
   if(x$kernel_ts){
     if(x$univariate){
@@ -88,7 +89,8 @@ print.ClustCpObj <- function(x) {
 #' ClustCpObj summary method
 #'
 #' @description The \code{ClustCpObj} method returns a summary of the algorithm.
-#' @param x an object of class \code{ClustCpObj};
+#' @param x an object of class \code{ClustCpObj}.
+#' @param ...
 #'
 #' @examples
 #'
@@ -108,7 +110,7 @@ print.ClustCpObj <- function(x) {
 #' @rdname summary.ClustCpObj
 #' @export
 #'
-summary.ClustCpObj <- function(x) {
+summary.ClustCpObj <- function(x, ...) {
   cat("ClustCpObj object\n")
   if(x$kernel_ts){
     if(x$univariate){
@@ -143,6 +145,7 @@ summary.ClustCpObj <- function(x) {
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#' @param ...
 #'
 #' @details
 #'
@@ -153,10 +156,10 @@ summary.ClustCpObj <- function(x) {
 #' The function returns a vector with the cluster assignment of each observation.
 #'
 #' @references
-#' Dahl, D. B., Johnson, D. J., & Müller, P. (2022).
-#' "Search Algorithms and Loss Functions for Bayesian Clustering."
-#' \emph{Journal of Computational and Graphical Statistics}, 31(2), 445-457.
-#' \doi{10.1080/10618600.2021.1950685}
+#'
+#' #' D. B. Dahl, D. J. Johnson, and P. Müller (2022), Search Algorithms and Loss
+#' Functions for Bayesian Clustering, \emph{Journal of Computational and
+#' Graphical Statistics}, 31(4), 1189-1201, \doi{10.1080/10618600.2022.2069779}.
 #'
 #' @examples
 #'
@@ -180,7 +183,7 @@ posterior_estimate.ClustCpObj <- function(x,
                                loss = "VI",
                                maxNClusters = 0,
                                nRuns = 16,
-                               maxZealousAttempts = 10) {
+                               maxZealousAttempts = 10, ...) {
 
   mcmc_chain <- x$clust[(x$n_burnin + 1):x$n_iterations,]
 
@@ -258,6 +261,7 @@ posterior_estimate.ClustCpObj <- function(x,
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#' @param y,... parameters of the generic method.
 #'
 #' @return
 #'
@@ -315,12 +319,13 @@ posterior_estimate.ClustCpObj <- function(x,
 #' @rdname plot.ClustCpObj
 #' @export
 #'
-plot.ClustCpObj <- function(x,
+plot.ClustCpObj <- function(x, y = NULL,
                              loss = "VI",
                              maxNClusters = 0,
                              nRuns = 16,
-                             maxZealousAttempts = 10) {
+                             maxZealousAttempts = 10, ...) {
 
+  Observation <- Time <- Value <- Cluster <- count <- y <- obs <- NULL
 
   if(x$kernel_ts){
     if(x$univariate_ts){

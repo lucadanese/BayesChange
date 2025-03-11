@@ -6,15 +6,19 @@
 \usage{
 \method{plot}{DetectCpObj}(
   x,
+  y = NULL,
   plot_freq = FALSE,
   loss = "VI",
   maxNClusters = 0,
   nRuns = 16,
-  maxZealousAttempts = 10
+  maxZealousAttempts = 10,
+  ...
 )
 }
 \arguments{
 \item{x}{an object of class \code{DetectCPObj}.}
+
+\item{y, ...}{parameters of the generic method.}
 
 \item{plot_freq}{if TRUE also the histogram with the empirical frequency of each change point is plotted.}
 

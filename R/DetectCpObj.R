@@ -49,7 +49,8 @@ DetectCpObj <- function(data = NULL,
 #' DetectCpObj print method
 #'
 #' @description The \code{DetectCpObj} method prints which algorithm was run.
-#' @param x an object of class \code{DetectCpObj};
+#' @param x an object of class \code{DetectCpObj}.
+#' @param ...
 #'
 #' @examples
 #' data_mat <- matrix(NA, nrow = 3, ncol = 100)
@@ -66,7 +67,7 @@ DetectCpObj <- function(data = NULL,
 #' @rdname print.DetectCpObj
 #' @export
 #'
-print.DetectCpObj <- function(x) {
+print.DetectCpObj <- function(x, ...) {
   cat("DetectCpObj object\n")
   if(x$univariate){
     cat("Type: change points detection on univariate time series")
@@ -79,6 +80,7 @@ print.DetectCpObj <- function(x) {
 #'
 #' @description The \code{DetectCpObj} method returns a summary of the algorithm.
 #' @param x an object of class \code{DetectCpObj};
+#' @param ...
 #'
 #' @examples
 #'
@@ -96,7 +98,7 @@ print.DetectCpObj <- function(x) {
 #' @rdname summary.DetectCpObj
 #' @export
 #'
-summary.DetectCpObj <- function(x) {
+summary.DetectCpObj <- function(x, ...) {
   cat("DetectCpObj object\n")
   if(x$univariate){
     cat("Detecting change points on an univariate time series:\n",
@@ -130,6 +132,7 @@ posterior_estimate <- function (object, ...) {
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#' @param ...
 #'
 #'
 #'
@@ -164,7 +167,7 @@ posterior_estimate.DetectCpObj <- function(x,
                                loss = "VI",
                                maxNClusters = 0,
                                nRuns = 16,
-                               maxZealousAttempts = 10) {
+                               maxZealousAttempts = 10,...) {
 
   mcmc_chain <- x$orders[(x$n_burnin + 1):x$n_iterations,]
 
@@ -244,6 +247,7 @@ posterior_estimate.DetectCpObj <- function(x,
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#' @param y,... parameters of the generic method.
 #'
 #'
 #'
@@ -271,12 +275,15 @@ posterior_estimate.DetectCpObj <- function(x,
 #' @rdname plot.DetectCpObj
 #' @export
 #'
-plot.DetectCpObj <- function(x,
+plot.DetectCpObj <- function(x, y = NULL,
                              plot_freq = FALSE,
                              loss = "VI",
                              maxNClusters = 0,
                              nRuns = 16,
-                             maxZealousAttempts = 10) {
+                             maxZealousAttempts = 10, ...) {
+
+
+  time <- V2 <- y <- NULL
 
   if(plot_freq == FALSE){
 

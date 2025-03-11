@@ -4,10 +4,12 @@
 \alias{print.DetectCpObj}
 \title{DetectCpObj print method}
 \usage{
-\method{print}{DetectCpObj}(x)
+\method{print}{DetectCpObj}(x, ...)
 }
 \arguments{
-\item{x}{an object of class \code{DetectCpObj};}
+\item{x}{an object of class \code{DetectCpObj}.}
+
+\item{...}{}
 }
 \description{
 The \code{DetectCpObj} method prints which algorithm was run.

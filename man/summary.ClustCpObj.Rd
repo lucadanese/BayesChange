@@ -4,10 +4,12 @@
 \alias{summary.ClustCpObj}
 \title{ClustCpObj summary method}
 \usage{
-\method{summary}{ClustCpObj}(x)
+\method{summary}{ClustCpObj}(x, ...)
 }
 \arguments{
-\item{x}{an object of class \code{ClustCpObj};}
+\item{x}{an object of class \code{ClustCpObj}.}
+
+\item{...}{}
 }
 \description{
 The \code{ClustCpObj} method returns a summary of the algorithm.

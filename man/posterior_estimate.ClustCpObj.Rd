@@ -9,7 +9,8 @@
   loss = "VI",
   maxNClusters = 0,
   nRuns = 16,
-  maxZealousAttempts = 10
+  maxZealousAttempts = 10,
+  ...
 )
 }
 \arguments{
@@ -22,6 +23,8 @@
 \item{nRuns}{number of runs in salso procedure.}
 
 \item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
+
+\item{...}{}
 }
 \value{
 The function returns a vector with the cluster assignment of each observation.
@@ -49,8 +52,7 @@ posterior_estimate(out)
 
 }
 \references{
-Dahl, D. B., Johnson, D. J., & Müller, P. (2022).
-"Search Algorithms and Loss Functions for Bayesian Clustering."
-\emph{Journal of Computational and Graphical Statistics}, 31(2), 445-457.
-\doi{10.1080/10618600.2021.1950685}
+#' D. B. Dahl, D. J. Johnson, and P. Müller (2022), Search Algorithms and Loss
+Functions for Bayesian Clustering, \emph{Journal of Computational and
+Graphical Statistics}, 31(4), 1189-1201, \doi{10.1080/10618600.2022.2069779}.
 }

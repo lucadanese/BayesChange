@@ -4,10 +4,12 @@
 \alias{print.ClustCpObj}
 \title{ClustCpObj print method}
 \usage{
-\method{print}{ClustCpObj}(x)
+\method{print}{ClustCpObj}(x, y = NULL, ...)
 }
 \arguments{
-\item{x}{an object of class \code{ClustCpObj};}
+\item{x}{an object of class \code{ClustCpObj}.}
+
+\item{y, }{... parameters of the generic method.}
 }
 \description{
 The \code{ClustCpObj} method prints which algorithm was run.

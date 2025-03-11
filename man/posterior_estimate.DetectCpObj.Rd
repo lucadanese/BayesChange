@@ -9,7 +9,8 @@
   loss = "VI",
   maxNClusters = 0,
   nRuns = 16,
-  maxZealousAttempts = 10
+  maxZealousAttempts = 10,
+  ...
 )
 }
 \arguments{
@@ -22,6 +23,8 @@
 \item{nRuns}{number of runs in salso procedure.}
 
 \item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
+
+\item{...}{}
 }
 \value{
 The function returns a vector with the cluster assignment of each observation.

@@ -4,10 +4,20 @@
 \alias{plot.ClustCpObj}
 \title{Plot estimated partition}
 \usage{
-\method{plot}{ClustCpObj}(x, loss = "VI", maxNClusters = 0, nRuns = 16, maxZealousAttempts = 10)
+\method{plot}{ClustCpObj}(
+  x,
+  y = NULL,
+  loss = "VI",
+  maxNClusters = 0,
+  nRuns = 16,
+  maxZealousAttempts = 10,
+  ...
+)
 }
 \arguments{
 \item{x}{an object of class \code{ClustCpObj}.}
+
+\item{y, ...}{parameters of the generic method.}
 
 \item{loss}{The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".}
 

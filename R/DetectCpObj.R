@@ -142,10 +142,9 @@ summary.DetectCpObj <- function(x) {
 #' @keywords internal
 #' @export
 #'
-posterior_estimate <- function (object) {
+posterior_estimate <- function (object, ...) {
   UseMethod("posterior_estimate")
 }
-
 
 #' Estimate the change points of the data
 #'

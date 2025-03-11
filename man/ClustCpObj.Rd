@@ -47,8 +47,3 @@ ClustCpObj(
 \description{
 A constructor for the \code{ClustCpObj} class. The class \code{ClustCpObj} contains...
 }
-\examples{
-
-## put example here
-
-}

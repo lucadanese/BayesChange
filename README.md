@@ -20,7 +20,7 @@ Now `BayesChange` can be installed through the [GitHub repository](https://githu
 devtools::install_github("lucadanese/BayesChange")
 ```
 
-## Example
+# Example
 
 The package contains two main functions: 
 
@@ -34,7 +34,7 @@ Additional methods and functions are included:
 * `plot()` provides a graphical representation of the results. 
 * `sim_epi_data` generates an arbitrary number of simulated survival functions. 
 
-# Detect change points 
+## Detect change points 
 
 
 ``` r
@@ -77,7 +77,7 @@ plot(out)
 
 ``` 
 
-# Cluster time dependent data with common change points 
+## Cluster time dependent data with common change points 
 
 ``` r
 

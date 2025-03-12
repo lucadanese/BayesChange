@@ -729,7 +729,7 @@ double AlphaShuffleOrder_TS(arma::mat data, arma::vec new_order, arma::vec old_o
 }
 
 
-double AlphaSplitOrder_MultiTS_Acc(arma::cube data, arma::vec new_order, arma::vec old_order,
+double AlphaSplit_MultiTS_Acc(arma::cube data, arma::vec new_order, arma::vec old_order,
                                    double q, double index, double gamma, double k_0, double nu_0,
                                    arma::mat phi_0, arma::vec m_0){
 
@@ -764,7 +764,7 @@ double AlphaSplitOrder_MultiTS_Acc(arma::cube data, arma::vec new_order, arma::v
 
 
 
-double AlphaMergeOrder_MultiTS_Acc(arma::cube data, arma::vec new_order, arma::vec old_order,
+double AlphaMerge_MultiTS_Acc(arma::cube data, arma::vec new_order, arma::vec old_order,
                                    double q, double index, double gamma, double k_0, double nu_0,
                                    arma::mat phi_0, arma::vec m_0){
 
@@ -790,7 +790,7 @@ double AlphaMergeOrder_MultiTS_Acc(arma::cube data, arma::vec new_order, arma::v
 }
 
 
-double AlphaShuffleOrder_MultiTS(arma::cube data, arma::vec new_order, arma::vec old_order,
+double AlphaShuffle_MultiTS(arma::cube data, arma::vec new_order, arma::vec old_order,
                                  double gamma, double k_0, double nu_0,
                                  arma::mat phi_0, arma::vec m_0){
 
@@ -806,7 +806,7 @@ double AlphaShuffleOrder_MultiTS(arma::cube data, arma::vec new_order, arma::vec
 
 
 
-double AlphaMergePartition_cpp(arma::vec lkl_old_i,
+double AlphaMerge_Surv(arma::vec lkl_old_i,
                                arma::vec lkl_old_j,
                                arma::vec lkl_proposal,
                                double num_groups,
@@ -867,7 +867,7 @@ double AlphaMergePartition_cpp(arma::vec lkl_old_i,
 
 }
 
-double AlphaSplitPartition_cpp(arma::vec lkl_proposal_i,
+double AlphaSplit_Surv(arma::vec lkl_proposal_i,
                                arma::vec lkl_proposal_j,
                                arma::vec lkl_old,
                                double num_groups,
@@ -926,7 +926,7 @@ double AlphaSplitPartition_cpp(arma::vec lkl_proposal_i,
 }
 
 
-double AlphaSplitOrder_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
+double AlphaSplit_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                              double q, double index, double theta, double sigma, double phi,
                              double a, double b, double c){
 
@@ -950,7 +950,7 @@ double AlphaSplitOrder_UniTS(arma::mat data, arma::vec new_order, arma::vec old_
   return res;
 }
 
-double AlphaMergeOrder_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
+double AlphaMerge_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                              double q, double index, double theta, double sigma, double phi,
                              double a, double b, double c){
 
@@ -973,7 +973,7 @@ double AlphaMergeOrder_UniTS(arma::mat data, arma::vec new_order, arma::vec old_
   return  my_min(a1,a2);
 }
 
-double AlphaShuffleOrder_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
+double AlphaShuffle_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                                double theta, double sigma, double phi,
                                double a, double b, double c){
 
@@ -983,7 +983,7 @@ double AlphaShuffleOrder_UniTS(arma::mat data, arma::vec new_order, arma::vec ol
   return  my_min(a1,a2);
 }
 
-double AlphaSplitOrder_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
+double AlphaSplit_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                                double q, double index, double gamma, double k_0, double nu_0,
                                double theta, double sigma,arma::mat phi_0, arma::vec m_0){
 
@@ -1007,7 +1007,7 @@ double AlphaSplitOrder_MultiTS(arma::mat data, arma::vec new_order, arma::vec ol
   return res;
 }
 
-double AlphaMergeOrder_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
+double AlphaMerge_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                                double q, double index, double gamma, double k_0, double nu_0,
                                double theta, double sigma,arma::mat phi_0, arma::vec m_0){
 
@@ -1030,7 +1030,7 @@ double AlphaMergeOrder_MultiTS(arma::mat data, arma::vec new_order, arma::vec ol
   return  my_min(a1,a2);
 }
 
-double AlphaShuffleOrder_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
+double AlphaShuffle_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                                  double gamma, double k_0, double nu_0,
                                  double theta, double sigma,arma::mat phi_0, arma::vec m_0){
 
@@ -1169,7 +1169,7 @@ Rcpp::List Shuffle_cpp(arma::vec order){
 // ACCELERATION STEP
 // -------------------
 
-void SplitMergeAccUnivariateTS(arma::mat data,
+void SplitMergeUniTS(arma::mat data,
                                arma::vec &order,
                                int iter, double q, double a, double b, double c, double gamma){
 
@@ -1259,7 +1259,7 @@ void SplitMergeAccUnivariateTS(arma::mat data,
 
 }
 
-void SplitMergeAccMultivariateTS(arma::cube data,
+void SplitMergeMultiTS(arma::cube data,
                                  arma::vec &order,
                                  int iter, double q, double k_0, double nu_0, arma::mat phi_0, arma::vec m_0, double gamma){
 
@@ -1290,7 +1290,7 @@ void SplitMergeAccMultivariateTS(arma::cube data,
 
       /// evaluate the proposed order
 
-      double alpha_split = AlphaSplitOrder_MultiTS_Acc(data, split_order, order, q, split_index, gamma, k_0, nu_0, phi_0, m_0);
+      double alpha_split = AlphaSplit_MultiTS_Acc(data, split_order, order, q, split_index, gamma, k_0, nu_0, phi_0, m_0);
 
       if(log(arma::randu()) <= alpha_split){
         res_order = split_order;
@@ -1311,7 +1311,7 @@ void SplitMergeAccMultivariateTS(arma::cube data,
 
       /// evaluate the proposed order
 
-      double alpha_merge = AlphaMergeOrder_MultiTS_Acc(data, merge_order, order, merge_index, q, gamma, k_0, nu_0, phi_0, m_0);
+      double alpha_merge = AlphaMerge_MultiTS_Acc(data, merge_order, order, merge_index, q, gamma, k_0, nu_0, phi_0, m_0);
 
 
 
@@ -1335,7 +1335,7 @@ void SplitMergeAccMultivariateTS(arma::cube data,
 
       /// evaluate the proposed order
 
-      double alpha_shuffle = AlphaShuffleOrder_MultiTS(data, shuffle_order, order, gamma, k_0, nu_0, phi_0, m_0);
+      double alpha_shuffle = AlphaShuffle_MultiTS(data, shuffle_order, order, gamma, k_0, nu_0, phi_0, m_0);
 
 
       if(log(arma::randu()) <= alpha_shuffle){
@@ -2535,8 +2535,12 @@ return infection_times;
 //'
 // [[Rcpp::export]]
 Rcpp::List detect_cp_uni(arma::vec data,
-                                int n_iterations, double q, double phi, double a, double b, double c,
-                                double par_theta_c = 1, double par_theta_d = 1, bool print_progress = true, unsigned long user_seed = 1234){
+                                int n_iterations, double q, double phi,
+                                double a, double b, double c,
+                                double par_theta_c = 1,
+                                double par_theta_d = 1,
+                                bool print_progress = true,
+                                unsigned long user_seed = 1234){
 
 
   // WARNINGS //
@@ -2625,7 +2629,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_split = AlphaSplitOrder_UniTS(data_mat, split_order, order, q, split_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_split = AlphaSplit_UniTS(data_mat, split_order, order, q, split_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
 
 
      if(log(arma::randu()) <= alpha_split){
@@ -2649,7 +2653,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_merge = AlphaMergeOrder_UniTS(data_mat, merge_order, order, q, merge_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_merge = AlphaMerge_UniTS(data_mat, merge_order, order, q, merge_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
 
      if(log(arma::randu()) <= alpha_merge){
        res_order = merge_order;
@@ -2671,7 +2675,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_shuffle = AlphaShuffleOrder_UniTS(data_mat, shuffle_order, order, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_shuffle = AlphaShuffle_UniTS(data_mat, shuffle_order, order, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
 
      if(log(arma::randu()) <= alpha_shuffle){
        res_order = shuffle_order;
@@ -2853,7 +2857,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_split = AlphaSplitOrder_MultiTS(data, split_order, order, q, split_index, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), phi_0, m_0);
+       double alpha_split = AlphaSplit_MultiTS(data, split_order, order, q, split_index, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), phi_0, m_0);
 
        if(log(arma::randu()) <= alpha_split){
          res_order = split_order;
@@ -2876,7 +2880,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_merge = AlphaMergeOrder_MultiTS(data, merge_order, order, q, merge_index, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), phi_0, m_0);
+       double alpha_merge = AlphaMerge_MultiTS(data, merge_order, order, q, merge_index, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), phi_0, m_0);
 
        if(log(arma::randu()) <= alpha_merge){
          res_order = merge_order;
@@ -2898,7 +2902,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_shuffle = AlphaShuffleOrder_MultiTS(data, shuffle_order, order, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), phi_0, m_0);
+       double alpha_shuffle = AlphaShuffle_MultiTS(data, shuffle_order, order, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), phi_0, m_0);
 
        if(log(arma::randu()) <= alpha_shuffle){
          res_order = shuffle_order;
@@ -3360,7 +3364,7 @@ for(int iter = 0; iter < n_iterations; iter++){
     proposed_order = orders_temp.row(partition_temp(id3)).t();
 
     // update the proposed order with a split-and-merge procedure
-    SplitMergeAccUnivariateTS(data.row(id3), proposed_order, L, q, a, b, c, gamma);
+    SplitMergeUniTS(data.row(id3), proposed_order, L, q, a, b, c, gamma);
     //
 
     lkl_proposal_m = lkl_temp;
@@ -3376,7 +3380,7 @@ for(int iter = 0; iter < n_iterations; iter++){
 
     // evaluate the proposed new partition
 
-    alpha = AlphaMergePartition_cpp(lkl_old_i_m,
+    alpha = AlphaMerge_Surv(lkl_old_i_m,
                                     lkl_old_j_m,
                                     lkl_proposal_m,
                                     k, data.n_cols, n, alpha_SM,
@@ -3457,8 +3461,8 @@ for(int iter = 0; iter < n_iterations; iter++){
     id3 = rint(prob_temp_i);
     id4 = rint(prob_temp_j);
 
-    SplitMergeAccUnivariateTS(data.row(id3), proposed_order_i, L, q, a, b, c, gamma);
-    SplitMergeAccUnivariateTS(data.row(id4), proposed_order_j, L, q, a, b, c, gamma);
+    SplitMergeUniTS(data.row(id3), proposed_order_i, L, q, a, b, c, gamma);
+    SplitMergeUniTS(data.row(id4), proposed_order_j, L, q, a, b, c, gamma);
 
     //
 
@@ -3474,7 +3478,7 @@ for(int iter = 0; iter < n_iterations; iter++){
 
     // evaluate the proposed new partition
 
-    alpha = AlphaSplitPartition_cpp(lkl_proposal_i_s,
+    alpha = AlphaSplit_Surv(lkl_proposal_i_s,
                                     lkl_proposal_j_s,
                                     lkl_old_s,
                                     k, data.n_cols, n, alpha_SM,
@@ -3524,7 +3528,7 @@ for(int iter = 0; iter < n_iterations; iter++){
 
     arma::uvec obs = find(partition_temp == i);
 
-    SplitMergeAccUnivariateTS(data.rows(obs), proposed_order, 1, q, a, b, c, gamma);
+    SplitMergeUniTS(data.rows(obs), proposed_order, 1, q, a, b, c, gamma);
 
     orders_temp.row(min(find(partition_temp == i))) = proposed_order.t();
 
@@ -3754,7 +3758,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
       proposed_order = orders_temp.row(partition_temp(id3)).t();
 
       // update the proposed order with a split-and-merge procedure
-      SplitMergeAccMultivariateTS(data.slices(id3, id3), proposed_order, L, q, k_0, nu_0, phi_0, m_0, gamma);
+      SplitMergeMultiTS(data.slices(id3, id3), proposed_order, L, q, k_0, nu_0, phi_0, m_0, gamma);
       //
 
       lkl_proposal_m = lkl_temp;
@@ -3769,7 +3773,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
       // evaluate the proposed new partition
 
-      alpha = AlphaMergePartition_cpp(lkl_old_i_m,
+      alpha = AlphaMerge_Surv(lkl_old_i_m,
                                       lkl_old_j_m,
                                       lkl_proposal_m,
                                       k, data.n_cols, data.n_slices, alpha_SM,
@@ -3850,8 +3854,8 @@ Rcpp::List clust_cp_multi(arma::cube data,
       id3 = rint(prob_temp_i);
       id4 = rint(prob_temp_j);
 
-      SplitMergeAccMultivariateTS(data.slices(id3,id3), proposed_order_i, L, q, k_0, nu_0, phi_0, m_0, gamma);
-      SplitMergeAccMultivariateTS(data.slices(id4,id4), proposed_order_j, L, q, k_0, nu_0, phi_0, m_0, gamma);
+      SplitMergeMultiTS(data.slices(id3,id3), proposed_order_i, L, q, k_0, nu_0, phi_0, m_0, gamma);
+      SplitMergeMultiTS(data.slices(id4,id4), proposed_order_j, L, q, k_0, nu_0, phi_0, m_0, gamma);
 
       //
 
@@ -3867,7 +3871,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
       // evaluate the proposed new partition
 
-      alpha = AlphaSplitPartition_cpp(lkl_proposal_i_s,
+      alpha = AlphaSplit_Surv(lkl_proposal_i_s,
                                       lkl_proposal_j_s,
                                       lkl_old_s,
                                       k, data.n_cols, data.n_slices, alpha_SM,
@@ -3913,7 +3917,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
     for(int i = 0; i <= max(partition_temp); i++){
       proposed_order = orders_temp.row(min(find(partition_temp == i))).t();
       arma::uvec obs = find(partition_temp == i);
-      SplitMergeAccMultivariateTS(data.slices(obs), proposed_order, 1, q, k_0, nu_0, phi_0, m_0, gamma);
+      SplitMergeMultiTS(data.slices(obs), proposed_order, 1, q, k_0, nu_0, phi_0, m_0, gamma);
       orders_temp.row(min(find(partition_temp == i))) = proposed_order.t();
     }
 

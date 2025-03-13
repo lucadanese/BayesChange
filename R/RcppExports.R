@@ -12,8 +12,8 @@
 #' @return Function \code{sim_epi_data} returns a vector with the simulated infection times.
 #'
 #' @export
-sim_epi_data <- function(S0, I0, max_time, beta_vec, gamma_0, user_seed = 1234L) {
-    .Call(`_BayesChange_sim_epi_data`, S0, I0, max_time, beta_vec, gamma_0, user_seed)
+sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
+    .Call(`_BayesChange_sim_epi_data`, S0, I0, max_time, beta_vec, xi_0, user_seed)
 }
 
 #' @name detect_cp_uni
@@ -61,16 +61,16 @@ detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, 
 #' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
 #' @param n_iterations number of MCMC iterations.
 #' @param q probability of performing a split at each iteration.
-#' @param k_0,nu_0,phi_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
+#' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 #' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
-#' @param prior_var_gamma parameters for the Gamma prior for \eqn{\gamma}.
+#' @param prior_var_phi parameters for the Gamma prior for \eqn{\gamma}.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{time}} computational time in seconds.
-#' \item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
-#' \item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
+#' \item{\code{$phi_MCMC}} traceplot for \eqn{\gamma}.
+#' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\} was accepted, \eqn{0} otherwise.
 #' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 #' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 #' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
@@ -86,12 +86,12 @@ detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, 
 #'
 #' out <- detect_cp_multi(data = data_mat,
 #'                               n_iterations = 2500,
-#'                               q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
+#'                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
+#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1)
 #'
 #'
-detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_gamma = 0.1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_theta_c, par_theta_d, prior_var_gamma, print_progress, user_seed)
+detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_phi = 0.1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, S_0, m_0, par_theta_c, par_theta_d, prior_var_phi, print_progress, user_seed)
 }
 
 #' Clustering Epidemiological survival functions with common changes in time
@@ -101,10 +101,10 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
 #' @param B number of orders for the normalisation constant.
 #' @param L number of split-merge steps for the proposal step.
-#' @param gamma recovery rate fixed constant for each population at each time.
-#' @param alpha \eqn{\alpha} for the acceptance ration in the split-merge procedure.
+#' @param xi recovery rate fixed constant for each population at each time.
+#' @param alpha_SM \eqn{\alpha} parameter for the main split-merge algorithm.
 #' @param q probability of performing a split when updating the single order for the proposal procedure.
-#' @param dt,a0,b0,c0,d0 parameters for the computation of the integrated likelihood of the survival functions.
+#' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
 #' @param MH_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #' @param S0,R0 parameters for the SDE solver.
 #' @param p prior average number of change points for each order.
@@ -149,8 +149,8 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, phi_0, m_0, par_th
 #'
 #'}
 #' @export
-clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q = 0.1, dt = 0.1, a0 = 4, b0 = 10, c0 = 1, d0 = 1, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, gamma, alpha, q, dt, a0, b0, c0, d0, MH_var, S0, R0, p, print_progress, user_seed)
+clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q = 0.1, a0 = 4, b0 = 10, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, MH_var, S0, R0, p, print_progress, user_seed)
 }
 
 #' Clustering univariate times series with common changes in time
@@ -159,9 +159,9 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q 
 #' @param n_iterations number of MCMC iterations.
 #' @param B number of orders for the normalisation constant.
 #' @param L number of split-merge steps for the proposal step.
-#' @param gamma,a,b,c parameters \eqn{\gamma} of the integrated likelihood.
+#' @param phi,a,b,c parameters of the integrated likelihood.
 #' @param q probability of a split in the split-merge proposal and acceleration step.
-#' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
+#' @param alpha_SM \eqn{\alpha} for the main split-merge algorithm.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{clust_cp_uni} returns a list containing the following components: \itemize{
@@ -181,11 +181,11 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, gamma = 1/8, alpha = 1, q 
 #' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
-#' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
+#' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, phi = 0.5)
 #'}
 #' @export
-clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_clust_cp_uni`, data, n_iterations, B, L, gamma, a, b, c, q, alpha_SM, print_progress, user_seed)
+clust_cp_uni <- function(data, n_iterations, B, L, phi, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_clust_cp_uni`, data, n_iterations, B, L, phi, a, b, c, q, alpha_SM, print_progress, user_seed)
 }
 
 #' Clustering multivariate times series with common changes in time
@@ -194,9 +194,9 @@ clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q
 #' @param n_iterations number of MCMC iterations.
 #' @param B number of orders for the normalisation constant.
 #' @param L number of split-merge steps for the proposal step.
-#' @param gamma,k_0,nu_0,phi_0,m_0 parameters of the integrated likelihood.
+#' @param phi,k_0,nu_0,S_0,m_0 parameters of the integrated likelihood.
 #' @param q probability of a split in the split-merge proposal and acceleration step.
-#' @param alpha_SM \eqn{\alpha} for the split-merge proposal and acceleration step.
+#' @param alpha_SM \eqn{\alpha} for the main split-merge algorithm.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{clust_cp_multi} returns a list containing the following components: \itemize{
@@ -231,10 +231,10 @@ clust_cp_uni <- function(data, n_iterations, B, L, gamma, a = 1, b = 1, c = 1, q
 #' data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
-#'                         gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
+#'                         phi = 0.1, k_0 = 0.25, nu_0 = 5, S_0 = diag(0.1,3,3), m_0 = rep(0,3))
 #'}
 #' @export
-clust_cp_multi <- function(data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_clust_cp_multi`, data, n_iterations, B, L, gamma, k_0, nu_0, phi_0, m_0, q, alpha_SM, print_progress, user_seed)
+clust_cp_multi <- function(data, n_iterations, B, L, phi, k_0, nu_0, S_0, m_0, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_clust_cp_multi`, data, n_iterations, B, L, phi, k_0, nu_0, S_0, m_0, q, alpha_SM, print_progress, user_seed)
 }
 

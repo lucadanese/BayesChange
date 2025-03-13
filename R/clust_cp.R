@@ -7,10 +7,12 @@
 #' @param data a vector or a matrix. If a vector the algorithm for
 #' univariate time series is used. If a matrix, where rows are the observations
 #' and columns are the times, then the algorithm for multivariate time series is used.
-#'
 #' @param n_iterations number of MCMC iterations.
 #' @param n_burnin number of iterations that must be excluded when computing the posterior estimate.
+#' @param B number of orders for the normalization constant.
+#' @param L number of split-merge steps for the proposal step.
 #' @param print_progress If TRUE (default) print the progress bar.
+#' @param alpha_SM \eqn{\alpha} for the split-merge main algorithm.
 #' @param user_seed seed for random distribution generation.
 #' @param kernel can be "ts" if data are time series or "epi" if data are survival functions.
 #'
@@ -20,10 +22,7 @@
 #'
 #' \itemize{
 #'   \item \code{q} probability of a split in the split-merge proposal and acceleration step.
-#'   \item \code{B} number of orders for the normalization constant.
-#'   \item \code{L} number of split-merge steps for the proposal step.
-#'   \item \code{alpha_SM} \eqn{\alpha} for the split-merge proposal and acceleration step.
-#'   \item \code{gamma},\code{a},\code{b},\code{c} parameters of the integrated likelihood.
+#'   \item \code{phi},\code{a},\code{b},\code{c} parameters of the integrated likelihood.
 #' }
 #'
 #' If the time series is multivariate the following must be specified:
@@ -32,18 +31,16 @@
 #'   \item \code{q} probability of a split in the split-merge proposal and acceleration step.
 #'   \item \code{B} number of orders for the normalization constant.
 #'   \item \code{L} number of split-merge steps for the proposal step.
-#'   \item \code{gamma},\code{k_0},\code{nu_0},\code{phi_0},\code{m_0} parameters of the integrated likelihood.
+#'   \item \code{phi},\code{k_0},\code{nu_0},\code{S_0},\code{m_0} parameters of the integrated likelihood.
 #' }
 #'
 #' If data are survival functions:
 #'
 #' \itemize{
 #'   \item \code{q} probability of a split in the split-merge proposal and acceleration step.
-#'   \item \code{B} number of orders for the normalization constant.
-#'   \item \code{L} number of split-merge steps for the proposal step.
 #'   \item \code{alpha_SM} \eqn{\alpha} for the split-merge proposal and acceleration step.
 #'   \item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
-#'   \item \code{gamma} recovery rate fixed constant for each population at each time.
+#'   \item \code{xi} recovery rate fixed constant for each population at each time.
 #'   \item \code{alpha} \eqn{\alpha} for the acceptance ration in the split-merge procedure.
 #'   \item \code{dt},\code{a0},\code{b0},\code{c0},\code{d0} parameters for the computation of the integrated likelihood of the survival functions.
 #'   \item \code{MH_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
@@ -83,7 +80,7 @@
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'                  L = 1, B = 1000, params = list(phi = 0.5), kernel = "ts")
 #'
 #' print(out)
 #'
@@ -113,8 +110,8 @@
 #' data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp(data = data_array, n_iterations = 3000, n_burnin = 1000,
-#'                 params = list(B = 1000, L = 1, gamma = 0.5, k_0 = 0.25,
-#'                               nu_0 = 5, phi_0 = diag(0.1,3,3),
+#'                 params = list(B = 1000, phi = 0.5, k_0 = 0.25,
+#'                               nu_0 = 5, S_0 = diag(0.1,3,3),
 #'                               m_0 = rep(0,3)), kernel = "ts")
 #'
 #' print(out)
@@ -149,7 +146,7 @@
 #' }
 #'
 #' out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
-#'                 params = list(M = 100, L = 1, B = 1000), kernel = "epi")
+#'                 params = list(M = 100), kernel = "epi")
 #'
 #' print(out)
 #' }
@@ -164,6 +161,9 @@ clust_cp <- function(data,
                      n_iterations,
                      n_burnin = 0,
                      params = list(),
+                     alpha_SM = 1,
+                     B = 1000,
+                     L = 1,
                      print_progress = TRUE,
                      user_seed = 1234,
                      kernel){
@@ -173,19 +173,19 @@ clust_cp <- function(data,
   if(n_iterations < 1) stop("number of iterations must be positive and > 1")
   if((is.null(kernel) | !(kernel %in% c("ts", "epi")))) stop("kernel must be 'ts' or 'epi'")
   if(n_burnin < 0) stop("number of burn in iterations must be positive and > 1")
+  if(alpha_SM < 0) stop("alpha_SM must be positive")
+  if((!is.null(B)) && (B < 1)) stop("B must be at least equal to 1")
+  if((!is.null(L)) && (L < 1)) stop("L must be at least equal to 1")
 
   if(kernel == "ts"){
 
     if(is.matrix(data)){
 
-      if((!is.null(params$B)) && (params$B < 1)) stop("params$B must be at least equal to 1")
-      if((!is.null(params$L)) && (params$L < 1)) stop("params$L must be at least equal to 1")
-      if((!is.null(params$gamma)) && ((params$gamma > 1) | (params$gamma < 0))) stop("params$gamma must be in (0,1)")
+      if((!is.null(params$phi)) && ((params$phi > 1) | (params$phi < 0))) stop("params$phi must be in (0,1)")
       if((!is.null(params$a)) && (params$a <= 0)) stop("params$a must be positive")
       if((!is.null(params$b)) && (params$b <= 0)) stop("params$b must be positive")
       if((!is.null(params$c)) && (params$c <= 0)) stop("params$c must be positive")
       if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
-      if((!is.null(params$alpha_SM)) && (params$alpha_SM <= 0)) stop("params$alpha_SM must be positive")
       if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
       if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
       if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
@@ -193,25 +193,25 @@ clust_cp <- function(data,
       # substitute missing parameters with default
 
       n_burnin_input = n_burnin
-      B_input = ifelse(is.null(params$B), 1000, params$B)
-      L_input = ifelse(is.null(params$L), 1, params$L)
-      gamma_input = ifelse(is.null(params$gamma), 1, params$gamma)
+      B_input = B
+      L_input = L
+      phi_input = ifelse(is.null(params$phi), 1, params$phi)
       a_input = ifelse(is.null(params$a), 1, params$a)
       b_input = ifelse(is.null(params$b), 1, params$b)
       c_input = ifelse(is.null(params$c), 1, params$c)
       q_input = ifelse(is.null(params$q), 0.5, params$q)
-      alpha_SM_input = ifelse(is.null(params$alpha_SM), 0.1, params$alpha_SM)
       print_progress_input = print_progress
       user_seed_input = user_seed
       #
 
       data_input = data
       n_iterations_input = n_iterations
+      alpha_SM_input = alpha_SM
 
       out <- clust_cp_uni(data = data_input,
                           n_iterations = n_iterations_input,
                           B = B_input, L = L_input,
-                          gamma = gamma_input, a = a_input, b = b_input,
+                          phi = phi_input, a = a_input, b = b_input,
                           c = c_input, q = q_input,
                           alpha_SM = alpha_SM_input,
                           print_progress = print_progress_input, user_seed = user_seed_input)
@@ -234,15 +234,12 @@ clust_cp <- function(data,
 
     } else if(is.array(data)){
 
-      if((!is.null(params$B)) && (params$B < 1)) stop("params$B must be at least equal to 1")
-      if((!is.null(params$L)) && (params$L < 1)) stop("params$L must be at least equal to 1")
-      if((!is.null(params$gamma)) && ((params$gamma > 1) | (params$gamma < 0))) stop("params$gamma must be in (0,1)")
+      if((!is.null(params$phi)) && ((params$phi > 1) | (params$phi < 0))) stop("params$phi must be in (0,1)")
       if((!is.null(params$k_0)) && (params$k_0 < 0)) stop("params$k_0 must be positive")
       if((!is.null(params$nu_0)) && (params$nu_0 < 0)) stop("params$nu_0 must be positive")
-      if((!is.null(params$phi_0)) && nrow(params$phi_0) != ncol(params$phi_0)) stop("number of rows and columns must be the same in params$phi_0")
+      if((!is.null(params$S_0)) && nrow(params$S_0) != ncol(params$S_0)) stop("number of rows and columns must be the same in params$S_0")
       if((!is.null(params$m_0)) && (length(params$m_0) != nrow(data))) stop("number of elements in params$m_0 must equal the number of observations")
       if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
-      if((!is.null(params$alpha_SM)) && (params$alpha_SM <= 0)) stop("params$alpha_SM must be positive")
       if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
       if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
       if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
@@ -250,19 +247,19 @@ clust_cp <- function(data,
       # substitute missing parameters with default
 
       n_burnin_input = n_burnin
-      B_input = ifelse(is.null(params$B), 1000, params$B)
-      L_input = ifelse(is.null(params$L), 1, params$L)
-      gamma_input = ifelse(is.null(params$gamma), 1, params$gamma)
+      B_input = B
+      L_input = L
+      phi_input = ifelse(is.null(params$phi), 1, params$phi)
       k_0_input = ifelse(is.null(params$k_0), 0.5, params$k_0)
       nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
       q_input = ifelse(is.null(params$q), 0.5, params$q)
-      alpha_SM_input = ifelse(is.null(params$alpha_SM), 0.1, params$alpha_SM)
+      alpha_SM_input = ifelse(is.null(alpha_SM), 0.1, params$alpha_SM)
       print_progress_input = print_progress
       user_seed_input = user_seed
 
 
       # with object matrix ifelse does not work
-      if(is.null(params$phi_0)){phi_0_input = diag(0.1, nrow(data), nrow(data))} else{phi_0_input = params$phi_0}
+      if(is.null(params$S_0)){S_0_input = diag(0.1, nrow(data), nrow(data))} else{S_0_input = params$S_0}
       if(is.null(params$m_0)){m_0_input = rep(0, nrow(data))} else{m_0_input = params$m_0}
       #
 
@@ -271,11 +268,12 @@ clust_cp <- function(data,
 
       data_input = data
       n_iterations_input = n_iterations
+      alpha_SM_input = alpha_SM
 
       out <- clust_cp_multi(data = data_input, n_iterations = n_iterations_input,
-                            B = B_input, L = L_input, gamma = gamma_input,
+                            B = B_input, L = L_input, phi = phi_input,
                             k_0 = k_0_input, nu_0 = nu_0_input,
-                            phi_0 = phi_0_input, m_0 = m_0_input, q = q_input,
+                            S_0 = S_0_input, m_0 = m_0_input, q = q_input,
                             alpha_SM = alpha_SM_input,
                             print_progress = print_progress_input,
                             user_seed = user_seed_input)
@@ -300,20 +298,13 @@ clust_cp <- function(data,
   if(kernel == "epi"){
 
     if((!is.null(params$M)) && (params$M < 1)) stop("params$M must be at least equal to 1")
-    if((!is.null(params$B)) && (params$B < 1)) stop("params$B must be at least equal to 1")
-    if((!is.null(params$L)) && (params$L < 1)) stop("params$L must be at least equal to 1")
-    if((!is.null(params$gamma)) && ((params$gamma <= 0) | (params$gamma >= 1))) stop("params$gamma must be in (0,1)")
-    if((!is.null(params$alpha)) && (params$alpha <= 0)) stop("params$alpha must be positive")
+    if((!is.null(params$xi)) && ((params$xi <= 0) | (params$phi >= 1))) stop("params$phi must be in (0,1)")
     if((!is.null(params$q)) && ((params$q <= 0) | (params$q >= 1))) stop("params$q must be in (0,1)")
-    if((!is.null(params$dt)) && ((params$dt <= 0) | (params$dt >= 1))) stop("params$dt must be in (0,1)")
     if((!is.null(params$a0)) && (params$a0 <= 0)) stop("params$a0 must be positive")
     if((!is.null(params$b0)) && (params$b0 <= 0)) stop("params$b0 must be positive")
-    if((!is.null(params$c0)) && (params$c0 <= 0)) stop("params$c0 must be positive")
-    if((!is.null(params$c0)) && (params$d0 <= 0)) stop("params$d0 must be positive")
     if((!is.null(params$MH_var)) && ((params$MH_var <= 0) | (params$MH_var >= 1))) stop("params$MH_var must be in (0,1)")
     if((!is.null(params$S0)) && (params$S0 <= 0)) stop("params$S0 must be positive")
     if((!is.null(params$R0)) && (params$R0 < 0)) stop("params$R0 must be at least 0")
-    if((!is.null(params$dt)) && ((params$p <= 0) | (params$p >= 1))) stop("params$p must be in (0,1)")
     if((!is.null(params) && !is.list(params))) stop("params must be a list")
     if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
     if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
@@ -322,16 +313,12 @@ clust_cp <- function(data,
 
     n_burnin_input = ifelse(is.null(n_burnin), 0, n_burnin)
     M_input = ifelse(is.null(params$M), 250, params$M)
-    B_input = ifelse(is.null(params$M), 100, params$M)
-    L_input = ifelse(is.null(params$L), 1, params$L)
-    gamma_input = ifelse(is.null(params$gamma), 1/8, params$gamma)
-    alpha_input = ifelse(is.null(params$alpha), 1, params$alpha)
+    B_input = B
+    L_input = L
+    xi_input = ifelse(is.null(params$xi), 1/8, params$xi)
     q_input = ifelse(is.null(params$q), 0.5, params$q)
-    dt_input = ifelse(is.null(params$dt), 0.1, params$dt)
     a0_input = ifelse(is.null(params$a0), 4, params$a0)
     b0_input = ifelse(is.null(params$b0), 10, params$b0)
-    c0_input = ifelse(is.null(params$c0), 1, params$c0)
-    d0_input = ifelse(is.null(params$d0), 1, params$d0)
     MH_var_input = ifelse(is.null(params$MH_var), 0.01, params$MH_var)
     S0_input = ifelse(is.null(params$S0), 1, params$S0)
     R0_input = ifelse(is.null(params$R0), 0, params$R0)
@@ -343,12 +330,12 @@ clust_cp <- function(data,
 
     data_input = data
     n_iterations_input = n_iterations
+    alpha_SM_input = alpha_SM
 
     out <- clust_cp_epi(data = data_input, n_iterations = n_iterations_input,
                         M = M_input, B = B_input, L = L_input,
-                        gamma = gamma_input,alpha = alpha_input, q = q_input,
-                        dt = dt_input, a0 = a0_input, b0 = b0_input,
-                        c0 =  c0_input, d0 = d0_input, MH_var = MH_var_input,
+                        xi = xi_input,alpha_SM = alpha_SM_input, q = q_input,
+                        a0 = a0_input, b0 = b0_input, MH_var = MH_var_input,
                         S0 = S0_input, R0 = R0_input, p = p_input,
                         print_progress = print_progress_input,
                         user_seed = user_seed_input)

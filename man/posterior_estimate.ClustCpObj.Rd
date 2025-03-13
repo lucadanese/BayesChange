@@ -46,7 +46,7 @@ data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
 data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
 out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-                params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+                params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
 
 posterior_estimate(out)
 

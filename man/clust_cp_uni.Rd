@@ -9,7 +9,7 @@ clust_cp_uni(
   n_iterations,
   B,
   L,
-  gamma,
+  phi,
   a = 1,
   b = 1,
   c = 1,
@@ -28,11 +28,11 @@ clust_cp_uni(
 
 \item{L}{number of split-merge steps for the proposal step.}
 
-\item{gamma, a, b, c}{parameters \eqn{\gamma} of the integrated likelihood.}
+\item{phi, a, b, c}{parameters of the integrated likelihood.}
 
 \item{q}{probability of a split in the split-merge proposal and acceleration step.}
 
-\item{alpha_SM}{\eqn{\alpha} for the split-merge proposal and acceleration step.}
+\item{alpha_SM}{\eqn{\alpha} for the main split-merge algorithm.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
@@ -59,6 +59,6 @@ data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
 data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
-out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, gamma = 0.5)
+out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, phi = 0.5)
 }
 }

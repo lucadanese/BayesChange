@@ -9,10 +9,10 @@ clust_cp_multi(
   n_iterations,
   B,
   L,
-  gamma,
+  phi,
   k_0,
   nu_0,
-  phi_0,
+  S_0,
   m_0,
   q = 0.5,
   alpha_SM = 0.1,
@@ -29,11 +29,11 @@ clust_cp_multi(
 
 \item{L}{number of split-merge steps for the proposal step.}
 
-\item{gamma, k_0, nu_0, phi_0, m_0}{parameters of the integrated likelihood.}
+\item{phi, k_0, nu_0, S_0, m_0}{parameters of the integrated likelihood.}
 
 \item{q}{probability of a split in the split-merge proposal and acceleration step.}
 
-\item{alpha_SM}{\eqn{\alpha} for the split-merge proposal and acceleration step.}
+\item{alpha_SM}{\eqn{\alpha} for the main split-merge algorithm.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
@@ -75,6 +75,6 @@ data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
 out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
-                        gamma = 0.1, k_0 = 0.25, nu_0 = 5, phi_0 = diag(0.1,3,3), m_0 = rep(0,3))
+                        phi = 0.1, k_0 = 0.25, nu_0 = 5, S_0 = diag(0.1,3,3), m_0 = rep(0,3))
 }
 }

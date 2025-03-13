@@ -9,7 +9,7 @@ test_that("clust_cp works", {
   data_mat[5,] <- as.numeric(c(rnorm(10,0,0.155), rnorm(40,1,0.280)))
 
   out_test <- clust_cp(data = data_mat,
-                       n_iterations = 100, params =  list(B = 100, L = 1, gamma = 0.1),
+                       n_iterations = 100, params =  list(B = 100, L = 1, phi = 0.1),
                        kernel = "ts", print_progress = FALSE)
 
   est <- posterior_estimate(out_test, maxNClusters = 3)
@@ -38,7 +38,7 @@ test_that("clust_cp epi works", {
 
   for(i in 1:3){
 
-    inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, max_time = 20, beta_vec = betas[[i]], gamma_0 = 1/8)
+    inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, max_time = 20, beta_vec = betas[[i]], xi_0 = 1/8)
 
     vec <- rep(0,20)
     names(vec) <- as.character(1:20)

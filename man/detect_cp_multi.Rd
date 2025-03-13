@@ -10,11 +10,11 @@ detect_cp_multi(
   q,
   k_0,
   nu_0,
-  phi_0,
+  S_0,
   m_0,
   par_theta_c = 1,
   par_theta_d = 1,
-  prior_var_gamma = 0.1,
+  prior_var_phi = 0.1,
   print_progress = TRUE,
   user_seed = 1234L
 )
@@ -26,11 +26,11 @@ detect_cp_multi(
 
 \item{q}{probability of performing a split at each iteration.}
 
-\item{k_0, nu_0, phi_0, m_0}{parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.}
+\item{k_0, nu_0, S_0, m_0}{parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.}
 
 \item{par_theta_c, par_theta_d}{parameters for the shifted Gamma prior for \eqn{\theta}.}
 
-\item{prior_var_gamma}{parameters for the Gamma prior for \eqn{\gamma}.}
+\item{prior_var_phi}{parameters for the Gamma prior for \eqn{\gamma}.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
@@ -40,8 +40,8 @@ detect_cp_multi(
 Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
 \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 \item{\code{time}} computational time in seconds.
-\item{\code{$gamma_MCMC}} traceplot for \eqn{\gamma}.
-\item{\code{$gamma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
+\item{\code{$phi_MCMC}} traceplot for \eqn{\gamma}.
+\item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\} was accepted, \eqn{0} otherwise.
 \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
@@ -60,8 +60,8 @@ data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 
 out <- detect_cp_multi(data = data_mat,
                               n_iterations = 2500,
-                              q = 0.25,k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
-                              par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1)
+                              q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
+                              par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1)
 
 
 }

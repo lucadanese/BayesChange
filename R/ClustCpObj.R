@@ -65,7 +65,7 @@ ClustCpObj <- function(data = NULL,
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'                 params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
 #'
 #' print(out)
 #'
@@ -103,7 +103,7 @@ print.ClustCpObj <- function(x, ...) {
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'                 params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
 #'
 #' summary(out)
 #'
@@ -172,7 +172,7 @@ summary.ClustCpObj <- function(object, ...) {
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'                 params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
 #'
 #' posterior_estimate(out)
 #'
@@ -282,7 +282,7 @@ posterior_estimate.ClustCpObj <- function(object,
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, gamma = 0.5), kernel = "ts")
+#'                 params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
 #'
 #' plot(out)
 #'

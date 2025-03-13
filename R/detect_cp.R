@@ -30,9 +30,9 @@
 #'
 #' \itemize{
 #'   \item \code{q} probability of performing a split at each iteration.
-#'   \item \code{k_0}, \code{nu_0}, \code{phi_0}, \code{m_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
+#'   \item \code{k_0}, \code{nu_0}, \code{S_0}, \code{m_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 #'   \item \code{par_theta_c}, \code{par_theta_d} parameters for the shifted Gamma prior for \eqn{\theta}.
-#'   \item \code{prior_var_gamma} parameters for the Gamma prior for \eqn{\gamma}.
+#'   \item \code{prior_var_phi} parameters for the Gamma prior for \eqn{\gamma}.
 #'   \item \code{print_progress} If TRUE (default) print the progress bar.
 #'   \item \code{user_seed} seed for random distribution generation.
 #' }
@@ -46,7 +46,7 @@
 #'   \item \code{$orders} matrix where each entries is the assignment of the realization to a block. Rows are the iterations and columns the times.
 #'   \item \code{$time} computational time.
 #'   \item \code{$gammaMCMC} traceplot for \eqn{\gamma}.
-#'   \item \code{$gamma_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
+#'   \item \code{$phi_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
 #'   \item \code{$sigma_MCMC} traceplot for \eqn{\sigma}.
 #'   \item \code{$sigma_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 #'   \item \code{$theta_MCMC} traceplot for \eqn{\theta}.
@@ -75,8 +75,8 @@
 #'
 #'
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                  params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                                par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1))
+#'                  params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
+#'                                par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1))
 #'
 #' print(out)
 #'
@@ -165,11 +165,11 @@ detect_cp <- function(data,
     if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
     if((!is.null(params$k_0)) && (params$k_0 < 0)) stop("params$k_0 must be positive")
     if((!is.null(params$nu_0)) && (params$nu_0 < 0)) stop("params$nu_0 must be positive")
-    if((!is.null(params$phi_0)) && nrow(params$phi_0) != ncol(params$phi_0)) stop("number of rows and columns must be the same in params$phi_0")
+    if((!is.null(params$S_0)) && nrow(params$S_0) != ncol(params$S_0)) stop("number of rows and columns must be the same in params$S_0")
     if((!is.null(params$m_0)) && (length(params$m_0) != nrow(data))) stop("number of elements in params$m_0 must equal the number of observations")
     if((!is.null(params$par_theta_c)) && (params$par_theta_c < 0)) stop("params$par_theta_c must be positive")
     if((!is.null(params$par_theta_d)) && (params$par_theta_d < 0)) stop("params$par_theta_d must be positive")
-    if((!is.null(params$prior_var_gamma)) && (params$prior_var_gamma < 0)) stop("params$prior_var_gamma must be positive")
+    if((!is.null(params$prior_var_phi)) && (params$prior_var_phi < 0)) stop("params$prior_var_phi must be positive")
     if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
     if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
     if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
@@ -182,14 +182,14 @@ detect_cp <- function(data,
     nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
     par_theta_c_input = ifelse(is.null(params$par_theta_c), 1, params$par_theta_c)
     par_theta_d_input = ifelse(is.null(params$par_theta_d), 1, params$par_theta_d)
-    prior_var_gamma_input = ifelse(is.null(params$prior_var_gamma), 0.1, params$prior_var_gamma)
+    prior_var_phi_input = ifelse(is.null(params$prior_var_phi), 0.1, params$prior_var_phi)
     #print_progress_input = ifelse(is.null(print_progress), TRUE, print_progress)
     #user_seed_input = ifelse(is.null(user_seed), 1234, user_seed)
     print_progress_input = print_progress
     user_seed_input = user_seed
 
     # with object matrix ifelse does not work
-    if(is.null(params$phi_0)){phi_0_input = diag(0.1, nrow(data), nrow(data))} else{phi_0_input = params$phi_0}
+    if(is.null(params$S_0)){S_0_input = diag(0.1, nrow(data), nrow(data))} else{S_0_input = params$S_0}
     if(is.null(params$m_0)){m_0_input = rep(0, nrow(data))} else{m_0_input = params$m_0}
     #
 
@@ -204,11 +204,11 @@ detect_cp <- function(data,
                            q = q_input,
                            k_0 = k_0_input,
                            nu_0 = nu_0_input,
-                           phi_0 = phi_0_input,
+                           S_0 = S_0_input,
                            m_0 = m_0_input,
                            par_theta_c = par_theta_c_input,
                            par_theta_d = par_theta_d_input,
-                           prior_var_gamma = prior_var_gamma_input,
+                           prior_var_phi = prior_var_phi_input,
                            print_progress = print_progress_input,
                            user_seed = user_seed_input)
 
@@ -219,8 +219,8 @@ detect_cp <- function(data,
                           n_burnin = n_burnin_input,
                           orders = out$orders,
                           time = out$time,
-                          gamma_MCMC = out$gamma_MCMC,
-                          gamma_MCMC_01 = out$gamma_MCMC_01,
+                          phi_MCMC = out$phi_MCMC,
+                          phi_MCMC_01 = out$phi_MCMC_01,
                           sigma_MCMC = out$sigma_MCMC,
                           sigma_MCMC_01 = out$sigma_MCMC_01,
                           theta_MCMC = out$theta_MCMC,

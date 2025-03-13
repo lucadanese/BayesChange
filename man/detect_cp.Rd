@@ -37,9 +37,9 @@ If the time series is multivariate the following must be specified:
 
 \itemize{
 \item \code{q} probability of performing a split at each iteration.
-\item \code{k_0}, \code{nu_0}, \code{phi_0}, \code{m_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
+\item \code{k_0}, \code{nu_0}, \code{S_0}, \code{m_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 \item \code{par_theta_c}, \code{par_theta_d} parameters for the shifted Gamma prior for \eqn{\theta}.
-\item \code{prior_var_gamma} parameters for the Gamma prior for \eqn{\gamma}.
+\item \code{prior_var_phi} parameters for the Gamma prior for \eqn{\gamma}.
 \item \code{print_progress} If TRUE (default) print the progress bar.
 \item \code{user_seed} seed for random distribution generation.
 }}
@@ -58,7 +58,7 @@ A \code{DetectCpObj} class object containing
 \item \code{$orders} matrix where each entries is the assignment of the realization to a block. Rows are the iterations and columns the times.
 \item \code{$time} computational time.
 \item \code{$gammaMCMC} traceplot for \eqn{\gamma}.
-\item \code{$gamma_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
+\item \code{$phi_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
 \item \code{$sigma_MCMC} traceplot for \eqn{\sigma}.
 \item \code{$sigma_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 \item \code{$theta_MCMC} traceplot for \eqn{\theta}.
@@ -90,8 +90,8 @@ data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 
 
 out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
-                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1))
+                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
+                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1))
 
 print(out)
 

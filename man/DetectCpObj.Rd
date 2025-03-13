@@ -10,8 +10,8 @@ DetectCpObj(
   n_burnin = NULL,
   orders = NULL,
   time = NULL,
-  gamma_MCMC = NULL,
-  gamma_MCMC_01 = NULL,
+  phi_MCMC = NULL,
+  phi_MCMC_01 = NULL,
   sigma_MCMC = NULL,
   sigma_MCMC_01 = NULL,
   theta_MCMC = NULL,
@@ -29,9 +29,9 @@ DetectCpObj(
 
 \item{time}{computational time in seconds;}
 
-\item{gamma_MCMC}{traceplot for \eqn{\gamma};}
+\item{phi_MCMC}{traceplot for \eqn{\gamma};}
 
-\item{gamma_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise;}
+\item{phi_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise;}
 
 \item{sigma_MCMC}{traceplot for \eqn{\sigma};}
 

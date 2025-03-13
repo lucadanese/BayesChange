@@ -9,8 +9,8 @@
 #' @param time computational time in seconds;
 #'
 #'
-#' @param gamma_MCMC traceplot for \eqn{\gamma};
-#' @param gamma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise;
+#' @param phi_MCMC traceplot for \eqn{\gamma};
+#' @param phi_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise;
 #' @param sigma_MCMC traceplot for \eqn{\sigma};
 #' @param sigma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise;
 #' @param theta_MCMC traceplot for \eqn{\theta};
@@ -24,8 +24,8 @@ DetectCpObj <- function(data = NULL,
                          n_burnin = NULL,
                          orders = NULL,
                          time = NULL,
-                         gamma_MCMC = NULL,
-                         gamma_MCMC_01 = NULL,
+                         phi_MCMC = NULL,
+                         phi_MCMC_01 = NULL,
                          sigma_MCMC = NULL,
                          sigma_MCMC_01 = NULL,
                          theta_MCMC = NULL,
@@ -36,8 +36,8 @@ DetectCpObj <- function(data = NULL,
                 n_burnin = n_burnin,
                 orders = orders,
                 time = time,
-                gamma_MCMC = gamma_MCMC,
-                gamma_MCMC_01 = gamma_MCMC_01,
+                phi_MCMC = phi_MCMC,
+                phi_MCMC_01 = phi_MCMC_01,
                 sigma_MCMC = sigma_MCMC,
                 sigma_MCMC_01 = sigma_MCMC_01,
                 theta_MCMC = theta_MCMC,
@@ -60,8 +60,8 @@ DetectCpObj <- function(data = NULL,
 #' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 #'
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1))
+#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
+#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1))
 #' print(out)
 #'
 #' @rdname print.DetectCpObj
@@ -91,8 +91,8 @@ print.DetectCpObj <- function(x, ...) {
 #' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 #'
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_gamma = 0.1))
+#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
+#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1))
 #' summary(out)
 #'
 #' @rdname summary.DetectCpObj
@@ -265,9 +265,9 @@ posterior_estimate.DetectCpObj <- function(object,
 #' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 #'
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                  params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3),
+#'                  params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3),
 #'                                m_0 = rep(0,3), par_theta_c = 2, par_theta_d = 0.2,
-#'                                prior_var_gamma = 0.1))
+#'                                prior_var_phi = 0.1))
 #' plot(out)
 #'
 #'

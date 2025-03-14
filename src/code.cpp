@@ -2963,7 +2963,6 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @param q probability of performing a split when updating the single order for the proposal procedure.
 //' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
 //' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-//' @param S0,R0 parameters for the SDE solver.
 //' @param p prior average number of change points for each order.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
@@ -3018,8 +3017,6 @@ Rcpp::List clust_cp_epi(arma::mat data,
                           double a0 = 4,
                           double b0 = 10,
                           double I0_var = 0.01,
-                          double S0 = 1,
-                          double R0 = 0,
                           double p = 0.003,
                           bool print_progress = true,
                           unsigned long user_seed = 1234){
@@ -3066,14 +3063,6 @@ Rcpp::List clust_cp_epi(arma::mat data,
     Rcpp::stop("'I0_var' must be positive.");
   }
 
-  if(S0 < 0){
-    Rcpp::stop("'S0' must be positive.");
-  }
-
-  if(R0 < 0){
-    Rcpp::stop("'R0' must be positive.");
-  }
-
   if((p < 0) | (p > 1)){
     Rcpp::stop("'p' must be in the interval (0,1).");
   }
@@ -3102,6 +3091,8 @@ Rcpp::List clust_cp_epi(arma::mat data,
  double c0 = 1;
  double d0 = 1;
  double dt = 0.1;
+ double S0 = 1;
+ double R0 = 0;
 
  arma::vec norm_vec = norm_constant_epi(data, xi, B, a0, b0, rho, M, dt,
                                         r, print_progress);

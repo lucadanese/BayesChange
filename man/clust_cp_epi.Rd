@@ -15,7 +15,7 @@ clust_cp_epi(
   q = 0.1,
   a0 = 4,
   b0 = 10,
-  MH_var = 0.01,
+  I0_var = 0.01,
   S0 = 1,
   R0 = 0,
   p = 0.003,
@@ -42,7 +42,7 @@ clust_cp_epi(
 
 \item{a0, b0}{parameters for the computation of the integrated likelihood of the survival functions.}
 
-\item{MH_var}{variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.}
+\item{I0_var}{variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.}
 
 \item{S0, R0}{parameters for the SDE solver.}
 

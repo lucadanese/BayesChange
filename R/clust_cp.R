@@ -43,7 +43,7 @@
 #'   \item \code{xi} recovery rate fixed constant for each population at each time.
 #'   \item \code{alpha} \eqn{\alpha} for the acceptance ration in the split-merge procedure.
 #'   \item \code{dt},\code{a0},\code{b0},\code{c0},\code{d0} parameters for the computation of the integrated likelihood of the survival functions.
-#'   \item \code{MH_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
+#'   \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #'   \item \code{S0},\code{R0} parameters for the SDE solver.
 #'   \item \code{p} prior average number of change points for each order.
 #' }
@@ -176,6 +176,8 @@ clust_cp <- function(data,
   if(alpha_SM < 0) stop("alpha_SM must be positive")
   if((!is.null(B)) && (B < 1)) stop("B must be at least equal to 1")
   if((!is.null(L)) && (L < 1)) stop("L must be at least equal to 1")
+  if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
+  if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
 
   if(kernel == "ts"){
 
@@ -187,8 +189,6 @@ clust_cp <- function(data,
       if((!is.null(params$c)) && (params$c <= 0)) stop("params$c must be positive")
       if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
       if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
-      if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
-      if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
 
       # substitute missing parameters with default
 
@@ -241,8 +241,6 @@ clust_cp <- function(data,
       if((!is.null(params$m_0)) && (length(params$m_0) != nrow(data))) stop("number of elements in params$m_0 must equal the number of observations")
       if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
       if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
-      if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
-      if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
 
       # substitute missing parameters with default
 
@@ -302,12 +300,10 @@ clust_cp <- function(data,
     if((!is.null(params$q)) && ((params$q <= 0) | (params$q >= 1))) stop("params$q must be in (0,1)")
     if((!is.null(params$a0)) && (params$a0 <= 0)) stop("params$a0 must be positive")
     if((!is.null(params$b0)) && (params$b0 <= 0)) stop("params$b0 must be positive")
-    if((!is.null(params$MH_var)) && ((params$MH_var <= 0) | (params$MH_var >= 1))) stop("params$MH_var must be in (0,1)")
+    if((!is.null(params$I0_var)) && ((params$I0_var <= 0) | (params$I0_var >= 1))) stop("params$I0_var must be in (0,1)")
     if((!is.null(params$S0)) && (params$S0 <= 0)) stop("params$S0 must be positive")
     if((!is.null(params$R0)) && (params$R0 < 0)) stop("params$R0 must be at least 0")
     if((!is.null(params) && !is.list(params))) stop("params must be a list")
-    if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
-    if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
 
     # substitute missing parameters with default
 
@@ -319,7 +315,7 @@ clust_cp <- function(data,
     q_input = ifelse(is.null(params$q), 0.5, params$q)
     a0_input = ifelse(is.null(params$a0), 4, params$a0)
     b0_input = ifelse(is.null(params$b0), 10, params$b0)
-    MH_var_input = ifelse(is.null(params$MH_var), 0.01, params$MH_var)
+    I0_var_input = ifelse(is.null(params$I0_var), 0.01, params$I0_var)
     S0_input = ifelse(is.null(params$S0), 1, params$S0)
     R0_input = ifelse(is.null(params$R0), 0, params$R0)
     p_input = ifelse(is.null(params$p), 0.003, params$p)
@@ -335,7 +331,7 @@ clust_cp <- function(data,
     out <- clust_cp_epi(data = data_input, n_iterations = n_iterations_input,
                         M = M_input, B = B_input, L = L_input,
                         xi = xi_input,alpha_SM = alpha_SM_input, q = q_input,
-                        a0 = a0_input, b0 = b0_input, MH_var = MH_var_input,
+                        a0 = a0_input, b0 = b0_input, I0_var = I0_var_input,
                         S0 = S0_input, R0 = R0_input, p = p_input,
                         print_progress = print_progress_input,
                         user_seed = user_seed_input)

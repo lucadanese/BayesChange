@@ -53,7 +53,7 @@ If data are survival functions:
 \item \code{xi} recovery rate fixed constant for each population at each time.
 \item \code{alpha} \eqn{\alpha} for the acceptance ration in the split-merge procedure.
 \item \code{dt},\code{a0},\code{b0},\code{c0},\code{d0} parameters for the computation of the integrated likelihood of the survival functions.
-\item \code{MH_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
+\item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 \item \code{S0},\code{R0} parameters for the SDE solver.
 \item \code{p} prior average number of change points for each order.
 }}

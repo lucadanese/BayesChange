@@ -105,7 +105,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_thet
 #' @param alpha_SM \eqn{\alpha} parameter for the main split-merge algorithm.
 #' @param q probability of performing a split when updating the single order for the proposal procedure.
 #' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
-#' @param MH_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
+#' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #' @param S0,R0 parameters for the SDE solver.
 #' @param p prior average number of change points for each order.
 #' @param print_progress If TRUE (default) print the progress bar.
@@ -149,8 +149,8 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_thet
 #'
 #'}
 #' @export
-clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q = 0.1, a0 = 4, b0 = 10, MH_var = 0.01, S0 = 1, R0 = 0, p = 0.003, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, MH_var, S0, R0, p, print_progress, user_seed)
+clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q = 0.1, a0 = 4, b0 = 10, I0_var = 0.01, S0 = 1, R0 = 0, p = 0.003, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, I0_var, S0, R0, p, print_progress, user_seed)
 }
 
 #' Clustering univariate times series with common changes in time

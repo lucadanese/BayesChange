@@ -23,7 +23,7 @@
 #'   \item \code{q} probability of performing a split at each iteration.
 #'   \item \code{phi} parameter \eqn{\phi} of the integrated likelihood function.
 #'   \item \code{a}, \code{b}, \code{c} parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
-#'   \item \code{par_theta_c}, \code{par_theta_d} parameters of the shifted Gamma prior for \eqn{\theta}.
+#'   \item \code{par_theta_c}, \code{par_theta_d} parameters of the shifted Gamma prior of \eqn{\theta}.
 #' }
 #'
 #' If the time series is multivariate the following must be specified:
@@ -33,8 +33,6 @@
 #'   \item \code{k_0}, \code{nu_0}, \code{S_0}, \code{m_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 #'   \item \code{par_theta_c}, \code{par_theta_d} parameters for the shifted Gamma prior for \eqn{\theta}.
 #'   \item \code{prior_var_phi} parameters for the Gamma prior for \eqn{\gamma}.
-#'   \item \code{print_progress} If TRUE (default) print the progress bar.
-#'   \item \code{user_seed} seed for random distribution generation.
 #' }
 #'
 #' @return A \code{DetectCpObj} class object containing

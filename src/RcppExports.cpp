@@ -72,8 +72,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // clust_cp_epi
-Rcpp::List clust_cp_epi(arma::mat data, int n_iterations, int M, int B, int L, double xi, double alpha_SM, double q, double a0, double b0, double MH_var, double S0, double R0, double p, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesChange_clust_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP xiSEXP, SEXP alpha_SMSEXP, SEXP qSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP MH_varSEXP, SEXP S0SEXP, SEXP R0SEXP, SEXP pSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+Rcpp::List clust_cp_epi(arma::mat data, int n_iterations, int M, int B, int L, double xi, double alpha_SM, double q, double a0, double b0, double I0_var, double S0, double R0, double p, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesChange_clust_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP xiSEXP, SEXP alpha_SMSEXP, SEXP qSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP I0_varSEXP, SEXP S0SEXP, SEXP R0SEXP, SEXP pSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -87,13 +87,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type q(qSEXP);
     Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
     Rcpp::traits::input_parameter< double >::type b0(b0SEXP);
-    Rcpp::traits::input_parameter< double >::type MH_var(MH_varSEXP);
+    Rcpp::traits::input_parameter< double >::type I0_var(I0_varSEXP);
     Rcpp::traits::input_parameter< double >::type S0(S0SEXP);
     Rcpp::traits::input_parameter< double >::type R0(R0SEXP);
     Rcpp::traits::input_parameter< double >::type p(pSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(clust_cp_epi(data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, MH_var, S0, R0, p, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(clust_cp_epi(data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, I0_var, S0, R0, p, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }

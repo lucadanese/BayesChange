@@ -1743,7 +1743,7 @@ void update_rho(arma::mat data,
                 double b0,
                 double c0,
                 double d0,
-                double MH_var,
+                double I0_var,
                 double gamma,
                 double dt,
                 int M,
@@ -1762,7 +1762,7 @@ void update_rho(arma::mat data,
     int T = data.n_cols;
     arma::mat curve_mat;
 
-    log_rho_new = log_rho + arma::randn() * sqrt(MH_var);
+    log_rho_new = log_rho + arma::randn() * sqrt(I0_var);
     rho_new = exp(log_rho_new);
 
 
@@ -2282,7 +2282,7 @@ Rcpp::List marginal_CP(arma::mat data,
                        double c0,
                        double d0,
                        double gamma,
-                       double MH_var,
+                       double I0_var,
                        int M,
                        int R,
                        int L,
@@ -2341,7 +2341,7 @@ Rcpp::List marginal_CP(arma::mat data,
   // start
   for(int iter = 0; iter < niter; iter++){
 
-    update_rho(data, rho, a0, b0, c0, d0, MH_var, gamma, dt, M,
+    update_rho(data, rho, a0, b0, c0, d0, I0_var, gamma, dt, M,
                S0, R0, llik, clust, orders);
 
     for(arma::uword j = 0; j < orders.n_rows; j++){
@@ -2962,7 +2962,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @param alpha_SM \eqn{\alpha} parameter for the main split-merge algorithm.
 //' @param q probability of performing a split when updating the single order for the proposal procedure.
 //' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
-//' @param MH_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
+//' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 //' @param S0,R0 parameters for the SDE solver.
 //' @param p prior average number of change points for each order.
 //' @param print_progress If TRUE (default) print the progress bar.
@@ -3017,7 +3017,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
                           double q = 0.1,
                           double a0 = 4,
                           double b0 = 10,
-                          double MH_var = 0.01,
+                          double I0_var = 0.01,
                           double S0 = 1,
                           double R0 = 0,
                           double p = 0.003,
@@ -3062,8 +3062,8 @@ Rcpp::List clust_cp_epi(arma::mat data,
   }
 
 
-  if(MH_var < 0){
-    Rcpp::stop("'MH_var' must be positive.");
+  if(I0_var < 0){
+    Rcpp::stop("'I0_var' must be positive.");
   }
 
   if(S0 < 0){
@@ -3135,7 +3135,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
  // start
  for(int iter = 0; iter < n_iterations; iter++){
 
-   update_rho(data, rho, a0, b0, c0, d0, MH_var, xi, dt, M,
+   update_rho(data, rho, a0, b0, c0, d0, I0_var, xi, dt, M,
               S0, R0, llik, clust, orders);
 
 

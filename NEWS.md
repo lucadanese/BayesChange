@@ -1,3 +1,9 @@
+# BayesChange 2.1.0
+
+* Names of some functions have been changed in order to simplify the code. 
+* Parameters have been fixed. In previous versions it was not clear winch parameters were common for different kernels and which not. 
+
+
 # BayesChange 2.0.0
 
 The functions of the package have been embedded in two main functions in an Object Oriented framework. New methods have been provided for the users. 

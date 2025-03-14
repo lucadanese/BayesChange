@@ -1582,7 +1582,7 @@ arma::vec norm_constant_epi(arma::mat data,
 // UPDATE PARAMETERS
 // -------------------
 
-double FullConditionalGamma(arma::mat data, arma::vec order, double gamma,
+double FullConditionalPhi(arma::mat data, arma::vec order, double gamma,
                             double theta, double sigma, double k_0, double nu_0,
                             arma::mat S_0, arma::vec m_0){
 
@@ -1647,35 +1647,35 @@ double FullConditionalSigma(arma::vec order, double theta, double sigma,
 
 }
 
-void UpdateGamma(double gamma_old, arma::mat data, arma::vec order,
+void UpdatePhi(double phi_old, arma::mat data, arma::vec order,
                  double theta, double sigma, double k_0, double nu_0,
                  arma::mat S_0, arma::vec m_0,
-                 arma::vec &gamma_inf, arma::vec &gamma_inf_10, gsl_rng *r, double prior_var_phi){
+                 arma::vec &phi_inf, arma::vec &phi_inf_10, gsl_rng *r, double prior_var_phi){
 
-  gamma_inf.resize(gamma_inf.n_elem + 1);
-  gamma_inf_10.resize(gamma_inf_10.n_elem + 1);
+  phi_inf.resize(phi_inf.n_elem + 1);
+  phi_inf_10.resize(phi_inf_10.n_elem + 1);
 
 
-  double tau = log(gamma_old/(1-gamma_old));
+  double tau = log(phi_old/(1-phi_old));
 
   double tau_star = tau + gsl_ran_gaussian(r,prior_var_phi); // How can I let the user set a different sd instead of 1?
 
-  double gamma_new = exp(tau_star)/(1+exp(tau_star));
+  double phi_new = exp(tau_star)/(1+exp(tau_star));
 
   double deriv_inv_star = abs(exp(tau_star) / std::pow(1+exp(tau_star),2));
 
   double deriv_inv = abs(exp(tau) / std::pow(1+exp(tau),2));
 
-  double alpha_MH = FullConditionalGamma(data, order, gamma_new, theta, sigma, k_0,
-                                         nu_0, S_0, m_0) + log(deriv_inv_star) - FullConditionalGamma(data, order, gamma_old, theta, sigma, k_0,
-                                         nu_0, S_0, m_0) - log(deriv_inv);
+  double alpha_MH = FullConditionalPhi(data, order, phi_new, theta, sigma, k_0,
+                                       nu_0, S_0, m_0) + log(deriv_inv_star) - FullConditionalPhi(data, order, phi_old, theta, sigma, k_0,
+                                       nu_0, S_0, m_0) - log(deriv_inv);
 
   if(log(arma::randu()) <= my_min(alpha_MH,log(1))){
-    gamma_inf(gamma_inf.n_elem - 1) = gamma_new;
-    gamma_inf_10(gamma_inf_10.n_elem - 1) = 1;
+    phi_inf(phi_inf.n_elem - 1) = phi_new;
+    phi_inf_10(phi_inf_10.n_elem - 1) = 1;
   } else {
-    gamma_inf(gamma_inf.n_elem - 1) = gamma_old;
-    gamma_inf_10(gamma_inf_10.n_elem - 1) = 0;
+    phi_inf(phi_inf.n_elem - 1) = phi_old;
+    phi_inf_10(phi_inf_10.n_elem - 1) = 0;
   }
 
 }
@@ -2510,8 +2510,8 @@ return infection_times;
 //' @param data vector of observations.
 //' @param n_iterations number of MCMC iteration.
 //' @param q probability of performing a split at each iterations.
-//' @param phi parameter \eqn{\phi} of the integrated likelihood function.
 //' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
+//' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
 //' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
@@ -2529,14 +2529,14 @@ return infection_times;
 //'
 //' out <- detect_cp_uni(data = data_vec,
 //'                             n_iterations = 2500,
-//'                             q = 0.25,
-//'                             phi = 0.1, a = 1, b = 1, c = 0.1)
+//'                             q = 0.25)
 //'
 //'
 // [[Rcpp::export]]
 Rcpp::List detect_cp_uni(arma::vec data,
-                                int n_iterations, double q, double phi,
+                                int n_iterations, double q,
                                 double a, double b, double c,
+                                double prior_var_phi = 0.1,
                                 double par_theta_c = 1,
                                 double par_theta_d = 1,
                                 bool print_progress = true,
@@ -2590,10 +2590,13 @@ Rcpp::List detect_cp_uni(arma::vec data,
  gsl_rng_set(r, user_seed);
  //
 
- arma::vec res_order, probs(2), sigma_inf(1), sigma_inf_10(1), theta_inf(1);
+ arma::vec res_order, probs(2), phi_inf(1), phi_inf_10(1), sigma_inf(1), sigma_inf_10(1), theta_inf(1);
  arma::mat data_mat(1,data.n_elem), res_mat(n_iterations, data_mat.n_cols);
 
- sigma_inf(0) = 0.1; // add a random initialisation for the gamma param
+ // add a random initialisation for the gamma param
+ phi_inf(0) = 0.5;
+ phi_inf_10(0) = 0;
+ sigma_inf(0) = 0.1;
  sigma_inf_10(0) = 0;
  theta_inf(0) = 0.1;
 
@@ -2629,7 +2632,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_split = AlphaSplit_UniTS(data_mat, split_order, order, q, split_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_split = AlphaSplit_UniTS(data_mat, split_order, order, q, split_index, theta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
 
 
      if(log(arma::randu()) <= alpha_split){
@@ -2653,7 +2656,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_merge = AlphaMerge_UniTS(data_mat, merge_order, order, q, merge_index, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_merge = AlphaMerge_UniTS(data_mat, merge_order, order, q, merge_index, theta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
 
      if(log(arma::randu()) <= alpha_merge){
        res_order = merge_order;
@@ -2675,7 +2678,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_shuffle = AlphaShuffle_UniTS(data_mat, shuffle_order, order, theta_inf(iter), sigma_inf(iter), phi, a, b, c);
+     double alpha_shuffle = AlphaShuffle_UniTS(data_mat, shuffle_order, order, theta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
 
      if(log(arma::randu()) <= alpha_shuffle){
        res_order = shuffle_order;
@@ -2686,7 +2689,19 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
    order = res_order;
 
+   arma::mat S_0(1,1);
+   S_0.row(0).col(0) = 1;
+
+   arma::vec m_0(1);
+   m_0(0) = 0;
+
+   double k_0 = 0.1;
+   double nu_0 = 1;
+
    // Posterior infererence on main parameters
+   UpdatePhi(phi_inf(iter), data_mat, order, theta_inf(iter), sigma_inf(iter), k_0, nu_0,
+             S_0, m_0, phi_inf, phi_inf_10, r, prior_var_phi);
+
    UpdateSigma(order, theta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
 
    UpdateTheta(theta_inf(iter), sigma_inf(iter+1), order, theta_inf, par_theta_c, par_theta_d, r);
@@ -2731,7 +2746,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //' @param q probability of performing a split at each iteration.
 //' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 //' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
-//' @param prior_var_phi parameters for the Gamma prior for \eqn{\gamma}.
+//' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
@@ -2815,11 +2830,11 @@ Rcpp::List detect_cp_multi(arma::mat data,
    gsl_rng_set(r, user_seed);
    //
 
-   arma::vec res_order, probs(2), gamma_inf(1), gamma_inf_10(1), sigma_inf(1), sigma_inf_10(1), theta_inf(1);
+   arma::vec res_order, probs(2), phi_inf(1), phi_inf_10(1), sigma_inf(1), sigma_inf_10(1), theta_inf(1);
    arma::mat res_mat(n_iterations, data.n_cols);
 
-   gamma_inf(0) = 0.5; // add a random initialisation for the gamma param
-   gamma_inf_10(0) = 0;
+   phi_inf(0) = 0.5; // add a random initialisation for the gamma param
+   phi_inf_10(0) = 0;
    sigma_inf(0) = 0.1;
    sigma_inf_10(0) = 0;
    theta_inf(0) = 0.1;
@@ -2856,7 +2871,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_split = AlphaSplit_MultiTS(data, split_order, order, q, split_index, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
+       double alpha_split = AlphaSplit_MultiTS(data, split_order, order, q, split_index, phi_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
 
        if(log(arma::randu()) <= alpha_split){
          res_order = split_order;
@@ -2879,7 +2894,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_merge = AlphaMerge_MultiTS(data, merge_order, order, q, merge_index, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
+       double alpha_merge = AlphaMerge_MultiTS(data, merge_order, order, q, merge_index, phi_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
 
        if(log(arma::randu()) <= alpha_merge){
          res_order = merge_order;
@@ -2901,7 +2916,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_shuffle = AlphaShuffle_MultiTS(data, shuffle_order, order, gamma_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
+       double alpha_shuffle = AlphaShuffle_MultiTS(data, shuffle_order, order, phi_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
 
        if(log(arma::randu()) <= alpha_shuffle){
          res_order = shuffle_order;
@@ -2913,8 +2928,8 @@ Rcpp::List detect_cp_multi(arma::mat data,
      order = res_order;
 
      // Posterior infererence on main parameters
-     UpdateGamma(gamma_inf(iter), data, order, theta_inf(iter), sigma_inf(iter), k_0, nu_0,
-                 S_0, m_0, gamma_inf, gamma_inf_10, r, prior_var_phi);
+     UpdatePhi(phi_inf(iter), data, order, theta_inf(iter), sigma_inf(iter), k_0, nu_0,
+                 S_0, m_0, phi_inf, phi_inf_10, r, prior_var_phi);
 
      UpdateSigma(order, theta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
 
@@ -2937,8 +2952,8 @@ Rcpp::List detect_cp_multi(arma::mat data,
    Rcpp::List out_list;
    out_list["orders"] = res_mat;
    out_list["time"] = time;
-   out_list["phi_MCMC"] = gamma_inf;
-   out_list["phi_MCMC_01"] = gamma_inf_10;
+   out_list["phi_MCMC"] = phi_inf;
+   out_list["phi_MCMC_01"] = phi_inf_10;
    out_list["sigma_MCMC"] = sigma_inf;
    out_list["sigma_MCMC_01"] = sigma_inf_10;
    out_list["theta_MCMC"] = theta_inf;
@@ -2963,7 +2978,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @param q probability of performing a split when updating the single order for the proposal procedure.
 //' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
 //' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-//' @param p prior average number of change points for each order.
+//' @param avg_blk average number of change points for the random generated orders.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{clust_cp_epi} returns a list containing the following components: \itemize{
@@ -3017,7 +3032,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
                           double a0 = 4,
                           double b0 = 10,
                           double I0_var = 0.01,
-                          double p = 0.003,
+                          double avg_blk = 0.003,
                           bool print_progress = true,
                           unsigned long user_seed = 1234){
 
@@ -3063,8 +3078,8 @@ Rcpp::List clust_cp_epi(arma::mat data,
     Rcpp::stop("'I0_var' must be positive.");
   }
 
-  if((p < 0) | (p > 1)){
-    Rcpp::stop("'p' must be in the interval (0,1).");
+  if((avg_blk < 0) | (avg_blk > 1)){
+    Rcpp::stop("'avg_blk' must be in the interval (0,1).");
   }
 
   // ------- //
@@ -3130,7 +3145,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
               S0, R0, llik, clust, orders);
 
 
-   update_partition(data, clust, orders, llik, norm_vec, alpha_SM, p, q,
+   update_partition(data, clust, orders, llik, norm_vec, alpha_SM, avg_blk, q,
                     dt, a0, b0, xi, rho, M, L, S0, R0);
 
 

@@ -8,7 +8,11 @@ detect_cp(
   data,
   n_iterations,
   n_burnin = 0,
+  q = 0.5,
   params = list(),
+  prior_var_phi = 0.1,
+  par_theta_c = 1,
+  par_theta_d = 1,
   print_progress = TRUE,
   user_seed = 1234
 )
@@ -22,25 +26,27 @@ and columns are the times, then the algorithm for multivariate time series is us
 
 \item{n_burnin}{number of iterations that must be excluded when computing the posterior estimate.}
 
+\item{q}{probability of performing a split at each iteration.}
+
 \item{params}{a list of parameters:
 
 If the time series is univariate the following must be specified:
 
 \itemize{
-\item \code{q} probability of performing a split at each iteration.
-\item \code{phi} parameter \eqn{\phi} of the integrated likelihood function.
 \item \code{a}, \code{b}, \code{c} parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
-\item \code{par_theta_c}, \code{par_theta_d} parameters of the shifted Gamma prior of \eqn{\theta}.
 }
 
 If the time series is multivariate the following must be specified:
 
 \itemize{
-\item \code{q} probability of performing a split at each iteration.
-\item \code{k_0}, \code{nu_0}, \code{S_0}, \code{m_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-\item \code{par_theta_c}, \code{par_theta_d} parameters for the shifted Gamma prior for \eqn{\theta}.
-\item \code{prior_var_phi} parameters for the Gamma prior for \eqn{\gamma}.
+\item \code{m_0}, \code{k_0}, \code{nu_0}, \code{S_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 }}
+
+\item{prior_var_phi}{variance for the proposal in the \eqn{N(0,\sigma^2_\phi)} posterior estimate of \eqn{\theta}.}
+
+\item{par_theta_c}{parameter of the shifted Gamma prior of \eqn{\theta}.}
+
+\item{par_theta_d}{parameter of the shifted Gamma prior of \eqn{\theta}.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
@@ -72,9 +78,8 @@ The \code{detect_cp} function detect change points on univariate and multivariat
 
 data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 
-
 out <- detect_cp(data = data_vec, n_iterations = 2500, n_burnin = 500,
-                 params = list(q = 0.25, phi = 0.1, a = 1, b = 1, c = 0.1))
+                 params = list(a = 1, b = 1, c = 0.1))
 
 print(out)
 
@@ -86,10 +91,8 @@ data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
 data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
 data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 
-
 out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1))
+                 params = list(m_0 = rep(0,3), k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3)))
 
 print(out)
 

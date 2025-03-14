@@ -8,10 +8,10 @@ detect_cp_uni(
   data,
   n_iterations,
   q,
-  phi,
   a,
   b,
   c,
+  prior_var_phi = 0.1,
   par_theta_c = 1,
   par_theta_d = 1,
   print_progress = TRUE,
@@ -25,9 +25,9 @@ detect_cp_uni(
 
 \item{q}{probability of performing a split at each iterations.}
 
-\item{phi}{parameter \eqn{\phi} of the integrated likelihood function.}
-
 \item{a, b, c}{parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.}
+
+\item{prior_var_phi}{parameters for the correlation coefficient in the likelihood.}
 
 \item{par_theta_c, par_theta_d}{parameters of the shifted Gamma prior for \eqn{\theta}.}
 
@@ -53,8 +53,7 @@ data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 
 out <- detect_cp_uni(data = data_vec,
                             n_iterations = 2500,
-                            q = 0.25,
-                            phi = 0.1, a = 1, b = 1, c = 0.1)
+                            q = 0.25)
 
 
 }

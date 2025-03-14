@@ -158,18 +158,19 @@ clust_cp <- function(data,
                      alpha_SM = 1,
                      B = 1000,
                      L = 1,
+                     q = 0.5,
+                     kernel,
                      print_progress = TRUE,
-                     user_seed = 1234,
-                     kernel){
+                     user_seed = 1234){
 
   if((!is.matrix(data)) && (!is.array(data))) stop("data must be a matrix or an array")
-  if(is.null(n_iterations)) stop("missing number of iterations")
   if(n_iterations < 1) stop("number of iterations must be positive and > 1")
-  if((is.null(kernel) | !(kernel %in% c("ts", "epi")))) stop("kernel must be 'ts' or 'epi'")
   if(n_burnin < 0) stop("number of burn in iterations must be positive and > 1")
   if(alpha_SM < 0) stop("alpha_SM must be positive")
   if((!is.null(B)) && (B < 1)) stop("B must be at least equal to 1")
   if((!is.null(L)) && (L < 1)) stop("L must be at least equal to 1")
+  if((!is.null(q)) && ((q >= 1) | (q <= 0))) stop("params$q must be in (0,1)")
+  if((is.null(kernel) | !(kernel %in% c("ts", "epi")))) stop("kernel must be 'ts' or 'epi'")
   if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
   if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
 
@@ -181,26 +182,25 @@ clust_cp <- function(data,
       if((!is.null(params$a)) && (params$a <= 0)) stop("params$a must be positive")
       if((!is.null(params$b)) && (params$b <= 0)) stop("params$b must be positive")
       if((!is.null(params$c)) && (params$c <= 0)) stop("params$c must be positive")
-      if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
       if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
 
-      # substitute missing parameters with default
 
+      data_input = data
+      n_iterations_input = n_iterations
+      alpha_SM_input = alpha_SM
       n_burnin_input = n_burnin
       B_input = B
       L_input = L
+      print_progress_input = print_progress
+      user_seed_input = user_seed
+
+      # substitute missing parameters with default
       phi_input = ifelse(is.null(params$phi), 1, params$phi)
       a_input = ifelse(is.null(params$a), 1, params$a)
       b_input = ifelse(is.null(params$b), 1, params$b)
       c_input = ifelse(is.null(params$c), 1, params$c)
       q_input = ifelse(is.null(params$q), 0.5, params$q)
-      print_progress_input = print_progress
-      user_seed_input = user_seed
       #
-
-      data_input = data
-      n_iterations_input = n_iterations
-      alpha_SM_input = alpha_SM
 
       out <- clust_cp_uni(data = data_input,
                           n_iterations = n_iterations_input,
@@ -209,7 +209,6 @@ clust_cp <- function(data,
                           c = c_input, q = q_input,
                           alpha_SM = alpha_SM_input,
                           print_progress = print_progress_input, user_seed = user_seed_input)
-
 
       # save output
 
@@ -236,31 +235,23 @@ clust_cp <- function(data,
       if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
       if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
 
-      # substitute missing parameters with default
-
+      data_input = data
+      n_iterations_input = n_iterations
       n_burnin_input = n_burnin
+      alpha_SM_input = alpha_SM
       B_input = B
       L_input = L
-      phi_input = ifelse(is.null(params$phi), 1, params$phi)
-      k_0_input = ifelse(is.null(params$k_0), 0.5, params$k_0)
-      nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
-      q_input = ifelse(is.null(params$q), 0.5, params$q)
-      alpha_SM_input = ifelse(is.null(alpha_SM), 0.1, params$alpha_SM)
+      q_input = q
       print_progress_input = print_progress
       user_seed_input = user_seed
 
-
-      # with object matrix ifelse does not work
-      if(is.null(params$S_0)){S_0_input = diag(0.1, nrow(data), nrow(data))} else{S_0_input = params$S_0}
+      # substitute missing parameters with default
       if(is.null(params$m_0)){m_0_input = rep(0, nrow(data))} else{m_0_input = params$m_0}
+      k_0_input = ifelse(is.null(params$k_0), 0.5, params$k_0)
+      phi_input = ifelse(is.null(params$phi), 1, params$phi)
+      if(is.null(params$S_0)){S_0_input = diag(0.1, nrow(data), nrow(data))} else{S_0_input = params$S_0}
+      nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
       #
-
-
-      #
-
-      data_input = data
-      n_iterations_input = n_iterations
-      alpha_SM_input = alpha_SM
 
       out <- clust_cp_multi(data = data_input, n_iterations = n_iterations_input,
                             B = B_input, L = L_input, phi = phi_input,
@@ -299,35 +290,30 @@ clust_cp <- function(data,
     if((!is.null(params$R0)) && (params$R0 < 0)) stop("params$R0 must be at least 0")
     if((!is.null(params) && !is.list(params))) stop("params must be a list")
 
-    # substitute missing parameters with default
-
-    n_burnin_input = ifelse(is.null(n_burnin), 0, n_burnin)
-    M_input = ifelse(is.null(params$M), 250, params$M)
+    data_input = data
+    n_iterations_input = n_iterations
+    n_burnin_input = n_burnin
+    alpha_SM_input = alpha_SM
     B_input = B
     L_input = L
-    xi_input = ifelse(is.null(params$xi), 1/8, params$xi)
-    q_input = ifelse(is.null(params$q), 0.5, params$q)
-    a0_input = ifelse(is.null(params$a0), 4, params$a0)
-    b0_input = ifelse(is.null(params$b0), 10, params$b0)
-    I0_var_input = ifelse(is.null(params$I0_var), 0.01, params$I0_var)
-    S0_input = ifelse(is.null(params$S0), 1, params$S0)
-    R0_input = ifelse(is.null(params$R0), 0, params$R0)
-    p_input = ifelse(is.null(params$p), 0.003, params$p)
+    q_input = q
     print_progress_input = print_progress
     user_seed_input = user_seed
 
+    # substitute missing parameters with default
+    M_input = ifelse(is.null(params$M), 250, params$M)
+    xi_input = ifelse(is.null(params$xi), 1/8, params$xi)
+    a0_input = ifelse(is.null(params$a0), 4, params$a0)
+    b0_input = ifelse(is.null(params$b0), 10, params$b0)
+    I0_var_input = ifelse(is.null(params$I0_var), 0.01, params$I0_var)
+    avg_blk_input = ifelse(is.null(params$avg_blk), 0.003, params$avg_blk)
     #
-
-    data_input = data
-    n_iterations_input = n_iterations
-    alpha_SM_input = alpha_SM
 
     out <- clust_cp_epi(data = data_input, n_iterations = n_iterations_input,
                         M = M_input, B = B_input, L = L_input,
                         xi = xi_input,alpha_SM = alpha_SM_input, q = q_input,
                         a0 = a0_input, b0 = b0_input, I0_var = I0_var_input,
-                        S0 = S0_input, R0 = R0_input, p = p_input,
-                        print_progress = print_progress_input,
+                        avg_blk = avg_blk_input, print_progress = print_progress_input,
                         user_seed = user_seed_input)
 
     result <- ClustCpObj(data = data_input,

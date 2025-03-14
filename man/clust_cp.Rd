@@ -2,7 +2,7 @@
 % Please edit documentation in R/clust_cp.R
 \name{clust_cp}
 \alias{clust_cp}
-\title{Clustering time dependent obsevations with common change points.}
+\title{Clustering time dependent observations with common change points.}
 \usage{
 clust_cp(
   data,
@@ -12,9 +12,10 @@ clust_cp(
   alpha_SM = 1,
   B = 1000,
   L = 1,
+  q = 0.5,
+  kernel,
   print_progress = TRUE,
-  user_seed = 1234,
-  kernel
+  user_seed = 1234
 )
 }
 \arguments{
@@ -31,30 +32,24 @@ and columns are the times, then the algorithm for multivariate time series is us
 If the time series is univariate the following must be specified:
 
 \itemize{
-\item \code{q} probability of a split in the split-merge proposal and acceleration step.
-\item \code{phi},\code{a},\code{b},\code{c} parameters of the integrated likelihood.
+\item \code{a},\code{b},\code{c} parameters of the integrated likelihood.
+\item \code{phi} correlation parameter in the likelihood.
 }
 
 If the time series is multivariate the following must be specified:
 
 \itemize{
-\item \code{q} probability of a split in the split-merge proposal and acceleration step.
-\item \code{B} number of orders for the normalization constant.
-\item \code{L} number of split-merge steps for the proposal step.
-\item \code{phi},\code{k_0},\code{nu_0},\code{S_0},\code{m_0} parameters of the integrated likelihood.
+\item \code{k_0},\code{nu_0},\code{S_0},\code{m_0} parameters of the integrated likelihood.
+\item \code{phi} correlation parameter in the likelihood.
 }
 
 If data are survival functions:
 
 \itemize{
-\item \code{q} probability of a split in the split-merge proposal and acceleration step.
-\item \code{alpha_SM} \eqn{\alpha} for the split-merge proposal and acceleration step.
 \item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
 \item \code{xi} recovery rate fixed constant for each population at each time.
-\item \code{alpha} \eqn{\alpha} for the acceptance ration in the split-merge procedure.
-\item \code{dt},\code{a0},\code{b0},\code{c0},\code{d0} parameters for the computation of the integrated likelihood of the survival functions.
+\item \code{a0},\code{b0} parameters for the computation of the integrated likelihood of the survival functions.
 \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-\item \code{S0},\code{R0} parameters for the SDE solver.
 \item \code{p} prior average number of change points for each order.
 }}
 
@@ -64,11 +59,11 @@ If data are survival functions:
 
 \item{L}{number of split-merge steps for the proposal step.}
 
+\item{kernel}{can be "ts" if data are time series or "epi" if data are survival functions.}
+
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
 \item{user_seed}{seed for random distribution generation.}
-
-\item{kernel}{can be "ts" if data are time series or "epi" if data are survival functions.}
 }
 \value{
 A \code{ClustCpObj} class object containing
@@ -81,7 +76,7 @@ A \code{ClustCpObj} class object containing
 \item \code{$orders} a multidimensional array where each slice is a matrix and represent an iteration. The row of each matrix correspond the order associated to the corresponding cluster.
 \item \code{$time} computational time.
 \item \code{$lkl} a matrix where each row is the likelihood of each observation computed at the corresponding iteration.
-\item \code{$norm_vec} a vector containing the normalisation constant computed at the beginning of the algorithm.
+\item \code{$norm_vec} a vector containing the normalization constant computed at the beginning of the algorithm.
 \item \code{$rho} a vector with the final estimate of the proportion of infected individuals at time 0.
 \item \code{$kernel_ts} if TRUE data are time series.
 \item \code{$kernel_epi} if TRUE data are survival function.

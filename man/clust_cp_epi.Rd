@@ -16,9 +16,7 @@ clust_cp_epi(
   a0 = 4,
   b0 = 10,
   I0_var = 0.01,
-  S0 = 1,
-  R0 = 0,
-  p = 0.003,
+  avg_blk = 0.003,
   print_progress = TRUE,
   user_seed = 1234L
 )
@@ -44,9 +42,7 @@ clust_cp_epi(
 
 \item{I0_var}{variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.}
 
-\item{S0, R0}{parameters for the SDE solver.}
-
-\item{p}{prior average number of change points for each order.}
+\item{avg_blk}{average number of change points for the random generated orders.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 

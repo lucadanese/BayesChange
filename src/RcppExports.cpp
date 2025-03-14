@@ -29,23 +29,23 @@ BEGIN_RCPP
 END_RCPP
 }
 // detect_cp_uni
-Rcpp::List detect_cp_uni(arma::vec data, int n_iterations, double q, double phi, double a, double b, double c, double par_theta_c, double par_theta_d, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesChange_detect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP phiSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+Rcpp::List detect_cp_uni(arma::vec data, int n_iterations, double q, double a, double b, double c, double prior_var_phi, double par_theta_c, double par_theta_d, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesChange_detect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP prior_var_phiSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type data(dataSEXP);
     Rcpp::traits::input_parameter< int >::type n_iterations(n_iterationsSEXP);
     Rcpp::traits::input_parameter< double >::type q(qSEXP);
-    Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     Rcpp::traits::input_parameter< double >::type c(cSEXP);
+    Rcpp::traits::input_parameter< double >::type prior_var_phi(prior_var_phiSEXP);
     Rcpp::traits::input_parameter< double >::type par_theta_c(par_theta_cSEXP);
     Rcpp::traits::input_parameter< double >::type par_theta_d(par_theta_dSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(detect_cp_uni(data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(detect_cp_uni(data, n_iterations, q, a, b, c, prior_var_phi, par_theta_c, par_theta_d, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -72,8 +72,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // clust_cp_epi
-Rcpp::List clust_cp_epi(arma::mat data, int n_iterations, int M, int B, int L, double xi, double alpha_SM, double q, double a0, double b0, double I0_var, double S0, double R0, double p, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesChange_clust_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP xiSEXP, SEXP alpha_SMSEXP, SEXP qSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP I0_varSEXP, SEXP S0SEXP, SEXP R0SEXP, SEXP pSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+Rcpp::List clust_cp_epi(arma::mat data, int n_iterations, int M, int B, int L, double xi, double alpha_SM, double q, double a0, double b0, double I0_var, double avg_blk, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesChange_clust_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP xiSEXP, SEXP alpha_SMSEXP, SEXP qSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP I0_varSEXP, SEXP avg_blkSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -88,12 +88,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
     Rcpp::traits::input_parameter< double >::type b0(b0SEXP);
     Rcpp::traits::input_parameter< double >::type I0_var(I0_varSEXP);
-    Rcpp::traits::input_parameter< double >::type S0(S0SEXP);
-    Rcpp::traits::input_parameter< double >::type R0(R0SEXP);
-    Rcpp::traits::input_parameter< double >::type p(pSEXP);
+    Rcpp::traits::input_parameter< double >::type avg_blk(avg_blkSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(clust_cp_epi(data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, I0_var, S0, R0, p, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(clust_cp_epi(data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, I0_var, avg_blk, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -147,7 +145,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesChange_sim_epi_data", (DL_FUNC) &_BayesChange_sim_epi_data, 6},
     {"_BayesChange_detect_cp_uni", (DL_FUNC) &_BayesChange_detect_cp_uni, 11},
     {"_BayesChange_detect_cp_multi", (DL_FUNC) &_BayesChange_detect_cp_multi, 12},
-    {"_BayesChange_clust_cp_epi", (DL_FUNC) &_BayesChange_clust_cp_epi, 16},
+    {"_BayesChange_clust_cp_epi", (DL_FUNC) &_BayesChange_clust_cp_epi, 14},
     {"_BayesChange_clust_cp_uni", (DL_FUNC) &_BayesChange_clust_cp_uni, 12},
     {"_BayesChange_clust_cp_multi", (DL_FUNC) &_BayesChange_clust_cp_multi, 13},
     {NULL, NULL, 0}

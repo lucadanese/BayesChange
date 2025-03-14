@@ -25,8 +25,8 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #' @param data vector of observations.
 #' @param n_iterations number of MCMC iteration.
 #' @param q probability of performing a split at each iterations.
-#' @param phi parameter \eqn{\phi} of the integrated likelihood function.
 #' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
+#' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
 #' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
@@ -44,12 +44,11 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #'
 #' out <- detect_cp_uni(data = data_vec,
 #'                             n_iterations = 2500,
-#'                             q = 0.25,
-#'                             phi = 0.1, a = 1, b = 1, c = 0.1)
+#'                             q = 0.25)
 #'
 #'
-detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, phi, a, b, c, par_theta_c, par_theta_d, print_progress, user_seed)
+detect_cp_uni <- function(data, n_iterations, q, a, b, c, prior_var_phi = 0.1, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, a, b, c, prior_var_phi, par_theta_c, par_theta_d, print_progress, user_seed)
 }
 
 #' @name detect_cp_multi
@@ -63,7 +62,7 @@ detect_cp_uni <- function(data, n_iterations, q, phi, a, b, c, par_theta_c = 1, 
 #' @param q probability of performing a split at each iteration.
 #' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 #' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
-#' @param prior_var_phi parameters for the Gamma prior for \eqn{\gamma}.
+#' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
@@ -106,8 +105,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_thet
 #' @param q probability of performing a split when updating the single order for the proposal procedure.
 #' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
 #' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-#' @param S0,R0 parameters for the SDE solver.
-#' @param p prior average number of change points for each order.
+#' @param avg_blk average number of change points for the random generated orders.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{clust_cp_epi} returns a list containing the following components: \itemize{
@@ -149,8 +147,8 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_thet
 #'
 #'}
 #' @export
-clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q = 0.1, a0 = 4, b0 = 10, I0_var = 0.01, S0 = 1, R0 = 0, p = 0.003, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, I0_var, S0, R0, p, print_progress, user_seed)
+clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q = 0.1, a0 = 4, b0 = 10, I0_var = 0.01, avg_blk = 0.003, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, I0_var, avg_blk, print_progress, user_seed)
 }
 
 #' Clustering univariate times series with common changes in time

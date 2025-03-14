@@ -30,7 +30,7 @@ detect_cp_multi(
 
 \item{par_theta_c, par_theta_d}{parameters for the shifted Gamma prior for \eqn{\theta}.}
 
-\item{prior_var_phi}{parameters for the Gamma prior for \eqn{\gamma}.}
+\item{prior_var_phi}{parameters for the correlation coefficient in the likelihood.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 

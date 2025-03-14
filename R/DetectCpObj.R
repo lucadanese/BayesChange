@@ -10,7 +10,7 @@
 #'
 #'
 #' @param phi_MCMC traceplot for \eqn{\gamma};
-#' @param phi_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise;
+#' @param phi_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise;
 #' @param sigma_MCMC traceplot for \eqn{\sigma};
 #' @param sigma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise;
 #' @param theta_MCMC traceplot for \eqn{\theta};

@@ -308,10 +308,9 @@ plot.DetectCpObj <- function(x, y = NULL,
                       y = "Value",
                       color = NULL) +
         ggplot2::scale_colour_brewer(palette = "Set1") +
-        ggplot2::theme_minimal() +
-        ggplot2::theme(legend.position="none", legend.key.width = ggplot2::unit(1, 'cm'))
+        ggplot2::theme_minimal()
 
-      p1
+      p1 + ggplot2::theme(legend.position="none")
 
 
     } else {
@@ -368,10 +367,9 @@ plot.DetectCpObj <- function(x, y = NULL,
                       y = "Value",
                       color = NULL) +
         ggplot2::scale_colour_brewer(palette = "Set1") +
-        ggplot2::theme_minimal() +
-        ggplot2::theme(legend.position="none", legend.key.width = ggplot2::unit(1, 'cm'))
+        ggplot2::theme_minimal()
 
-      p1
+      p1 <- p1 + ggplot2::theme(legend.position="none")
 
       x_unique <- unique(.data_plot$time)
       b <- rep(0, length(x$data))
@@ -396,7 +394,9 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal()
 
-      ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = TRUE)
+      p2 <- p2 + ggplot2::theme(legend.position="none")
+
+      ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = FALSE)
 
     } else {
 

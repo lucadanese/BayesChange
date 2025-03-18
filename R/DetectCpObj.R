@@ -384,7 +384,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       }
 
-      b <- b/10000
+      b <- b/(x$n_iterations)
 
       p2 <- ggplot2::ggplot(data.frame(x = x_unique, y =b)) +
         ggplot2::geom_bar(ggplot2::aes(x = x_unique, y = y), stat="identity", width = 0.5, col = "black") +
@@ -437,7 +437,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       }
 
-      b <- b/10000
+      b <- b/(x$n_iterations)
 
       p2 <- ggplot2::ggplot(data.frame(x = x_unique, y =b)) +
         ggplot2::geom_bar(ggplot2::aes(x = x_unique, y = y), stat="identity", width = 0.5, col = "black") +

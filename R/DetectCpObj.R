@@ -309,7 +309,7 @@ plot.DetectCpObj <- function(x, y = NULL,
                       color = NULL) +
         ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal() +
-        ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
+        ggplot2::theme(legend.position="none", legend.key.width = ggplot2::unit(1, 'cm'))
 
       p1
 
@@ -369,7 +369,7 @@ plot.DetectCpObj <- function(x, y = NULL,
                       color = NULL) +
         ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal() +
-        ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
+        ggplot2::theme(legend.position="none", legend.key.width = ggplot2::unit(1, 'cm'))
 
       p1
 

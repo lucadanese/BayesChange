@@ -299,13 +299,15 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       .data_plot <- as.data.frame(cbind(vec_data))
       .data_plot$time <- rep(1:length(x$data))
+      .data_plot$obs <- as.factor(rep(1, ncol(.data_plot)))
 
       p1 <- ggplot2::ggplot(.data_plot) +
-        ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data),  linetype = 1) +
+        ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = obs),  linetype = 1) +
         ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
         ggplot2::labs(x = "time",
                       y = " ",
                       color = NULL) +
+        ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal() +
         ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
 
@@ -335,6 +337,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::labs(x = "time",
                       y = " ",
                       color = NULL) +
+        ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal() +
         ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
 
@@ -356,13 +359,15 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       .data_plot <- as.data.frame(cbind(vec_data))
       .data_plot$time <- rep(1:length(x$data))
+      .data_plot$obs <- as.factor(rep(1, ncol(.data_plot)))
 
       p1 <- ggplot2::ggplot(.data_plot) +
-        ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = "#69b3a2"),  linetype = 1) +
+        ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = obs),  linetype = 1) +
         ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
         ggplot2::labs(x = "time",
                       y = " ",
                       color = NULL) +
+        ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal() +
         ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
 
@@ -388,6 +393,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::scale_y_continuous(breaks = c(0,.5,1)) +
         ggplot2::ylab("Prob.") +
         ggplot2::xlab("Date") +
+        ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal()
 
       ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1))
@@ -415,6 +421,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::labs(x = "time",
                       y = " ",
                       color = NULL) +
+        ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal() +
         ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
 

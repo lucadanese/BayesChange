@@ -358,7 +358,7 @@ plot.DetectCpObj <- function(x, y = NULL,
       .data_plot$time <- rep(1:length(x$data))
 
       p1 <- ggplot2::ggplot(.data_plot) +
-        ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data),  linetype = 1) +
+        ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = "#69b3a2"),  linetype = 1) +
         ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
         ggplot2::labs(x = "time",
                       y = " ",

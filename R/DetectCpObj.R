@@ -304,7 +304,7 @@ plot.DetectCpObj <- function(x, y = NULL,
       p1 <- ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = obs),  linetype = 1) +
         ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
-        ggplot2::labs(x = "Iteration",
+        ggplot2::labs(x = "Time",
                       y = "Value",
                       color = NULL) +
         ggplot2::scale_colour_brewer(palette = "Set1") +
@@ -333,7 +333,7 @@ plot.DetectCpObj <- function(x, y = NULL,
       p1 <- ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = V2),  linetype = 1) +
         ggplot2::geom_vline(xintercept = unique(.data_plot$time)[cp], linetype = 2) +
-        ggplot2::labs(x = "Iteration",
+        ggplot2::labs(x = "Time",
                       y = "Value",
                       color = NULL) +
         ggplot2::scale_colour_brewer(palette = "Set1") +
@@ -390,7 +390,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.text.y = ggplot2::element_text(angle = 90)) +
         ggplot2::scale_y_continuous(breaks = c(0,.5,1)) +
         ggplot2::ylab("Prob.") +
-        ggplot2::xlab("Iteration") +
+        ggplot2::xlab("Time") +
         ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal()
 
@@ -445,7 +445,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.text.y = ggplot2::element_text(angle = 90)) +
         ggplot2::scale_y_continuous(breaks = c(0,.5,1)) +
         ggplot2::ylab("Prob.") +
-        ggplot2::xlab("Iteration") +
+        ggplot2::xlab("Time") +
         ggplot2::theme_minimal()
 
       ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = TRUE)

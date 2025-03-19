@@ -348,7 +348,11 @@ plot.ClustCpObj <- function(x, y = NULL,
       .data_plot$Observation <- as.factor(.data_plot$Observation)
 
       ggplot2::ggplot(.data_plot) +
-        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = Observation, linetype = Observation)) +
+        #ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = Observation, linetype = Observation)) +
+        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Observation, group = Observation, linetype = Cluster)) +
+        ggplot2::xlab("Time") +
+        ggplot2::ylab("Value") +
+        ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal()
 
     } else {
@@ -373,7 +377,11 @@ plot.ClustCpObj <- function(x, y = NULL,
       .data_plot$count <- as.factor(.data_plot$count)
 
       ggplot2::ggplot(.data_plot) +
-        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = interaction(Observation,count), linetype = Observation)) +
+        #ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = interaction(Observation,count), linetype = Observation)) +
+        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Observation, group = interaction(Observation,count), linetype = Cluster)) +
+        ggplot2::xlab("Time") +
+        ggplot2::ylab("Value") +
+        ggplot2::scale_colour_brewer(palette = "Set1") +
         ggplot2::theme_minimal()
 
     }
@@ -392,6 +400,7 @@ plot.ClustCpObj <- function(x, y = NULL,
       ggplot2::geom_line(lwd = 0.5) +
       ggplot2::xlab("Time") +
       ggplot2::ylab("Proportion of Infected Individuals") +
+      ggplot2::scale_colour_brewer(palette = "Set1") +
       ggplot2::theme_minimal()
 
   }

@@ -363,22 +363,26 @@ plot.ClustCpObj <- function(x, y = NULL,
 
       .data_plot <- data.frame(Value = numeric(0))
 
+      count = 0
       for (i in 1:dim(x$data)[3]) {
         mat <- x$data[,,i]
-        .data_plot <- rbind(.data_plot, data.frame(Value = as.vector(mat),
-                                                 Observation = i,
-                                                 Cluster = est_cp[i],
-                                                 count = sort(rep(1:nrow(mat), ncol(mat))),
-                                                 Time = rep(1:ncol(mat),nrow(mat))))
+        for(j in 1:nrow(mat)){
+          count = count + 1
+          .data_plot <- rbind(.data_plot, data.frame(Value = as.vector(mat[j,]),
+                                                     Observation = i,
+                                                     Cluster = est_cp[i],
+                                                     Time = 1:ncol(mat),
+                                                     Count = count))
+        }
       }
+
 
       .data_plot$Observation <- as.factor(.data_plot$Observation)
       .data_plot$Cluster <- as.factor(.data_plot$Cluster)
-      .data_plot$count <- as.factor(.data_plot$count)
+      .data_plot$count <- as.factor(.data_plot$Count)
 
       ggplot2::ggplot(.data_plot) +
-        #ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Cluster, group = interaction(Observation,count), linetype = Observation)) +
-        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Observation, group = interaction(Observation,count), linetype = Cluster)) +
+        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Observation, group = Count, linetype = Cluster)) +
         ggplot2::xlab("Time") +
         ggplot2::ylab("Value") +
         ggplot2::scale_colour_brewer(palette = "Set1") +

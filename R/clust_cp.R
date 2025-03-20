@@ -282,7 +282,7 @@ clust_cp <- function(data,
 
     if((!is.null(params$M)) && (params$M < 1)) stop("params$M must be at least equal to 1")
     if((!is.null(params$xi)) && ((params$xi <= 0) | (params$xi >= 1))) stop("params$xi must be in (0,1)")
-    if((!is.null(params$alpha_SM)) && ((params$alpha_SM <= 0) | (params$alpha_SM >= 1))) stop("params$alpha_SM must be in (0,1)")
+    if((!is.null(params$alpha_SM)) && (params$alpha_SM <= 0)) stop("params$alpha_SM must be positive")
     if((!is.null(params$a0)) && (params$a0 <= 0)) stop("params$a0 must be positive")
     if((!is.null(params$b0)) && (params$b0 <= 0)) stop("params$b0 must be positive")
     if((!is.null(params$I0_var)) && ((params$I0_var <= 0) | (params$I0_var >= 1))) stop("params$I0_var must be in (0,1)")

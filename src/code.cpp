@@ -3116,6 +3116,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
  double dt = 0.1;
  double S0 = 1;
  double R0 = 0;
+ double prop_nblocks = avg_blk/data.n_cols;
 
  arma::vec norm_vec = norm_constant_epi(data, xi, B, a0, b0, rho, M, dt,
                                         r, print_progress);
@@ -3153,7 +3154,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
               S0, R0, llik, clust, orders);
 
 
-   update_partition(data, clust, orders, llik, norm_vec, alpha_SM, avg_blk, q,
+   update_partition(data, clust, orders, llik, norm_vec, alpha_SM, prop_nblocks, q,
                     dt, a0, b0, xi, rho, M, L, S0, R0);
 
 

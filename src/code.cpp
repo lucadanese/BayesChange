@@ -3086,8 +3086,8 @@ Rcpp::List clust_cp_epi(arma::mat data,
     Rcpp::stop("'I0_var' must be positive.");
   }
 
-  if((avg_blk < 0) | (avg_blk > 1)){
-    Rcpp::stop("'avg_blk' must be in the interval (0,1).");
+  if((avg_blk < 0)){
+    Rcpp::stop("'avg_blk' must be positive.");
   }
 
   // ------- //

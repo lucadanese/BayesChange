@@ -282,12 +282,11 @@ clust_cp <- function(data,
 
     if((!is.null(params$M)) && (params$M < 1)) stop("params$M must be at least equal to 1")
     if((!is.null(params$xi)) && ((params$xi <= 0) | (params$xi >= 1))) stop("params$xi must be in (0,1)")
-    if((!is.null(params$q)) && ((params$q <= 0) | (params$q >= 1))) stop("params$q must be in (0,1)")
+    if((!is.null(params$alpha_SM)) && ((params$alpha_SM <= 0) | (params$alpha_SM >= 1))) stop("params$alpha_SM must be in (0,1)")
     if((!is.null(params$a0)) && (params$a0 <= 0)) stop("params$a0 must be positive")
     if((!is.null(params$b0)) && (params$b0 <= 0)) stop("params$b0 must be positive")
     if((!is.null(params$I0_var)) && ((params$I0_var <= 0) | (params$I0_var >= 1))) stop("params$I0_var must be in (0,1)")
-    if((!is.null(params$S0)) && (params$S0 <= 0)) stop("params$S0 must be positive")
-    if((!is.null(params$R0)) && (params$R0 < 0)) stop("params$R0 must be at least 0")
+    if((!is.null(params$avg_blk) && (params$avg_blk < 0))) stop("params$avg_blk must be positive")
     if((!is.null(params) && !is.list(params))) stop("params must be a list")
 
     data_input = data
@@ -306,7 +305,7 @@ clust_cp <- function(data,
     a0_input = ifelse(is.null(params$a0), 4, params$a0)
     b0_input = ifelse(is.null(params$b0), 10, params$b0)
     I0_var_input = ifelse(is.null(params$I0_var), 0.01, params$I0_var)
-    avg_blk_input = ifelse(is.null(params$avg_blk), 0.003, params$avg_blk)
+    avg_blk_input = ifelse(is.null(params$avg_blk), 2, params$avg_blk)
     #
 
     out <- clust_cp_epi(data = data_input, n_iterations = n_iterations_input,

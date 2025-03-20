@@ -281,7 +281,7 @@ clust_cp <- function(data,
   if(kernel == "epi"){
 
     if((!is.null(params$M)) && (params$M < 1)) stop("params$M must be at least equal to 1")
-    if((!is.null(params$xi)) && ((params$xi <= 0) | (params$phi >= 1))) stop("params$phi must be in (0,1)")
+    if((!is.null(params$xi)) && ((params$xi <= 0) | (params$phi >= 1))) stop("params$xi must be in (0,1)")
     if((!is.null(params$q)) && ((params$q <= 0) | (params$q >= 1))) stop("params$q must be in (0,1)")
     if((!is.null(params$a0)) && (params$a0 <= 0)) stop("params$a0 must be positive")
     if((!is.null(params$b0)) && (params$b0 <= 0)) stop("params$b0 must be positive")

@@ -3723,13 +3723,15 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   for(int iter = 0; iter < n_iterations; iter++){
 
+    Rcpp::Rcout << partition_temp;
+    
     //define k
     //int k = max(partition_temp) + 1;
     double k = max(partition_temp) + 1;
     //
 
     Rcpp::Rcout << "OK";
-    Rcpp::Rcout << partition_temp; 
+    
     
     // select two random obs
     freq_temp.fill(1.0);

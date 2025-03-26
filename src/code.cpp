@@ -3697,8 +3697,6 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   double num_groups_temp = max(partition_temp) + 1;
 
-  Rcpp::Rcout << "OK";
-
   for(int i = 0; i < num_groups_temp; i++){
     orders_temp.row(i) = generate_random_order(data.slice(0).n_cols, 2.0/data.slice(0).n_cols, r).t();
   }
@@ -3730,6 +3728,9 @@ Rcpp::List clust_cp_multi(arma::cube data,
     double k = max(partition_temp) + 1;
     //
 
+    Rcpp::Rcout << "OK";
+    Rcpp::Rcout << partition_temp; 
+    
     // select two random obs
     freq_temp.fill(1.0);
     id1 = rint(freq_temp);

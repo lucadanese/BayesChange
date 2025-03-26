@@ -1489,11 +1489,11 @@ arma::vec norm_constant_multi(arma::cube data,
     }
     Rcpp::checkUserInterrupt();
   }
-
+  Rcpp::Rcout << "OKOK 1";
   for(arma::uword i = 0; i < data.n_slices; i++){
     temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) + log(R) - (T-1)*log(2);
   }
-
+  Rcpp::Rcout << "OKOK 2";
   return temp_llik_vec;
 }
 

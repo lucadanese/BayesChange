@@ -3697,6 +3697,9 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   double num_groups_temp = max(partition_temp) + 1;
 
+  Rcpp::Rcout << "OK 2";
+  Rcpp::Rcout << partition_temp;
+  
   for(int i = 0; i < num_groups_temp; i++){
     orders_temp.row(i) = generate_random_order(data.slice(0).n_cols, 2.0/data.slice(0).n_cols, r).t();
   }
@@ -3711,6 +3714,9 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   arma::vec norm_const = norm_constant_multi(data, phi, B, k_0, nu_0, S_0, m_0, 2.0/data.slice(0).n_cols,print_progress);
 
+  Rcpp::Rcout << "OK 1";
+  Rcpp::Rcout << partition_temp;
+  
   if(print_progress == true){
     Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
   }
@@ -3723,6 +3729,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   for(int iter = 0; iter < n_iterations; iter++){
 
+    Rcpp::Rcout << "OK 3";
     Rcpp::Rcout << partition_temp;
     
     //define k

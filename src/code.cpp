@@ -3697,6 +3697,8 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   double num_groups_temp = max(partition_temp) + 1;
 
+  Rcpp::Rcout << "OK";s
+
   for(int i = 0; i < num_groups_temp; i++){
     orders_temp.row(i) = generate_random_order(data.slice(0).n_cols, 2.0/data.slice(0).n_cols, r).t();
   }

@@ -1478,6 +1478,7 @@ arma::vec norm_constant_multi(arma::cube data,
     new_order_mat.row(0) = new_order_vec.t();
 
     for(arma::uword i = 0; i < data.n_slices; i++){
+      Rcpp::Rcout << data.slice(i);
       temp_llik_mat(r,i) = Likelihood_MultiTS(data.slice(i),new_order_mat.row(0).t(),gamma_par,k_0,nu_0,S_0,m_0) - ord_lprob;
     }
 
@@ -1489,8 +1490,8 @@ arma::vec norm_constant_multi(arma::cube data,
     }
     Rcpp::checkUserInterrupt();
 
-    Rcpp::Rcout << temp_llik_mat.row(0);
-    Rcpp::Rcout << new_order_mat.row(0).t();
+    //Rcpp::Rcout << temp_llik_mat.row(0);
+    //Rcpp::Rcout << new_order_mat.row(0).t();
     
   }
   Rcpp::Rcout << "OKOK 1";

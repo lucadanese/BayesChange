@@ -1478,7 +1478,6 @@ arma::vec norm_constant_multi(arma::cube data,
     new_order_mat.row(0) = new_order_vec.t();
 
     for(arma::uword i = 0; i < data.n_slices; i++){
-      Rcpp::Rcout << data.slice(i);
       temp_llik_mat(r,i) = Likelihood_MultiTS(data.slice(i),new_order_mat.row(0).t(),gamma_par,k_0,nu_0,S_0,m_0) - ord_lprob;
     }
 
@@ -1489,17 +1488,12 @@ arma::vec norm_constant_multi(arma::cube data,
         double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
     }
     Rcpp::checkUserInterrupt();
-
-    //Rcpp::Rcout << temp_llik_mat.row(0);
-    //Rcpp::Rcout << new_order_mat.row(0).t();
     
   }
   Rcpp::Rcout << "OKOK 1";
   for(arma::uword i = 0; i < data.n_slices; i++){
-    //Rcpp::Rcout << temp_llik_mat.col(i);
     temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) + log(R) - (T-1)*log(2);
   }
-  Rcpp::Rcout << "OKOK 2";
   return temp_llik_vec;
 }
 
@@ -3703,9 +3697,6 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   double num_groups_temp = max(partition_temp) + 1;
 
-  Rcpp::Rcout << "OK 2";
-  Rcpp::Rcout << partition_temp;
-  
   for(int i = 0; i < num_groups_temp; i++){
     orders_temp.row(i) = generate_random_order(data.slice(0).n_cols, 2.0/data.slice(0).n_cols, r).t();
   }
@@ -3720,9 +3711,6 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   arma::vec norm_const = norm_constant_multi(data, phi, B, k_0, nu_0, S_0, m_0, 2.0/data.slice(0).n_cols,print_progress);
 
-  Rcpp::Rcout << "OK 1";
-  Rcpp::Rcout << partition_temp;
-  
   if(print_progress == true){
     Rcpp::Rcout << "\n------ MAIN LOOP ------\n\n";
   }
@@ -3735,17 +3723,11 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   for(int iter = 0; iter < n_iterations; iter++){
 
-    Rcpp::Rcout << "OK 3";
-    Rcpp::Rcout << partition_temp;
-    
     //define k
     //int k = max(partition_temp) + 1;
     double k = max(partition_temp) + 1;
     //
 
-    Rcpp::Rcout << "OK";
-    
-    
     // select two random obs
     freq_temp.fill(1.0);
     id1 = rint(freq_temp);

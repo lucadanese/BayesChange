@@ -1488,10 +1488,14 @@ arma::vec norm_constant_multi(arma::cube data,
         double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
     }
     Rcpp::checkUserInterrupt();
+
+    Rcpp::Rcout << temp_llik_mat(r,i);
+    Rcpp::Rcout << new_order_mat.row(0).t();
+    
   }
   Rcpp::Rcout << "OKOK 1";
   for(arma::uword i = 0; i < data.n_slices; i++){
-    Rcpp::Rcout << temp_llik_mat.col(i);
+    //Rcpp::Rcout << temp_llik_mat.col(i);
     temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) + log(R) - (T-1)*log(2);
   }
   Rcpp::Rcout << "OKOK 2";

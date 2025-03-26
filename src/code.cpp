@@ -1489,7 +1489,7 @@ arma::vec norm_constant_multi(arma::cube data,
     }
     Rcpp::checkUserInterrupt();
 
-    Rcpp::Rcout << temp_llik_mat(r,i);
+    Rcpp::Rcout << temp_llik_mat.row(0);
     Rcpp::Rcout << new_order_mat.row(0).t();
     
   }

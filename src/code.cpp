@@ -806,7 +806,7 @@ double AlphaShuffle_MultiTS(arma::cube data, arma::vec new_order, arma::vec old_
 
 
 
-double AlphaMerge_Surv(arma::vec lkl_old_i,
+double AlphaMerge_Clust(arma::vec lkl_old_i,
                                arma::vec lkl_old_j,
                                arma::vec lkl_proposal,
                                double num_groups,
@@ -867,7 +867,7 @@ double AlphaMerge_Surv(arma::vec lkl_old_i,
 
 }
 
-double AlphaSplit_Surv(arma::vec lkl_proposal_i,
+double AlphaSplit_Clust(arma::vec lkl_proposal_i,
                                arma::vec lkl_proposal_j,
                                arma::vec lkl_old,
                                double num_groups,
@@ -3385,7 +3385,7 @@ for(int iter = 0; iter < n_iterations; iter++){
 
     // evaluate the proposed new partition
 
-    alpha = AlphaMerge_Surv(lkl_old_i_m,
+    alpha = AlphaMerge_Clust(lkl_old_i_m,
                                     lkl_old_j_m,
                                     lkl_proposal_m,
                                     k, data.n_cols, n, alpha_SM,
@@ -3483,7 +3483,7 @@ for(int iter = 0; iter < n_iterations; iter++){
 
     // evaluate the proposed new partition
 
-    alpha = AlphaSplit_Surv(lkl_proposal_i_s,
+    alpha = AlphaSplit_Clust(lkl_proposal_i_s,
                                     lkl_proposal_j_s,
                                     lkl_old_s,
                                     k, data.n_cols, n, alpha_SM,
@@ -3778,7 +3778,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
       // evaluate the proposed new partition
 
-      alpha = AlphaMerge_Surv(lkl_old_i_m,
+      alpha = AlphaMerge_Clust(lkl_old_i_m,
                                       lkl_old_j_m,
                                       lkl_proposal_m,
                                       k, data.n_cols, data.n_slices, alpha_SM,
@@ -3876,7 +3876,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
       // evaluate the proposed new partition
 
-      alpha = AlphaSplit_Surv(lkl_proposal_i_s,
+      alpha = AlphaSplit_Clust(lkl_proposal_i_s,
                                       lkl_proposal_j_s,
                                       lkl_old_s,
                                       k, data.n_cols, data.n_slices, alpha_SM,

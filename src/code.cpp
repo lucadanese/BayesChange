@@ -2974,6 +2974,110 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
  }
 
+//' @name detect_cp_epi
+//' @export detect_cp_epi
+//'
+//' @title Detect Change Points on survival functions
+//' @description Detect Change Points on survival functions
+//'
+//' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
+//' @param n_iterations number of MCMC iterations.
+//' @param q probability of performing a split at each iteration.
+//' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
+//' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
+//' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
+//' @param print_progress If TRUE (default) print the progress bar.
+//' @param user_seed seed for random distribution generation.
+//' @return Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
+//' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
+//' \item{\code{time}} computational time in seconds.
+//' \item{\code{$phi_MCMC}} traceplot for \eqn{\gamma}.
+//' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\} was accepted, \eqn{0} otherwise.
+//' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
+//' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
+//' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+//' }
+//'
+//'@examples
+//'
+//' data_mat <- matrix(NA, nrow = 3, ncol = 100)
+//'
+//' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+//' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
+//' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+//'
+//' out <- detect_cp_multi(data = data_mat,
+//'                               n_iterations = 2500,
+//'                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
+//'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1)
+//'
+//'
+// [[Rcpp::export]]
+Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
+                         double M, double xi, double a0, double b0, double I0_var = 0.01,
+                         bool print_progress = true, unsigned long user_seed = 1234){
+
+   // set seed for gsl random distribution generator
+   const gsl_rng_type * T;
+   gsl_rng *r;
+   gsl_rng_env_setup();
+   T = gsl_rng_default; // Generator setup
+   r = gsl_rng_alloc (T);
+   gsl_rng_set(r, user_seed);
+   //
+
+   arma::vec clust(data.n_rows), llik(data.n_rows), rho(data.n_rows);
+
+   rho.fill(0.0045);
+   clust = arma::regspace(0, data.n_rows-1);
+
+   arma::mat order(1, data.n_cols);
+   arma::mat orders_output(n_iterations, data.n_cols);
+   arma::mat rho_output(n_iterations, data.n_rows);
+   order.row(0).fill(0);
+
+   int start_s = clock();
+   int current_s = start_s;
+   int nupd = round(n_iterations / 10);
+
+   double c0 = 1;
+   double d0 = 1;
+   double dt = 0.1;
+   double S0 = 1;
+   double R0 = 0;
+
+   for(arma::uword i = 0; i < clust.n_elem; i++){
+     arma::mat curve_mat = integrated_curves_mat(dt, order.row(0).t(), a0, b0, xi, rho(i), M, S0, R0);
+     llik(i) = log_sum_exp(curve_mat.cols(0,data.n_cols-1) * data.row(i).t() - curve_mat.col(data.n_cols)) - log(M);
+   }
+
+   for(int iter = 0; iter < n_iterations; iter++){
+    update_rho(data, rho, a0, b0, c0, d0, I0_var, xi, dt, M, S0, R0, llik, clust, order);
+    update_single_order(data, clust, 0, order, llik, q, dt, a0, b0, xi, rho, M, S0, R0);
+
+    orders_output.row(iter) = order.row(0);
+    rho_output.row(iter) = rho;
+
+     if(((iter + 1) % nupd == 0) & (print_progress == true)){
+       current_s = clock();
+       Rcpp::Rcout << "Completed:\t" << (iter + 1) << "/" << n_iterations << " - in " <<
+         double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
+     }
+     Rcpp::checkUserInterrupt();
+   }
+
+   double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+
+   Rcpp::List out_list;
+   out_list["order"] = orders_output;
+   out_list["rho"] = rho_output;
+   out_list["time"] = time;
+
+   gsl_rng_free (r);
+
+   return(out_list);
+ }
+
 
 
 //' Clustering Epidemiological survival functions with common changes in time

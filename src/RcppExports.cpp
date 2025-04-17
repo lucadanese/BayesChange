@@ -71,6 +71,26 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// detect_cp_epi
+Rcpp::List detect_cp_epi(arma::mat data, double xi, double a0, double b0, double M, int n_iterations, double q, double I0_var, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesChange_detect_cp_epi(SEXP dataSEXP, SEXP xiSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP MSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP I0_varSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< double >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
+    Rcpp::traits::input_parameter< double >::type b0(b0SEXP);
+    Rcpp::traits::input_parameter< double >::type M(MSEXP);
+    Rcpp::traits::input_parameter< int >::type n_iterations(n_iterationsSEXP);
+    Rcpp::traits::input_parameter< double >::type q(qSEXP);
+    Rcpp::traits::input_parameter< double >::type I0_var(I0_varSEXP);
+    Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
+    Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(detect_cp_epi(data, xi, a0, b0, M, n_iterations, q, I0_var, print_progress, user_seed));
+    return rcpp_result_gen;
+END_RCPP
+}
 // clust_cp_epi
 Rcpp::List clust_cp_epi(arma::mat data, int n_iterations, int M, int B, int L, double xi, double alpha_SM, double q, double a0, double b0, double I0_var, double avg_blk, bool print_progress, unsigned long user_seed);
 RcppExport SEXP _BayesChange_clust_cp_epi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP MSEXP, SEXP BSEXP, SEXP LSEXP, SEXP xiSEXP, SEXP alpha_SMSEXP, SEXP qSEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP I0_varSEXP, SEXP avg_blkSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
@@ -145,6 +165,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesChange_sim_epi_data", (DL_FUNC) &_BayesChange_sim_epi_data, 6},
     {"_BayesChange_detect_cp_uni", (DL_FUNC) &_BayesChange_detect_cp_uni, 11},
     {"_BayesChange_detect_cp_multi", (DL_FUNC) &_BayesChange_detect_cp_multi, 12},
+    {"_BayesChange_detect_cp_epi", (DL_FUNC) &_BayesChange_detect_cp_epi, 10},
     {"_BayesChange_clust_cp_epi", (DL_FUNC) &_BayesChange_clust_cp_epi, 14},
     {"_BayesChange_clust_cp_uni", (DL_FUNC) &_BayesChange_clust_cp_uni, 12},
     {"_BayesChange_clust_cp_multi", (DL_FUNC) &_BayesChange_clust_cp_multi, 13},

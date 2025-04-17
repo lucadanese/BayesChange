@@ -13,6 +13,7 @@ detect_cp(
   prior_var_phi = 0.1,
   par_theta_c = 1,
   par_theta_d = 1,
+  kernel,
   print_progress = TRUE,
   user_seed = 1234
 )

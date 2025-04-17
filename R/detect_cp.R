@@ -88,6 +88,7 @@ detect_cp <- function(data,
                       prior_var_phi = 0.1,
                       par_theta_c = 1,
                       par_theta_d = 1,
+                      kernel,
                       print_progress = TRUE,
                       user_seed = 1234){
 
@@ -99,113 +100,125 @@ detect_cp <- function(data,
   if((!is.null(prior_var_phi)) && (prior_var_phi <= 0)) stop("prior_var_phi must be positive")
   if(!is.null(par_theta_c) && (par_theta_c < 0)) stop("par_theta_c must be positive")
   if(!is.null(par_theta_d) && (par_theta_d < 0)) stop("par_theta_d must be positive")
+  if((is.null(kernel) | !(kernel %in% c("ts", "epi")))) stop("kernel must be 'ts' or 'epi'")
   if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
   if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
 
+  if(kernel == "ts"){
 
-  if(is.vector(data)){
+    if(is.vector(data)){
 
-    if((!is.null(params$a)) && (params$a < 0)) stop("params$a must be positive")
-    if((!is.null(params$b)) && (params$b < 0)) stop("params$b must be positive")
-    if(!(is.null(params$c)) && (params$c < 0)) stop("params$c must be positive")
-    if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
+      if((!is.null(params$a)) && (params$a < 0)) stop("params$a must be positive")
+      if((!is.null(params$b)) && (params$b < 0)) stop("params$b must be positive")
+      if(!(is.null(params$c)) && (params$c < 0)) stop("params$c must be positive")
+      if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
 
-    data_input = data
-    n_iterations_input = n_iterations
-    n_burnin_input = n_burnin
-    q_input = q
-    prior_var_phi_input = prior_var_phi
-    par_theta_c_input = par_theta_c
-    par_theta_d_input = par_theta_d
-    print_progress_input = print_progress
-    user_seed_input = user_seed
+      data_input = data
+      n_iterations_input = n_iterations
+      n_burnin_input = n_burnin
+      q_input = q
+      prior_var_phi_input = prior_var_phi
+      par_theta_c_input = par_theta_c
+      par_theta_d_input = par_theta_d
+      print_progress_input = print_progress
+      user_seed_input = user_seed
 
-    # substitute missing parameters with default
-    a_input = ifelse(is.null(params$a), 1, params$a)
-    b_input = ifelse(is.null(params$b), 1, params$b)
-    c_input = ifelse(is.null(params$c), 0.1, params$c)
-    #
+      # substitute missing parameters with default
+      a_input = ifelse(is.null(params$a), 1, params$a)
+      b_input = ifelse(is.null(params$b), 1, params$b)
+      c_input = ifelse(is.null(params$c), 0.1, params$c)
+      #
 
-    out <- detect_cp_uni(data = data_input,
-                         n_iterations = n_iterations_input,
-                         q = q_input,
-                         a = a_input,
-                         b = b_input,
-                         c = c_input,
-                         prior_var_phi = prior_var_phi_input,
-                         par_theta_c = par_theta_c_input,
-                         par_theta_d = par_theta_d_input,
-                         print_progress = print_progress_input,
-                         user_seed = user_seed_input)
-
-    # save output
-
-    result <- DetectCpObj(data = data_input,
-                          n_iterations = n_iterations_input,
-                          n_burnin = n_burnin_input,
-                          orders = out$orders,
-                          time = out$time,
-                          phi_MCMC = out$phi_MCMC,
-                          phi_MCMC_01 = out$phi_MCMC_01,
-                          sigma_MCMC = out$sigma_MCMC,
-                          sigma_MCMC_01 = out$sigma_MCMC_01,
-                          theta_MCMC = out$theta_MCMC,
-                          univariate_ts = TRUE)
-
-  }
-
-  if(is.matrix(data)){
-
-    if((!is.null(params$k_0)) && (params$k_0 < 0)) stop("params$k_0 must be positive")
-    if((!is.null(params$nu_0)) && (params$nu_0 < 0)) stop("params$nu_0 must be positive")
-    if((!is.null(params$S_0)) && nrow(params$S_0) != ncol(params$S_0)) stop("number of rows and columns must be the same in params$S_0")
-    if((!is.null(params$m_0)) && (length(params$m_0) != nrow(data))) stop("number of elements in params$m_0 must equal the number of observations")
-
-    # substitute missing parameters with default
-    if(is.null(params$m_0)){m_0_input = rep(0, nrow(data))} else{m_0_input = params$m_0}
-    k_0_input = ifelse(is.null(params$k_0), 0.5, params$k_0)
-    nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
-    if(is.null(params$S_0)){S_0_input = diag(0.1, nrow(data), nrow(data))} else{S_0_input = params$S_0}
-    #
-
-    data_input = data
-    n_iterations_input = n_iterations
-    n_burnin_input = n_burnin
-    q_input = q
-    prior_var_phi_input = prior_var_phi
-    par_theta_c_input = par_theta_c
-    par_theta_d_input = par_theta_d
-    print_progress_input = print_progress
-    user_seed_input = user_seed
-
-    out <- detect_cp_multi(data = as.matrix(data_input),
+      out <- detect_cp_uni(data = data_input,
                            n_iterations = n_iterations_input,
                            q = q_input,
-                           m_0 = m_0_input,
-                           k_0 = k_0_input,
-                           nu_0 = nu_0_input,
-                           S_0 = S_0_input,
+                           a = a_input,
+                           b = b_input,
+                           c = c_input,
+                           prior_var_phi = prior_var_phi_input,
                            par_theta_c = par_theta_c_input,
                            par_theta_d = par_theta_d_input,
-                           prior_var_phi = prior_var_phi_input,
                            print_progress = print_progress_input,
                            user_seed = user_seed_input)
 
-    # save output
+      # save output
 
-    result <- DetectCpObj(data = data_input,
-                          n_iterations = n_iterations_input,
-                          n_burnin = n_burnin_input,
-                          orders = out$orders,
-                          time = out$time,
-                          phi_MCMC = out$phi_MCMC,
-                          phi_MCMC_01 = out$phi_MCMC_01,
-                          sigma_MCMC = out$sigma_MCMC,
-                          sigma_MCMC_01 = out$sigma_MCMC_01,
-                          theta_MCMC = out$theta_MCMC,
-                          univariate_ts = FALSE)
+      result <- DetectCpObj(data = data_input,
+                            n_iterations = n_iterations_input,
+                            n_burnin = n_burnin_input,
+                            orders = out$orders,
+                            time = out$time,
+                            phi_MCMC = out$phi_MCMC,
+                            phi_MCMC_01 = out$phi_MCMC_01,
+                            sigma_MCMC = out$sigma_MCMC,
+                            sigma_MCMC_01 = out$sigma_MCMC_01,
+                            theta_MCMC = out$theta_MCMC,
+                            univariate_ts = TRUE)
+
+    }
+
+    if(is.matrix(data)){
+
+      if((!is.null(params$k_0)) && (params$k_0 < 0)) stop("params$k_0 must be positive")
+      if((!is.null(params$nu_0)) && (params$nu_0 < 0)) stop("params$nu_0 must be positive")
+      if((!is.null(params$S_0)) && nrow(params$S_0) != ncol(params$S_0)) stop("number of rows and columns must be the same in params$S_0")
+      if((!is.null(params$m_0)) && (length(params$m_0) != nrow(data))) stop("number of elements in params$m_0 must equal the number of observations")
+
+      # substitute missing parameters with default
+      if(is.null(params$m_0)){m_0_input = rep(0, nrow(data))} else{m_0_input = params$m_0}
+      k_0_input = ifelse(is.null(params$k_0), 0.5, params$k_0)
+      nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
+      if(is.null(params$S_0)){S_0_input = diag(0.1, nrow(data), nrow(data))} else{S_0_input = params$S_0}
+      #
+
+      data_input = data
+      n_iterations_input = n_iterations
+      n_burnin_input = n_burnin
+      q_input = q
+      prior_var_phi_input = prior_var_phi
+      par_theta_c_input = par_theta_c
+      par_theta_d_input = par_theta_d
+      print_progress_input = print_progress
+      user_seed_input = user_seed
+
+      out <- detect_cp_multi(data = as.matrix(data_input),
+                             n_iterations = n_iterations_input,
+                             q = q_input,
+                             m_0 = m_0_input,
+                             k_0 = k_0_input,
+                             nu_0 = nu_0_input,
+                             S_0 = S_0_input,
+                             par_theta_c = par_theta_c_input,
+                             par_theta_d = par_theta_d_input,
+                             prior_var_phi = prior_var_phi_input,
+                             print_progress = print_progress_input,
+                             user_seed = user_seed_input)
+
+      # save output
+
+      result <- DetectCpObj(data = data_input,
+                            n_iterations = n_iterations_input,
+                            n_burnin = n_burnin_input,
+                            orders = out$orders,
+                            time = out$time,
+                            phi_MCMC = out$phi_MCMC,
+                            phi_MCMC_01 = out$phi_MCMC_01,
+                            sigma_MCMC = out$sigma_MCMC,
+                            sigma_MCMC_01 = out$sigma_MCMC_01,
+                            theta_MCMC = out$theta_MCMC,
+                            univariate_ts = FALSE)
+
+    }
 
   }
+
+  if(kernel == "epi"){
+
+
+
+  }
+
+
 
   return(result)
 

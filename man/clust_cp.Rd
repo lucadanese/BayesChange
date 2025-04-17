@@ -19,9 +19,8 @@ clust_cp(
 )
 }
 \arguments{
-\item{data}{a vector or a matrix. If a vector the algorithm for
-univariate time series is used. If a matrix, where rows are the observations
-and columns are the times, then the algorithm for multivariate time series is used.}
+\item{data}{a matrix or an array If a matrix the algorithm for
+univariate time series is used, where each row is a time series. If an array, the algorithm is run for multivariate time series. Each slice of the array is a matrix where the rows are the dimensions of the time series.}
 
 \item{n_iterations}{number of MCMC iterations.}
 

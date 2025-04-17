@@ -1488,9 +1488,9 @@ arma::vec norm_constant_multi(arma::cube data,
         double(current_s-start_s)/CLOCKS_PER_SEC << " sec\n";
     }
     Rcpp::checkUserInterrupt();
-    
+
   }
-  
+
   for(arma::uword i = 0; i < data.n_slices; i++){
     temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) + log(R) - (T-1)*log(2);
   }
@@ -2731,6 +2731,8 @@ Rcpp::List detect_cp_uni(arma::vec data,
  Rcpp::List out_list;
  out_list["orders"] = res_mat;
  out_list["time"] = time;
+ out_list["phi_MCMC"] = phi_inf;
+ out_list["phi_MCMC_01"] = phi_inf_10;
  out_list["sigma_MCMC"] = sigma_inf;
  out_list["sigma_MCMC_01"] = sigma_inf_10;
  out_list["theta_MCMC"] = theta_inf;

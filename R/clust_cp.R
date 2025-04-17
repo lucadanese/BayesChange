@@ -4,9 +4,8 @@
 #' @title Clustering time dependent observations with common change points.
 #' @description The \code{clust_cp} function cluster observations with common change points. Data can be time series or survival functions.
 #'
-#' @param data a vector or a matrix. If a vector the algorithm for
-#' univariate time series is used. If a matrix, where rows are the observations
-#' and columns are the times, then the algorithm for multivariate time series is used.
+#' @param data a matrix or an array If a matrix the algorithm for
+#' univariate time series is used, where each row is a time series. If an array, the algorithm is run for multivariate time series. Each slice of the array is a matrix where the rows are the dimensions of the time series.
 #' @param n_iterations number of MCMC iterations.
 #' @param n_burnin number of iterations that must be excluded when computing the posterior estimate.
 #' @param B number of orders for the normalization constant.

@@ -2977,39 +2977,47 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @name detect_cp_epi
 //' @export detect_cp_epi
 //'
-//' @title Detect Change Points on survival functions
-//' @description Detect Change Points on survival functions
+//' @title Detect Change Points on a survival function
+//' @description Detect Change Points on a survival function
 //'
-//' @param data a matrix where each row is a component of the time series and the columns correpospond to the times.
+//' @param data a matrix where each row is a component of the time series and the columns correspond to the times.
 //' @param n_iterations number of MCMC iterations.
 //' @param q probability of performing a split at each iteration.
+//'
 //' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
 //' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
 //' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
 //' @param print_progress If TRUE (default) print the progress bar.
+//'
 //' @param user_seed seed for random distribution generation.
-//' @return Function \code{detect_cp_multi} returns a list containing the following components: \itemize{
+//' @return Function \code{detect_cp_epi} returns a list containing the following components: \itemize{
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{time}} computational time in seconds.
-//' \item{\code{$phi_MCMC}} traceplot for \eqn{\gamma}.
-//' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\} was accepted, \eqn{0} otherwise.
-//' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
-//' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
-//' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+//' \item{\code{$I0_MCMC}} traceplot for \eqn{I_0}.
+//' \item{\code{$I0_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 //' }
 //'
 //'@examples
 //'
-//' data_mat <- matrix(NA, nrow = 3, ncol = 100)
+//' data_mat <- matrix(NA, nrow = 1, ncol = 100)
 //'
-//' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-//' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-//' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+//' betas <- c(rep(0.45, 25),rep(0.14,75))
 //'
-//' out <- detect_cp_multi(data = data_mat,
-//'                               n_iterations = 2500,
-//'                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-//'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1)
+//' inf_times <- sim_epi_data(10000, 10, 100, betas, 1/8)
+//'
+//' inf_times_vec <- rep(0,100)
+//' names(inf_times_vec) <- as.character(1:100)
+//'
+//' for(j in 1:100){
+//'  if(as.character(j) %in% names(table(floor(inf_times)))){
+//'    inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
+//'  }
+//' }
+//'
+//' data_mat[1,] <- inf_times_vec
+//'
+//' out <- detect_cp_epi(data = data_mat, n_iterations = 1000, q = 0.5,
+//'                      xi = 1/8, a0 = 40, b0 = 10, M = 1000)
 //'
 //'
 // [[Rcpp::export]]
@@ -3069,8 +3077,9 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
    double time = double(current_s-start_s)/CLOCKS_PER_SEC;
 
    Rcpp::List out_list;
-   out_list["order"] = orders_output;
-   out_list["rho"] = rho_output;
+   out_list["orders"] = orders_output;
+   out_list["I0_MCMC"] = rho_output;
+   out_list["I0_MCMC_01"] = rho_output;
    out_list["time"] = time;
 
    gsl_rng_free (r);

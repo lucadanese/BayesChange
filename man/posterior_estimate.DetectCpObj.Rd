@@ -41,7 +41,7 @@ data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 
 
 out <- detect_cp(data = data_vec, n_iterations = 2500, n_burnin = 500,
-                 params = list(q = 0.25, phi = 0.1, a = 1, b = 1, c = 0.1))
+                 params = list(q = 0.25, phi = 0.1, a = 1, b = 1, c = 0.1), kernel = "ts")
 
 posterior_estimate(out)
 

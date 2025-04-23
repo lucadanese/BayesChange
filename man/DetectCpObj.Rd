@@ -15,6 +15,10 @@ DetectCpObj(
   sigma_MCMC = NULL,
   sigma_MCMC_01 = NULL,
   theta_MCMC = NULL,
+  I0_MCMC = NULL,
+  I0_MCMC_01 = NULL,
+  kernel_ts = NULL,
+  kernel_epi = NULL,
   univariate_ts = NULL
 )
 }
@@ -29,17 +33,25 @@ DetectCpObj(
 
 \item{time}{computational time in seconds;}
 
-\item{phi_MCMC}{traceplot for \eqn{\gamma};}
+\item{phi_MCMC}{traceplot for \eqn{\gamma}.}
 
-\item{phi_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise;}
+\item{phi_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.}
 
-\item{sigma_MCMC}{traceplot for \eqn{\sigma};}
+\item{sigma_MCMC}{traceplot for \eqn{\sigma}.}
 
-\item{sigma_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise;}
+\item{sigma_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.}
 
-\item{theta_MCMC}{traceplot for \eqn{\theta};}
+\item{theta_MCMC}{traceplot for \eqn{\theta}.}
 
-\item{univariate_ts}{TRUE/FALSE if time series is univariate or not;}
+\item{I0_MCMC}{traceplot for \eqn{I_0}.}
+
+\item{I0_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.}
+
+\item{kernel_ts}{if TRUE data are time series.}
+
+\item{kernel_epi}{if TRUE data are survival functions.}
+
+\item{univariate_ts}{TRUE/FALSE if time series is univariate or not.}
 }
 \description{
 A constructor for the \code{DetectCpObj} class. The class \code{DetectCpObj} contains...

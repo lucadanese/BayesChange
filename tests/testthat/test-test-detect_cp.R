@@ -5,7 +5,7 @@ test_that("detect_cp works", {
 
   out_test <- detect_cp(data = data_test,
                         n_iterations = 100,
-                        print_progress = FALSE)
+                        print_progress = FALSE, kernel = "ts")
 
   est <- posterior_estimate(out_test, maxNClusters = 100)
 

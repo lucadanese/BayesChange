@@ -1739,6 +1739,7 @@ void UpdateTheta(double theta,double sigma, arma::vec order,  arma::vec &theta_i
 
 void update_rho(arma::mat data,
                 arma::vec &rho,
+                arma::vec &rho01,
                 double a0,
                 double b0,
                 double c0,
@@ -1752,6 +1753,8 @@ void update_rho(arma::mat data,
                 arma::vec &llik,
                 arma::vec clust,
                 arma::mat orders){
+
+  rho01.fill(0);
 
   for(arma::uword i = 0; i < data.n_rows; i++){
 
@@ -1775,6 +1778,7 @@ void update_rho(arma::mat data,
 
     if(log(arma::randu()) < acc_rate){
       rho(i) = rho_new;
+      rho01(i) = 1;
       llik(i) = new_llik;
     }
   }
@@ -2293,8 +2297,9 @@ Rcpp::List marginal_CP(arma::mat data,
                        unsigned long user_seed = 1234){
 
 
-  arma::vec rho(data.n_rows);
+  arma::vec rho(data.n_rows), rho01(data.n_rows);
   rho.fill(0.001);
+  rho01.fill(0);
 
   arma::vec clust(data.n_rows), llik(data.n_rows);
   clust.fill(0);
@@ -2341,7 +2346,7 @@ Rcpp::List marginal_CP(arma::mat data,
   // start
   for(int iter = 0; iter < niter; iter++){
 
-    update_rho(data, rho, a0, b0, c0, d0, I0_var, gamma, dt, M,
+    update_rho(data, rho, rho01, a0, b0, c0, d0, I0_var, gamma, dt, M,
                S0, R0, llik, clust, orders);
 
     for(arma::uword j = 0; j < orders.n_rows; j++){
@@ -3034,14 +3039,15 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
    gsl_rng_set(r, user_seed);
    //
 
-   arma::vec clust(data.n_rows), llik(data.n_rows), rho(data.n_rows);
+   arma::vec clust(data.n_rows), llik(data.n_rows), rho(data.n_rows), rho01(data.n_rows);
 
    rho.fill(0.0045);
+   rho01.fill(0);
    clust = arma::regspace(0, data.n_rows-1);
 
    arma::mat order(1, data.n_cols);
    arma::mat orders_output(n_iterations, data.n_cols);
-   arma::mat rho_output(n_iterations, data.n_rows);
+   arma::mat rho_output(n_iterations, data.n_rows), rho01_output(n_iterations, data.n_rows);
    order.row(0).fill(0);
 
    int start_s = clock();
@@ -3060,11 +3066,12 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
    }
 
    for(int iter = 0; iter < n_iterations; iter++){
-    update_rho(data, rho, a0, b0, c0, d0, I0_var, xi, dt, M, S0, R0, llik, clust, order);
+    update_rho(data, rho, rho01, a0, b0, c0, d0, I0_var, xi, dt, M, S0, R0, llik, clust, order);
     update_single_order(data, clust, 0, order, llik, q, dt, a0, b0, xi, rho, M, S0, R0);
 
     orders_output.row(iter) = order.row(0);
     rho_output.row(iter) = rho;
+    rho01_output.row(iter) = rho01;
 
      if(((iter + 1) % nupd == 0) & (print_progress == true)){
        current_s = clock();
@@ -3079,7 +3086,7 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
    Rcpp::List out_list;
    out_list["orders"] = orders_output;
    out_list["I0_MCMC"] = rho_output;
-   out_list["I0_MCMC_01"] = rho_output;
+   out_list["I0_MCMC_01"] = rho01_output;
    out_list["time"] = time;
 
    gsl_rng_free (r);
@@ -3217,8 +3224,9 @@ Rcpp::List clust_cp_epi(arma::mat data,
  gsl_rng_set(r, user_seed);
  //
 
- arma::vec rho(data.n_rows);
+ arma::vec rho(data.n_rows), rho01(data.n_rows);
  rho.fill(0.0045);
+ rho01.fill(0);
 
  arma::vec clust(data.n_rows), llik(data.n_rows);
  clust = arma::regspace(0, data.n_rows-1);
@@ -3252,6 +3260,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
  arma::cube res_orders(data.n_rows, data.n_cols, n_iterations);
  arma::mat res_llik(n_iterations, data.n_rows);
  arma::mat res_rho(n_iterations, data.n_rows);
+ arma::mat res_rho_01(n_iterations, data.n_rows);
 
  //loop
  int start_s = clock();
@@ -3265,7 +3274,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
  // start
  for(int iter = 0; iter < n_iterations; iter++){
 
-   update_rho(data, rho, a0, b0, c0, d0, I0_var, xi, dt, M,
+   update_rho(data, rho, rho01, a0, b0, c0, d0, I0_var, xi, dt, M,
               S0, R0, llik, clust, orders);
 
 
@@ -3282,6 +3291,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
    res_clust.row(iter) = clust.t();
    res_llik.row(iter).cols(0,data.n_rows-1) = llik.t();
    res_rho.row(iter).cols(0,data.n_rows-1) = rho.t();
+   res_rho_01.row(iter).cols(0,data.n_rows-1) = rho01.t();
    res_orders.slice(iter).rows(0, orders.n_rows-1) = orders;
 
    // print time
@@ -3303,7 +3313,8 @@ Rcpp::List clust_cp_epi(arma::mat data,
  results["orders"] = res_orders;
  results["time"] = time;
  results["llik"] = res_llik;
- results["rho"] = res_rho;
+ results["I0_MCMC"] = res_rho;
+ results["I0_MCMC_01"] = res_rho_01;
  return results;
 }
 

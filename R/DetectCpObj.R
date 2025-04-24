@@ -312,7 +312,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
   time <- V2 <- y <- NULL
 
-  if(plot_freq == FALSE){
+  if(!plot_freq){
 
     if(x$kernel_ts){
 
@@ -336,9 +336,10 @@ plot.DetectCpObj <- function(x, y = NULL,
                         y = "Value",
                         color = NULL) +
           ggplot2::scale_colour_brewer(palette = "Set1") +
-          ggplot2::theme_minimal()
+          ggplot2::theme_minimal() +
+          ggplot2::theme(legend.position="none")
 
-        p1 + ggplot2::theme(legend.position="none")
+        p1
 
 
       } else {
@@ -400,9 +401,6 @@ plot.DetectCpObj <- function(x, y = NULL,
 
 
     }
-
-
-
 
   } else {
 
@@ -567,8 +565,6 @@ plot.DetectCpObj <- function(x, y = NULL,
       ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = FALSE)
 
     }
-
-
 
   }
 

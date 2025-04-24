@@ -52,7 +52,8 @@
 #'   \item \code{$time} computational time.
 #'   \item \code{$lkl} a matrix where each row is the likelihood of each observation computed at the corresponding iteration.
 #'   \item \code{$norm_vec} a vector containing the normalization constant computed at the beginning of the algorithm.
-#'   \item \code{$rho} a vector with the final estimate of the proportion of infected individuals at time 0.
+#'   \item \code{I0_MCMC} traceplot for \eqn{I_0}.
+#'   \item \code{I0_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #'   \item \code{$kernel_ts} if TRUE data are time series.
 #'   \item \code{$kernel_epi} if TRUE data are survival function.
 #'   \item \code{$univariate_ts} TRUE if data is an univariate time series, FALSE if it is a multivariate time series.
@@ -219,7 +220,6 @@ clust_cp <- function(data,
                            time = out$time,
                            lkl = out$lkl,
                            norm_vec = out$norm_vec,
-                           rho = out$rho,
                            kernel_ts = TRUE,
                            kernel_epi = FALSE,
                            univariate_ts = TRUE)
@@ -268,7 +268,6 @@ clust_cp <- function(data,
                            time = out$time,
                            lkl = out$lkl,
                            norm_vec = out$norm_vec,
-                           rho = out$rho,
                            kernel_ts = TRUE,
                            kernel_epi = FALSE,
                            univariate_ts = FALSE)
@@ -322,7 +321,8 @@ clust_cp <- function(data,
                          time = out$time,
                          lkl = out$lkl,
                          norm_vec = out$norm_vec,
-                         rho = out$rho,
+                         I0_MCMC = out$I0_MCMC,
+                         I0_MCMC_01 = out$I0_MCMC_01,
                          kernel_ts = FALSE,
                          kernel_epi = TRUE,
                          univariate_ts = TRUE)

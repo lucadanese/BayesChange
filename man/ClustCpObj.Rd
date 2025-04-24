@@ -14,6 +14,8 @@ ClustCpObj(
   lkl = NULL,
   norm_vec = NULL,
   rho = NULL,
+  I0_MCMC = NULL,
+  I0_MCMC_01 = NULL,
   kernel_ts = NULL,
   kernel_epi = NULL,
   univariate_ts = NULL

@@ -192,8 +192,8 @@ detect_cp <- function(data,
                             sigma_MCMC = out$sigma_MCMC,
                             sigma_MCMC_01 = out$sigma_MCMC_01,
                             theta_MCMC = out$theta_MCMC,
-                            kernel_ts = FALSE,
-                            kernel_epi = TRUE,
+                            kernel_ts = TRUE,
+                            kernel_epi = FALSE,
                             univariate_ts = TRUE)
 
     }
@@ -247,8 +247,8 @@ detect_cp <- function(data,
                             sigma_MCMC = out$sigma_MCMC,
                             sigma_MCMC_01 = out$sigma_MCMC_01,
                             theta_MCMC = out$theta_MCMC,
-                            kernel_ts = FALSE,
-                            kernel_epi = TRUE,
+                            kernel_ts = TRUE,
+                            kernel_epi = FALSE,
                             univariate_ts = FALSE)
 
     }
@@ -297,8 +297,8 @@ detect_cp <- function(data,
                           n_burnin = n_burnin_input,
                           orders = out$orders,
                           time = out$time,
-                          I0_MCMC = out$I0,
-                          I0_MCMC_01 = out$I0,
+                          I0_MCMC = out$I0_MCMC,
+                          I0_MCMC_01 = out$I0_MCMC_01,
                           kernel_ts = FALSE,
                           kernel_epi = TRUE,
                           univariate_ts = FALSE)

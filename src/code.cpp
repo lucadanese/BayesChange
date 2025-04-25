@@ -337,6 +337,8 @@ double Likelihood_UniTS(arma::mat data, arma::vec order,
 
     }
 
+
+
     if((n_i != 1) & (n_i != 2)){
 
       arma::mat S_i(n_i,n_i,arma::fill::zeros);
@@ -371,6 +373,7 @@ double Likelihood_UniTS(arma::mat data, arma::vec order,
       vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1+std::pow(phi,2)) - std::log(c) - std::log(n_i) + std::log(phi) + std::log(n_i-c-2)) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).col(1)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
 
     }
+
 
   }
 
@@ -1406,7 +1409,10 @@ arma::vec norm_constant_uni(arma::mat data,
     new_order_mat.row(0) = new_order_vec.t();
 
     for(arma::uword i = 0; i < data.n_rows; i++){
-      temp_llik_mat(r,i) = LogLikelihood_TS(data.row(i),new_order_mat.row(0),gamma_par,a,b,c) - ord_lprob;
+    //temp_llik_mat(r,i) = LogLikelihood_TS(data.row(i),new_order_mat.row(0),gamma_par,a,b,c) - ord_lprob;
+      temp_llik_mat(r,i) = Likelihood_UniTS(data.row(i),new_order_vec,gamma_par,a,b,c) - ord_lprob;
+
+
     }
 
     // print time
@@ -1419,6 +1425,9 @@ arma::vec norm_constant_uni(arma::mat data,
   }
 
   for(arma::uword i = 0; i < data.n_rows; i++){
+
+
+
     temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) + log(R) - (T-1)*log(2);
   }
 
@@ -2446,7 +2455,7 @@ Rcpp::List DoobGillespieAlg(double S0,
 //' @param I0 number of infected individuals at time 0.
 //' @param max_time maximum observed time.
 //' @param beta_vec vector with the infection rate for each discrete time.
-//' @param gamma_0 the recovery rate of the population, must be in \eqn{(0,1)}.
+//' @param xi_0 the recovery rate of the population, must be in \eqn{(0,1)}.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{sim_epi_data} returns a vector with the simulated infection times.
 //'
@@ -2548,7 +2557,7 @@ return infection_times;
 // [[Rcpp::export]]
 Rcpp::List detect_cp_uni(arma::vec data,
                                 int n_iterations, double q,
-                                double a, double b, double c,
+                                double a = 1, double b = 1, double c = 0.1,
                                 double prior_var_phi = 0.1,
                                 double par_theta_c = 1,
                                 double par_theta_d = 1,
@@ -2988,10 +2997,10 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @param data a matrix where each row is a component of the time series and the columns correspond to the times.
 //' @param n_iterations number of MCMC iterations.
 //' @param q probability of performing a split at each iteration.
-//'
-//' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-//' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
-//' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
+//' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
+//' @param xi recovery rate fixed constant for each population at each time.
+//' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
+//' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 //' @param print_progress If TRUE (default) print the progress bar.
 //'
 //' @param user_seed seed for random distribution generation.

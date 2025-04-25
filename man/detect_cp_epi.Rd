@@ -24,15 +24,17 @@ detect_cp_epi(
 
 \item{q}{probability of performing a split at each iteration.}
 
+\item{M}{number of Monte Carlo iterations when computing the likelihood of the survival function.}
+
+\item{xi}{recovery rate fixed constant for each population at each time.}
+
+\item{a0, b0}{parameters for the computation of the integrated likelihood of the survival functions.}
+
+\item{I0_var}{variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.}
+
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
 \item{user_seed}{seed for random distribution generation.}
-
-\item{k_0, nu_0, S_0, m_0}{parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.}
-
-\item{par_theta_c, par_theta_d}{parameters for the shifted Gamma prior for \eqn{\theta}.}
-
-\item{prior_var_phi}{parameters for the correlation coefficient in the likelihood.}
 }
 \value{
 Function \code{detect_cp_epi} returns a list containing the following components: \itemize{

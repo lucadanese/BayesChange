@@ -58,6 +58,8 @@ If data are survival functions:
 
 \item{L}{number of split-merge steps for the proposal step.}
 
+\item{q}{probability of a split in the split-merge proposal and acceleration step.}
+
 \item{kernel}{can be "ts" if data are time series or "epi" if data are survival functions.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}

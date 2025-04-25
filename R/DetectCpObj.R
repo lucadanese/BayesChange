@@ -70,8 +70,10 @@ DetectCpObj <- function(data = NULL,
 #' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 #'
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1), kernel = "ts")
+#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4,
+#'                               S_0 = diag(1,3,3), m_0 = rep(0,3),
+#'                               par_theta_c = 2, par_theta_d = 0.2,
+#'                               prior_var_phi = 0.1), kernel = "ts")
 #' print(out)
 #'
 #' @rdname print.DetectCpObj
@@ -107,8 +109,10 @@ print.DetectCpObj <- function(x, ...) {
 #' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 #'
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1), kernel = "ts")
+#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4,
+#'                               S_0 = diag(1,3,3), m_0 = rep(0,3),
+#'                               par_theta_c = 2, par_theta_d = 0.2,
+#'                               prior_var_phi = 0.1), kernel = "ts")
 #' summary(out)
 #'
 #' @rdname summary.DetectCpObj
@@ -339,7 +343,7 @@ plot.DetectCpObj <- function(x, y = NULL,
           ggplot2::theme_minimal() +
           ggplot2::theme(legend.position="none")
 
-        p1
+        print(p1)
 
 
       } else {
@@ -369,7 +373,7 @@ plot.DetectCpObj <- function(x, y = NULL,
           ggplot2::theme_minimal() +
           ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
 
-        p1
+        print(p1)
 
       }
 
@@ -395,9 +399,10 @@ plot.DetectCpObj <- function(x, y = NULL,
                       y = "Proportion of Infected Individuals",
                       color = NULL) +
         ggplot2::scale_colour_brewer(palette = "Set1") +
-        ggplot2::theme_minimal()
+        ggplot2::theme_minimal() +
+        ggplot2::theme(legend.position="none")
 
-      p1 + ggplot2::theme(legend.position="none")
+      print(p1)
 
 
     }
@@ -416,7 +421,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         vec_data <- x$data
 
         .data_plot <- as.data.frame(cbind(vec_data))
-        .data_plot$time <- rep(1:length(x$data))
+        .data_plot$time <- 1:length(vec_data)
         .data_plot$obs <- as.factor(rep(1, ncol(.data_plot)))
 
         p1 <- ggplot2::ggplot(.data_plot) +
@@ -455,7 +460,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
         p2 <- p2 + ggplot2::theme(legend.position="none")
 
-        ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = FALSE)
+        print(ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = FALSE))
 
       } else {
 
@@ -507,7 +512,7 @@ plot.DetectCpObj <- function(x, y = NULL,
           ggplot2::xlab("Time") +
           ggplot2::theme_minimal()
 
-        ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = TRUE)
+        print(ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = TRUE))
 
       }
 
@@ -562,7 +567,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       p2 <- p2 + ggplot2::theme(legend.position="none")
 
-      ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = FALSE)
+      print(ggpubr::ggarrange(p1, p2, nrow = 2, heights = c(2,1), common.legend = FALSE))
 
     }
 

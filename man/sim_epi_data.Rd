@@ -15,9 +15,9 @@ sim_epi_data(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L)
 
 \item{beta_vec}{vector with the infection rate for each discrete time.}
 
-\item{user_seed}{seed for random distribution generation.}
+\item{xi_0}{the recovery rate of the population, must be in \eqn{(0,1)}.}
 
-\item{gamma_0}{the recovery rate of the population, must be in \eqn{(0,1)}.}
+\item{user_seed}{seed for random distribution generation.}
 }
 \value{
 Function \code{sim_epi_data} returns a vector with the simulated infection times.

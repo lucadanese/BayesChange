@@ -7,7 +7,7 @@
 #' @param I0 number of infected individuals at time 0.
 #' @param max_time maximum observed time.
 #' @param beta_vec vector with the infection rate for each discrete time.
-#' @param gamma_0 the recovery rate of the population, must be in \eqn{(0,1)}.
+#' @param xi_0 the recovery rate of the population, must be in \eqn{(0,1)}.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{sim_epi_data} returns a vector with the simulated infection times.
 #'
@@ -55,7 +55,7 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #'                             q = 0.25)
 #'
 #'
-detect_cp_uni <- function(data, n_iterations, q, a, b, c, prior_var_phi = 0.1, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
+detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_var_phi = 0.1, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, a, b, c, prior_var_phi, par_theta_c, par_theta_d, print_progress, user_seed)
 }
 
@@ -110,10 +110,10 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_thet
 #' @param data a matrix where each row is a component of the time series and the columns correspond to the times.
 #' @param n_iterations number of MCMC iterations.
 #' @param q probability of performing a split at each iteration.
-#'
-#' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-#' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
-#' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
+#' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
+#' @param xi recovery rate fixed constant for each population at each time.
+#' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
+#' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #' @param print_progress If TRUE (default) print the progress bar.
 #'
 #' @param user_seed seed for random distribution generation.

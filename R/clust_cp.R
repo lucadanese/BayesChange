@@ -10,6 +10,7 @@
 #' @param n_burnin number of iterations that must be excluded when computing the posterior estimate.
 #' @param B number of orders for the normalization constant.
 #' @param L number of split-merge steps for the proposal step.
+#' @param q probability of a split in the split-merge proposal and acceleration step.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param alpha_SM \eqn{\alpha} for the split-merge main algorithm.
 #' @param user_seed seed for random distribution generation.
@@ -195,7 +196,7 @@ clust_cp <- function(data,
       user_seed_input = user_seed
 
       # substitute missing parameters with default
-      phi_input = ifelse(is.null(params$phi), 1, params$phi)
+      phi_input = ifelse(is.null(params$phi), 0.1, params$phi)
       a_input = ifelse(is.null(params$a), 1, params$a)
       b_input = ifelse(is.null(params$b), 1, params$b)
       c_input = ifelse(is.null(params$c), 1, params$c)
@@ -226,7 +227,6 @@ clust_cp <- function(data,
 
     } else if(is.array(data)){
 
-      if((!is.null(params$phi)) && ((params$phi > 1) | (params$phi < 0))) stop("params$phi must be in (0,1)")
       if((!is.null(params$k_0)) && (params$k_0 < 0)) stop("params$k_0 must be positive")
       if((!is.null(params$nu_0)) && (params$nu_0 < 0)) stop("params$nu_0 must be positive")
       if((!is.null(params$S_0)) && nrow(params$S_0) != ncol(params$S_0)) stop("number of rows and columns must be the same in params$S_0")

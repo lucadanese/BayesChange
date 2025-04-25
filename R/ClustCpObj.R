@@ -11,6 +11,8 @@
 #' @param lkl a vector with the likelihood of the final clustering.
 #' @param norm_vec a vector with the estimated normalization constant.
 #' @param rho a vector with the estimated proportion of infected individuals for each observation.
+#' @param I0_MCMC traceplot for \eqn{I_0}.
+#' @param I0_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #' @param kernel_ts if TRUE data are time series.
 #' @param kernel_epi if TRUE data are survival functions.
 #' @param univariate_ts TRUE/FALSE if time series is univariate or not;
@@ -26,7 +28,6 @@ ClustCpObj <- function(data = NULL,
                        time = NULL,
                        lkl = NULL,
                        norm_vec = NULL,
-                       rho = NULL,
                        I0_MCMC = NULL,
                        I0_MCMC_01 = NULL,
                        kernel_ts = NULL,
@@ -41,7 +42,6 @@ ClustCpObj <- function(data = NULL,
                 time = time,
                 lkl = lkl,
                 norm_vec = norm_vec,
-                rho = rho,
                 I0_MCMC = I0_MCMC,
                 I0_MCMC_01 = I0_MCMC_01,
                 kernel_ts = kernel_ts,

@@ -1,8 +1,9 @@
 # BayesChange 2.1.0
 
+* Now with BayesChange is possible to detect change points also on survival functions. 
 * Names of some functions have been changed in order to simplify the code. 
-* Parameters have been fixed. In previous versions it was not clear winch parameters were common for different kernels and which not. 
-
+* Parameters have been fixed. In previous versions it was not clear which parameters were common for different kernels and which not. 
+* An error occurring when testing 'detect_cp' has been fixed.
 
 # BayesChange 2.0.0
 

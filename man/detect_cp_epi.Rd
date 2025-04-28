@@ -48,7 +48,7 @@ Function \code{detect_cp_epi} returns a list containing the following components
 Detect Change Points on a survival function
 }
 \examples{
-
+\donttest{
 data_mat <- matrix(NA, nrow = 1, ncol = 100)
 
 betas <- c(rep(0.45, 25),rep(0.14,75))
@@ -60,14 +60,14 @@ names(inf_times_vec) <- as.character(1:100)
 
 for(j in 1:100){
  if(as.character(j) \%in\% names(table(floor(inf_times)))){
-   inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
- }
+ inf_times_vec[j] =
+ table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]}
 }
 
 data_mat[1,] <- inf_times_vec
 
-out <- detect_cp_epi(data = data_mat, n_iterations = 1000, q = 0.5,
-                     xi = 1/8, a0 = 40, b0 = 10, M = 1000)
+out <- detect_cp_epi(data = data_mat, n_iterations = 250, q = 0.5,
+                     xi = 1/8, a0 = 40, b0 = 10, M = 250)
 
-
+}
 }

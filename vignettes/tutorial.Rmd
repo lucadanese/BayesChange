@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Here we provide a brief tutorial of the `BayesChange` package. The `BayesChange` package contains two main functions: one that performs change points detection on univariate and multivariate time series and one that perform clustering of time series and survival functions with common change points. Here we briefly show how to implement these. 
+Here we provide a brief tutorial of the `BayesChange` package. The `BayesChange` package contains two main functions: one that performs change points detection on time series and survival functions and one that perform clustering of time series and survival functions with common change points. Here we briefly show how to implement these. 
 
 ```{r setup}
 library(BayesChange)
@@ -23,15 +23,15 @@ library(BayesChange)
 
 ## Detecting change points
 
-The function `detect_cp` provide a method for detecting change points on univariate and multivariate time series, it is based on the work @MM2014 and on the work @CORRADIN202226.
+The function `detect_cp` provide a method for detecting change points, it is based on the work @MM2014 and on @CORRADIN202226.
 
-Depending on the structure of the data, `detect_cp` performs change points detection on univariate time series or multivariate time series. For example we can create a vector of 100 observations where the first 50 observations are sampled from a normal distribution with mean 0 and variance 0.1 and the other 50 observations still from a normal distribution with mean 0 but variance 0.25. 
+Depending on the structure of the data, `detect_cp` might perform change points detection on univariate time series or multivariate time series. For example we can create a vector of 100 observations where the first 50 observations are sampled from a normal distribution with mean 0 and variance 0.1 and the other 50 observations still from a normal distribution with mean 0 but variance 0.25. 
 
 ```{r}
 data_uni <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
 ```
 
-Now we can run the function `detect_cp`, as arguments of the function we need to specify the number of iterations, the number of burn-in steps and a list with the the autoregressive coefficient `phi` for the likelihood of the data, the parameters `a`, `b`, `c` for the priors and the probability `q` of performing a split at each step. 
+Now we can run the function `detect_cp`, as arguments of the function we need to specify the number of iterations, the number of burn-in steps and a list with the the autoregressive coefficient `phi` for the likelihood of the data, the parameters `a`, `b`, `c` for the priors and the probability `q` of performing a split at each step. Since we deal with time series we need also to specify `kernel = "ts"`.
 
 ```{r}
 out <- detect_cp(data = data_uni,                             
@@ -59,8 +59,7 @@ The package also provides a method for plotting the change points.
 plot(out, loss = "binder")
 ```
 
-
-In we define instead a matrix of data, `detect_cp` automatically performs a multivariate change points detection method. 
+If we define instead a matrix of data, `detect_cp` automatically performs a multivariate change points detection method. 
 
 ```{r}
 data_multi <- matrix(NA, nrow = 3, ncol = 100)
@@ -110,7 +109,7 @@ for(j in 1:100){
 data_mat[1,] <- inf_times_vec
 ```
 
-To run `detect_cp` on epidemiological data we need to set `kernel = "epi"`. 
+To run `detect_cp` on epidemiological data we need to set `kernel = "epi"`. Moreover, besides the usual parameters, we need to set the number of Monte Carlo replications `M` for the approximation of the integrated likelihood and the recovery rate `xi`. `a0` and `b0` are optional and correspond to the parameters of the gamma distribution for the integration of the likelihood. 
 
 ```{r}
 out <- detect_cp(data = data_mat, n_iterations = 200, n_burnin = 50,
@@ -119,6 +118,8 @@ out <- detect_cp(data = data_mat, n_iterations = 200, n_burnin = 50,
 print(out)
 table(posterior_estimate(out, loss = "binder"))
 ```
+
+Also here, with function `plot` we can plot the survival function and the position of the change points. 
 
 ```{r}
 plot(out)
@@ -236,7 +237,6 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
 
 ```
 
-In `clust_cp` we need to specify, besides the usual parameters, the number of Monte Carlo replications `M` for the approximation of the integrated likelihood and the recovery rate `gamma`. 
 
 ```{r}
 out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10, 

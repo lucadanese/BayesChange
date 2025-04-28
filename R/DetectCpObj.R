@@ -314,7 +314,7 @@ plot.DetectCpObj <- function(x, y = NULL,
                              maxZealousAttempts = 10, ...) {
 
 
-  time <- V2 <- y <- NULL
+  time <- V2 <- y <- obs <- NULL
 
   if(!plot_freq){
 
@@ -384,10 +384,12 @@ plot.DetectCpObj <- function(x, y = NULL,
       est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                   nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-      .df_sf_plot <- data.frame(y = as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
-                                x = rep(1:ncol(x$data), nrow(x$data)),
-                                time = rep(1:ncol(x$data),nrow(x$data)),
-                                obs = rep("1", nrow(x$data)))
+      .df_sf_plot <- data.frame(as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
+                                rep(1:ncol(x$data), nrow(x$data)),
+                                rep(1:ncol(x$data),nrow(x$data)),
+                                rep("1", nrow(x$data)))
+
+      colnames(.df_sf_plot) <- c("y","x","time","obs")
 
       cp <- cumsum(table(est_cp))[-length(table(est_cp))]
 
@@ -523,10 +525,12 @@ plot.DetectCpObj <- function(x, y = NULL,
       est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                   nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-      .df_sf_plot <- data.frame(y = as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
-                                x = rep(1:ncol(x$data), nrow(x$data)),
-                                time = rep(1:ncol(x$data),nrow(x$data)),
-                                obs = rep("1", nrow(x$data)))
+      .df_sf_plot <- data.frame(as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
+                                rep(1:ncol(x$data), nrow(x$data)),
+                                rep(1:ncol(x$data),nrow(x$data)),
+                                rep("1", nrow(x$data)))
+
+      colnames(.df_sf_plot) <- c("y","x","time","obs")
 
       cp <- cumsum(table(est_cp))[-length(table(est_cp))]
 

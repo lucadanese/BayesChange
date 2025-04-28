@@ -2564,41 +2564,6 @@ Rcpp::List detect_cp_uni(arma::vec data,
                                 bool print_progress = true,
                                 unsigned long user_seed = 1234){
 
-
-  // WARNINGS //
-  //if(n_iterations < 1){
-  //  Rcpp::stop("number of iterations must be at least 1.");
-  //}
-
-  //if((q > 1) | (q < 0)){
-  //  Rcpp::stop("'q' must be included in (0,1).");
-  //}
-
-  //if((phi > 1) | (phi < 0)){
-  //  Rcpp::stop("'phi' must be included in (0,1).");
-  //}
-
-  //if(a < 0){
-  //  Rcpp::stop("'a' must be positive.");
-  //}
-
-  //if(b < 0){
-  //  Rcpp::stop("'b' must be positive.");
-  //}
-
-  //if(c < 0){
-  //  Rcpp::stop("'c' must be positive.");
-  //}
-
-  //if(par_theta_c < 0){
-  //  Rcpp::stop("'par_theta_c' must be positive.");
-  //}
-
-  //if(par_theta_d < 0){
-  //  Rcpp::stop("'par_theta_d' must be positive.");
-  //}
-  // ------- //
-
  int start_s = clock();
  int current_s = start_s;
  int nupd = round(n_iterations / 10);
@@ -2777,13 +2742,13 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{time}} computational time in seconds.
 //' \item{\code{$phi_MCMC}} traceplot for \eqn{\gamma}.
-//' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\} was accepted, \eqn{0} otherwise.
+//' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 //' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 //' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
 //' }
 //'
-//'@examples
+//' @examples
 //'
 //' data_mat <- matrix(NA, nrow = 3, ncol = 100)
 //'
@@ -2803,47 +2768,6 @@ Rcpp::List detect_cp_multi(arma::mat data,
                                   arma::mat S_0, arma::vec m_0,
                                   double par_theta_c = 1, double par_theta_d = 1, double prior_var_phi = 0.1,
                                   bool print_progress = true, unsigned long user_seed = 1234){
-
-      //if(n_iterations < 1){
-    //  Rcpp::stop("number of iterations must be at least 1.");
-    //}
-
-    //if((q > 1) | (q < 0)){
-    //  Rcpp::stop("'q' must be included in (0,1).");
-    //}
-
-    //if(k_0 < 0){
-    //  Rcpp::stop("'k_0' must be positive.");
-    //}
-
-    //if(nu_0 < 0){
-    //  Rcpp::stop("'nu_0' must be positive.");
-    //}
-
-    //if(S_0.n_rows != data.n_rows){
-    //  Rcpp::stop("number of rows in 'S_0' must equal number of observations.");
-    //}
-
-    //if(S_0.n_cols != data.n_rows){
-    //  Rcpp::stop("number of columns in 'S_0' must equal number of observations.");
-    //}
-
-    //if(m_0.n_elem != data.n_rows){
-    //  Rcpp::stop("number of elements in 'm_0' must equal number of observations.");
-    //}
-
-    //if(par_theta_c < 0){
-    //  Rcpp::stop("'par_theta_c' must be positive.");
-    //}
-
-    //if(par_theta_d < 0){
-    //  Rcpp::stop("'par_theta_d' must be positive.");
-    //}
-
-    //if(prior_var_phi < 0){
-    //  Rcpp::stop("'prior_var_phi' must be positive.");
-    //}
-    // ------- //
 
    // set seed for gsl random distribution generator
    const gsl_rng_type * T;
@@ -3011,8 +2935,8 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' \item{\code{$I0_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 //' }
 //'
-//'@examples
-//'
+//' @examples
+//' \donttest{
 //' data_mat <- matrix(NA, nrow = 1, ncol = 100)
 //'
 //' betas <- c(rep(0.45, 25),rep(0.14,75))
@@ -3024,16 +2948,16 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'
 //' for(j in 1:100){
 //'  if(as.character(j) %in% names(table(floor(inf_times)))){
-//'    inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
-//'  }
+//'  inf_times_vec[j] =
+//'  table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]}
 //' }
 //'
 //' data_mat[1,] <- inf_times_vec
 //'
-//' out <- detect_cp_epi(data = data_mat, n_iterations = 1000, q = 0.5,
-//'                      xi = 1/8, a0 = 40, b0 = 10, M = 1000)
+//' out <- detect_cp_epi(data = data_mat, n_iterations = 250, q = 0.5,
+//'                      xi = 1/8, a0 = 40, b0 = 10, M = 250)
 //'
-//'
+//'}
 // [[Rcpp::export]]
 Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
                          double M, double xi, double a0, double b0, double I0_var = 0.01,
@@ -3174,55 +3098,6 @@ Rcpp::List clust_cp_epi(arma::mat data,
                           double avg_blk = 0.003,
                           bool print_progress = true,
                           unsigned long user_seed = 1234){
-
-  // WARNINGS //
-  if(n_iterations < 1){
-    Rcpp::stop("number of iterations must be at least 1.");
-  }
-
-  if(M < 1){
-    Rcpp::stop("'M' must be at least equal to 1.");
-  }
-
-  if(B < 1){
-    Rcpp::stop("'B' must be at least equal to 1.");
-  }
-
-  if(L < 1){
-    Rcpp::stop("'L' must be at least equal to 1.");
-  }
-
-  if((xi < 0)| (xi > 1)){
-    Rcpp::stop("'xi' must be in the interval (0,1).");
-  }
-
-  if(alpha_SM < 0){
-    Rcpp::stop("'alpha_SM' must be positive.");
-  }
-
-  if((q < 0) | (q > 1)){
-    Rcpp::stop("'q' must be in the interval (0,1).");
-  }
-
-  if(a0 < 0){
-    Rcpp::stop("'a0' must be positive.");
-  }
-
-  if(b0 < 0){
-    Rcpp::stop("'b0' must be positive.");
-  }
-
-
-  if(I0_var < 0){
-    Rcpp::stop("'I0_var' must be positive.");
-  }
-
-  if((avg_blk < 0)){
-    Rcpp::stop("'avg_blk' must be positive.");
-  }
-
-  // ------- //
-
 
  // set seed for gsl random distribution generator
  const gsl_rng_type * T;
@@ -3373,44 +3248,6 @@ Rcpp::List clust_cp_uni(arma::mat data,
                           double alpha_SM = 0.1,
                           bool print_progress = true,
                           unsigned long user_seed = 1234){
-
-// WARNINGS //
-if(n_iterations < 1){
-  Rcpp::stop("number of iterations must be at least 1.");
-}
-
-if(B < 1){
-  Rcpp::stop("'B' must be at least equal to 1.");
-}
-
-if(L < 1){
-  Rcpp::stop("'L' must be at least equal to 1.");
-}
-
-if((phi > 1) | (phi < 0)){
-  Rcpp::stop("'phi' must be included in (0,1).");
-}
-
-if(a < 0){
-  Rcpp::stop("'a' must be positive.");
-}
-
-if(b < 0){
-  Rcpp::stop("'b' must be positive.");
-}
-
-if(c < 0){
-  Rcpp::stop("'c' must be positive.");
-}
-
-
-if((q > 1) | (q < 0)){
-  Rcpp::stop("'q' must be included in (0,1).");
-}
-
-if(alpha_SM <= 0){
-  Rcpp::stop("'alpha_SM' must be positive.");
-}
 
 
 // ------- //
@@ -3772,50 +3609,6 @@ Rcpp::List clust_cp_multi(arma::cube data,
   merge_i(data.n_slices), merge_j(data.n_slices), old_order, order_0, lkl_proposal_m, lkl_old_i_m, lkl_old_j_m, lkl_old_s, lkl_proposal_i_s,lkl_proposal_j_s;
   int id1, id2, id3, id4;
   double alpha;
-
-  // WARNINGS //
-  if(n_iterations < 1){
-    Rcpp::stop("number of iterations must be at least 1.");
-  }
-
-  if(B < 1){
-    Rcpp::stop("'B' must be at least equal to 1.");
-  }
-
-  if(L < 1){
-    Rcpp::stop("'L' must be at least equal to 1.");
-  }
-
-  if((phi > 1) | (phi < 0)){
-    Rcpp::stop("'phi' must be included in (0,1).");
-  }
-
-  if(k_0 < 0){
-    Rcpp::stop("'k_0' must be positive.");
-  }
-
-  if(nu_0 < 0){
-    Rcpp::stop("'nu_0' must be positive.");
-  }
-
-  if(S_0.n_rows != data.slice(0).n_rows){
-    Rcpp::stop("number of rows and columns in 'S_0' must correspond to the number of dimensions of the time series.");
-  }
-
-  if(m_0.n_elem != data.slice(0).n_rows){
-    Rcpp::stop("number of elements in 'm_0' must correspond to the number of dimensions of the time series.");
-  }
-
-  if((q > 1) | (q < 0)){
-    Rcpp::stop("'q' must be included in (0,1).");
-  }
-
-  if(alpha_SM <= 0){
-    Rcpp::stop("'alpha_SM' must be positive.");
-  }
-
-  // ------- //
-
 
   // set seed for gsl random distribution generator
   const gsl_rng_type * T;

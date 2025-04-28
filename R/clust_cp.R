@@ -75,7 +75,7 @@
 #' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                  L = 1, B = 1000, params = list(phi = 0.5), kernel = "ts")
+#'                  L = 1, params = list(phi = 0.5), B = 1000, kernel = "ts")
 #'
 #' print(out)
 #'
@@ -105,9 +105,9 @@
 #' data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 #'
 #' out <- clust_cp(data = data_array, n_iterations = 3000, n_burnin = 1000,
-#'                 params = list(B = 1000, phi = 0.5, k_0 = 0.25,
+#'                 params = list(phi = 0.5, k_0 = 0.25,
 #'                               nu_0 = 5, S_0 = diag(0.1,3,3),
-#'                               m_0 = rep(0,3)), kernel = "ts")
+#'                               m_0 = rep(0,3)), B = 1000,  kernel = "ts")
 #'
 #' print(out)
 #'
@@ -141,7 +141,7 @@
 #' }
 #'
 #' out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
-#'                 params = list(M = 100), kernel = "epi")
+#'                 params = list(M = 100, xi = 1/8), B = 1000, kernel = "epi")
 #'
 #' print(out)
 #' }
@@ -149,8 +149,6 @@
 #' @references
 #'
 #' Corradin, R., Danese, L., KhudaBukhsh, W. R., & Ongaro, A. (2024). \emph{Model-based clustering of time-dependent observations with common structural changes}. arXiv preprint arXiv:2410.09552.
-#'
-#'
 #'
 clust_cp <- function(data,
                      n_iterations,
@@ -199,7 +197,7 @@ clust_cp <- function(data,
       phi_input = ifelse(is.null(params$phi), 0.1, params$phi)
       a_input = ifelse(is.null(params$a), 1, params$a)
       b_input = ifelse(is.null(params$b), 1, params$b)
-      c_input = ifelse(is.null(params$c), 1, params$c)
+      c_input = ifelse(is.null(params$c), 0.1, params$c)
       q_input = ifelse(is.null(params$q), 0.5, params$q)
       #
 

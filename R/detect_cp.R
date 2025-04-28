@@ -12,7 +12,7 @@
 #' @param n_iterations number of MCMC iterations.
 #' @param n_burnin number of iterations that must be excluded when computing the posterior estimate.
 #' @param q probability of performing a split at each iteration.
-#' @param kernek can be "ts" if data are time series or "epi" if data are survival functions.
+#' @param kernel can be "ts" if data are time series or "epi" if data are survival functions.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #'
@@ -92,6 +92,7 @@
 #'
 #' print(out)
 #'
+#' \donttest{
 #' ## Survival functions
 #'
 #' data_mat <- matrix(NA, nrow = 1, ncol = 100)
@@ -111,10 +112,11 @@
 #'
 #' data_mat[1,] <- inf_times_vec
 #'
-#' out <- detect_cp(data = data_mat, n_iterations = 1000, n_burnin = 250,
-#'                  params = list(xi = 1/8, a0 = 40, b0 = 10, M = 1000), kernel = "epi")
+#' out <- detect_cp(data = data_mat, n_iterations = 500, n_burnin = 100,
+#'                  params = list(M = 250, xi = 1/8, a0 = 40, b0 = 10), kernel = "epi")
 #'
 #' print(out)
+#' }
 #'
 #' @references
 #'

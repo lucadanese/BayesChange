@@ -46,8 +46,6 @@ ClustCpObj(
 \item{kernel_epi}{if TRUE data are survival functions.}
 
 \item{univariate_ts}{TRUE/FALSE if time series is univariate or not;}
-
-\item{rho}{a vector with the estimated proportion of infected individuals for each observation.}
 }
 \description{
 A constructor for the \code{ClustCpObj} class. The class \code{ClustCpObj} contains...

@@ -102,7 +102,7 @@ data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
 data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
 out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-                 L = 1, B = 1000, params = list(phi = 0.5), kernel = "ts")
+                 L = 1, params = list(phi = 0.5), B = 1000, kernel = "ts")
 
 print(out)
 
@@ -132,9 +132,9 @@ data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
 
 out <- clust_cp(data = data_array, n_iterations = 3000, n_burnin = 1000,
-                params = list(B = 1000, phi = 0.5, k_0 = 0.25,
+                params = list(phi = 0.5, k_0 = 0.25,
                               nu_0 = 5, S_0 = diag(0.1,3,3),
-                              m_0 = rep(0,3)), kernel = "ts")
+                              m_0 = rep(0,3)), B = 1000,  kernel = "ts")
 
 print(out)
 
@@ -168,7 +168,7 @@ for(i in 1:5){
 }
 
 out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
-                params = list(M = 100), kernel = "epi")
+                params = list(M = 100, xi = 1/8), B = 1000, kernel = "epi")
 
 print(out)
 }

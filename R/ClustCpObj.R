@@ -10,7 +10,6 @@
 #' @param time computational time in seconds;
 #' @param lkl a vector with the likelihood of the final clustering.
 #' @param norm_vec a vector with the estimated normalization constant.
-#' @param rho a vector with the estimated proportion of infected individuals for each observation.
 #' @param I0_MCMC traceplot for \eqn{I_0}.
 #' @param I0_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #' @param kernel_ts if TRUE data are time series.
@@ -330,7 +329,7 @@ plot.ClustCpObj <- function(x, y = NULL,
                              nRuns = 16,
                              maxZealousAttempts = 10, ...) {
 
-  Observation <- Time <- Value <- Cluster <- count <- y <- obs <- NULL
+  Observation <- Time <- Value <- Cluster <- Count <- y <- obs <- NULL
 
   if(x$kernel_ts){
     if(x$univariate_ts){
@@ -383,7 +382,7 @@ plot.ClustCpObj <- function(x, y = NULL,
 
       .data_plot$Observation <- as.factor(.data_plot$Observation)
       .data_plot$Cluster <- as.factor(.data_plot$Cluster)
-      .data_plot$count <- as.factor(.data_plot$Count)
+      .data_plot$Count <- as.factor(.data_plot$Count)
 
       ggplot2::ggplot(.data_plot) +
         ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Observation, group = Count, linetype = Cluster)) +

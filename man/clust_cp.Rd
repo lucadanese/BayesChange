@@ -38,7 +38,7 @@ If the time series is univariate the following must be specified:
 If the time series is multivariate the following must be specified:
 
 \itemize{
-\item \code{k_0},\code{nu_0},\code{S_0},\code{m_0} parameters of the integrated likelihood.
+\item \code{k_0}, \code{nu_0}, \code{S_0}, \code{m_0} parameters of the integrated likelihood.
 \item \code{phi} correlation parameter in the likelihood.
 }
 
@@ -47,9 +47,9 @@ If data are survival functions:
 \itemize{
 \item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
 \item \code{xi} recovery rate fixed constant for each population at each time.
-\item \code{a0},\code{b0} parameters for the computation of the integrated likelihood of the survival functions.
+\item \code{a0}, \code{b0} parameters for the computation of the integrated likelihood of the survival functions.
 \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-\item \code{p} prior average number of change points for each order.
+\item \code{avg_blk} prior average number of change points for each order.
 }}
 
 \item{alpha_SM}{\eqn{\alpha} for the split-merge main algorithm.}

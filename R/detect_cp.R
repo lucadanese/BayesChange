@@ -44,7 +44,6 @@
 #'   \item \code{xi} recovery rate fixed constant for each population at each time.
 #'   \item \code{a0},\code{b0} parameters for the computation of the integrated likelihood of the survival functions.
 #'   \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-#'   \item \code{p} prior average number of change points for each order.
 #' }
 #'
 #' @return A \code{DetectCpObj} class object containing

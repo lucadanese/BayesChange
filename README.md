@@ -1,9 +1,20 @@
 
 <img src="bayeschange_logo.png" width="250" align="center"/>
 
-<!-- badges: start -->
-[![CRAN Status](http://www.r-pkg.org/badges/version/BayesChange)](https://cran.r-project.org/package=BayesChange) `r badge_cran_download("badger", "grand-total", "blue")`
-<!-- badges: end -->
+```{r echo=FALSE, results="hide", message=FALSE}
+library("badger")
+```
+
+```{r, echo = FALSE, results='asis'}
+cat(
+	badge_cran_release("badger", "green"),
+	badge_cran_download("badger", "grand-total", "green"),
+	badge_cran_download("badger", "last-month", "green"),
+	badge_cran_download("badger", "last-week", "green"),
+	badge_github_actions()
+)
+```
+
 
 `BayesChange` provides C++ functions to perform Bayesian change points analysis.
 

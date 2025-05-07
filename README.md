@@ -1,7 +1,7 @@
 
 # BayesChange
 
-![](man/figures/bayeschange_logo.png)
+![](bayeschange_logo.png)
 
 <!-- badges: start -->
 <!-- badges: end -->

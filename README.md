@@ -25,8 +25,8 @@ devtools::install_github("lucadanese/BayesChange")
 
 The package contains two main functions: 
 
-* `detect_cp` detect change points on time series and survival functions. 
-* `clust_cp` cluster time series or survival functions with common change points. 
+* `detect_cp` change points detection on time series and survival functions. 
+* `clust_cp` clustering of time series or survival functions with common change points. 
 
 Additional methods and functions are included: 
 

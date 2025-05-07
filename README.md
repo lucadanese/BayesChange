@@ -1,10 +1,10 @@
 
 # BayesChange
 
-
+<img src="bayeschange_logo.png" width="250" align="center"/>
 
 `BayesChange` provides C++ functions to perform Bayesian change points analysis.
-<img src="bayeschange_logo.png" width="250" align="center"/>
+
 
 
 

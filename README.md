@@ -2,10 +2,7 @@
 <img src="bayeschange_logo.png" width="250" align="center"/>
 
 <!-- badges: start -->
-[![CRAN Status](http://www.r-pkg.org/badges/version/BayesChange)](https://cran.r-project.org/package=BayesChange) [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/BayesChange?color=blue)](https://r-pkg.org/pkg/BayesChange)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2024--01--30-yellowgreen.svg)](https://github.com/lucadanese/BayesChange/commits/master)
-[![R-CMD-check](https://github.com/lucadanese/BayesChange/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lucadanese/BayesChange/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/lucadanese/BayesChange/branch/main/graph/badge.svg)](https://app.codecov.io/gh/lucadanese/BayesChange?branch=main)
+[![CRAN Status](http://www.r-pkg.org/badges/version/BayesChange)](https://cran.r-project.org/package=BayesChange) `r badge_cran_download("badger", "grand-total", "blue")`
 <!-- badges: end -->
 
 `BayesChange` provides C++ functions to perform Bayesian change points analysis.

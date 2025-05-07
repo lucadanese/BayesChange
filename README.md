@@ -1,7 +1,7 @@
 
 # BayesChange
 
-<img src="bayeschange_logo.png" width="400"/>
+<img src="bayeschange_logo.png" alt="drawing" width="250"/>
 
 <!-- badges: start -->
 <!-- badges: end -->

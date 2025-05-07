@@ -1,12 +1,10 @@
 
 # BayesChange
 
+<img src="bayeschange_plot.png" width="400"/>
+
 <!-- badges: start -->
 <!-- badges: end -->
-<p align="center">
-  <img src="bayeschange_plot.png" style="width:40%;">
-</p>
-
 
 `BayesChange` provides C++ functions to perform Bayesian change points analysis. 
 

@@ -24,7 +24,7 @@ data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4,
                               S_0 = diag(1,3,3), m_0 = rep(0,3),
-                              par_theta_c = 2, par_theta_d = 0.2,
+                              prior_delta_c = 2, prior_delta_d = 0.2,
                               prior_var_phi = 0.1), kernel = "ts")
 print(out)
 

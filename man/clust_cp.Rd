@@ -42,12 +42,12 @@ If the time series is multivariate the following must be specified:
 \item \code{phi} correlation parameter in the likelihood.
 }
 
-If data are survival functions:
+If data are epidemic diffusions:
 
 \itemize{
 \item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
 \item \code{xi} recovery rate fixed constant for each population at each time.
-\item \code{a0}, \code{b0} parameters for the computation of the integrated likelihood of the survival functions.
+\item \code{a0}, \code{b0} parameters for the computation of the integrated likelihood of the epidemic diffusions.
 \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 \item \code{avg_blk} prior average number of change points for each order.
 }}
@@ -60,7 +60,7 @@ If data are survival functions:
 
 \item{q}{probability of a split in the split-merge proposal and acceleration step.}
 
-\item{kernel}{can be "ts" if data are time series or "epi" if data are survival functions.}
+\item{kernel}{can be "ts" if data are time series or "epi" if data are epidemic diffusions.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
@@ -86,7 +86,7 @@ A \code{ClustCpObj} class object containing
 }
 }
 \description{
-The \code{clust_cp} function cluster observations with common change points. Data can be time series or survival functions.
+The \code{clust_cp} function cluster observations with common change points. Data can be time series or epidemic diffusions.
 }
 \examples{
 

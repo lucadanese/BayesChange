@@ -11,11 +11,11 @@
 #' @param phi_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 #' @param sigma_MCMC traceplot for \eqn{\sigma}.
 #' @param sigma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
-#' @param theta_MCMC traceplot for \eqn{\theta}.
+#' @param delta_MCMC traceplot for \eqn{\delta}.
 #' @param I0_MCMC traceplot for \eqn{I_0}.
 #' @param I0_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #' @param kernel_ts if TRUE data are time series.
-#' @param kernel_epi if TRUE data are survival functions.
+#' @param kernel_epi if TRUE data are epidemic diffusions.
 #' @param univariate_ts TRUE/FALSE if time series is univariate or not.
 #'
 #'
@@ -30,7 +30,7 @@ DetectCpObj <- function(data = NULL,
                          phi_MCMC_01 = NULL,
                          sigma_MCMC = NULL,
                          sigma_MCMC_01 = NULL,
-                         theta_MCMC = NULL,
+                         delta_MCMC = NULL,
                          I0_MCMC = NULL,
                          I0_MCMC_01 = NULL,
                          kernel_ts = NULL,
@@ -46,7 +46,7 @@ DetectCpObj <- function(data = NULL,
                 phi_MCMC_01 = phi_MCMC_01,
                 sigma_MCMC = sigma_MCMC,
                 sigma_MCMC_01 = sigma_MCMC_01,
-                theta_MCMC = theta_MCMC,
+                delta_MCMC = delta_MCMC,
                 I0_MCMC = I0_MCMC,
                 I0_MCMC_01 = I0_MCMC_01,
                 kernel_ts = kernel_ts,
@@ -72,7 +72,7 @@ DetectCpObj <- function(data = NULL,
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
 #'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4,
 #'                               S_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               par_theta_c = 2, par_theta_d = 0.2,
+#'                               prior_delta_c = 2, prior_delta_d = 0.2,
 #'                               prior_var_phi = 0.1), kernel = "ts")
 #' print(out)
 #'
@@ -111,7 +111,7 @@ print.DetectCpObj <- function(x, ...) {
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
 #'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4,
 #'                               S_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               par_theta_c = 2, par_theta_d = 0.2,
+#'                               prior_delta_c = 2, prior_delta_d = 0.2,
 #'                               prior_var_phi = 0.1), kernel = "ts")
 #' summary(out)
 #'
@@ -297,7 +297,7 @@ posterior_estimate.DetectCpObj <- function(object,
 #'
 #' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
 #'                  params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3),
-#'                                m_0 = rep(0,3), par_theta_c = 2, par_theta_d = 0.2,
+#'                                m_0 = rep(0,3), prior_delta_c = 2, prior_delta_d = 0.2,
 #'                                prior_var_phi = 0.1), kernel = "ts")
 #' plot(out)
 #'

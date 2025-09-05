@@ -12,8 +12,8 @@ detect_cp_uni(
   b = 1,
   c = 0.1,
   prior_var_phi = 0.1,
-  par_theta_c = 1,
-  par_theta_d = 1,
+  prior_delta_c = 1,
+  prior_delta_d = 1,
   print_progress = TRUE,
   user_seed = 1234L
 )
@@ -29,7 +29,7 @@ detect_cp_uni(
 
 \item{prior_var_phi}{parameters for the correlation coefficient in the likelihood.}
 
-\item{par_theta_c, par_theta_d}{parameters of the shifted Gamma prior for \eqn{\theta}.}
+\item{prior_delta_c, prior_delta_d}{parameters of the shifted Gamma prior for \eqn{\delta}.}
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
@@ -41,7 +41,7 @@ Function \code{detect_cp_uni} returns a list containing the following components
 \item{\code{time}} computational time in seconds.
 \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
-\item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+\item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 }
 }
 \description{

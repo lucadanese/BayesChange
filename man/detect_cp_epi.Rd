@@ -28,7 +28,7 @@ detect_cp_epi(
 
 \item{xi}{recovery rate fixed constant for each population at each time.}
 
-\item{a0, b0}{parameters for the computation of the integrated likelihood of the survival functions.}
+\item{a0, b0}{parameters for the computation of the integrated likelihood of the epidemic_diffusions.}
 
 \item{I0_var}{variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.}
 

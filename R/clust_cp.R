@@ -2,7 +2,7 @@
 #' @export clust_cp
 #'
 #' @title Clustering time dependent observations with common change points.
-#' @description The \code{clust_cp} function cluster observations with common change points. Data can be time series or survival functions.
+#' @description The \code{clust_cp} function cluster observations with common change points. Data can be time series or epidemic diffusions.
 #'
 #' @param data a matrix or an array If a matrix the algorithm for
 #' univariate time series is used, where each row is a time series. If an array, the algorithm is run for multivariate time series. Each slice of the array is a matrix where the rows are the dimensions of the time series.
@@ -14,7 +14,7 @@
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param alpha_SM \eqn{\alpha} for the split-merge main algorithm.
 #' @param user_seed seed for random distribution generation.
-#' @param kernel can be "ts" if data are time series or "epi" if data are survival functions.
+#' @param kernel can be "ts" if data are time series or "epi" if data are epidemic diffusions.
 #'
 #' @param params a list of parameters:
 #'
@@ -32,12 +32,12 @@
 #'   \item \code{phi} correlation parameter in the likelihood.
 #' }
 #'
-#' If data are survival functions:
+#' If data are epidemic diffusions:
 #'
 #' \itemize{
 #'   \item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
 #'   \item \code{xi} recovery rate fixed constant for each population at each time.
-#'   \item \code{a0}, \code{b0} parameters for the computation of the integrated likelihood of the survival functions.
+#'   \item \code{a0}, \code{b0} parameters for the computation of the integrated likelihood of the epidemic diffusions.
 #'   \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #'   \item \code{avg_blk} prior average number of change points for each order.
 #' }

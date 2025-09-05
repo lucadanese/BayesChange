@@ -35,7 +35,7 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #' @param q probability of performing a split at each iterations.
 #' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 #' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
-#' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
+#' @param prior_delta_c,prior_delta_d parameters of the shifted Gamma prior for \eqn{\delta}.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
 #' @return Function \code{detect_cp_uni} returns a list containing the following components: \itemize{
@@ -43,7 +43,7 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #' \item{\code{time}} computational time in seconds.
 #' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 #' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
-#' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+#' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 #' }
 #'
 #' @examples
@@ -55,8 +55,8 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #'                             q = 0.25)
 #'
 #'
-detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_var_phi = 0.1, par_theta_c = 1, par_theta_d = 1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, a, b, c, prior_var_phi, par_theta_c, par_theta_d, print_progress, user_seed)
+detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_var_phi = 0.1, prior_delta_c = 1, prior_delta_d = 1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, a, b, c, prior_var_phi, prior_delta_c, prior_delta_d, print_progress, user_seed)
 }
 
 #' @name detect_cp_multi
@@ -69,7 +69,7 @@ detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_va
 #' @param n_iterations number of MCMC iterations.
 #' @param q probability of performing a split at each iteration.
 #' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-#' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
+#' @param prior_delta_c,prior_delta_d parameters for the shifted Gamma prior for \eqn{\delta}.
 #' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
 #' @param print_progress If TRUE (default) print the progress bar.
 #' @param user_seed seed for random distribution generation.
@@ -80,7 +80,7 @@ detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_va
 #' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 #' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 #' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
-#' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+#' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 #' }
 #'
 #' @examples
@@ -94,11 +94,11 @@ detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_va
 #' out <- detect_cp_multi(data = data_mat,
 #'                               n_iterations = 2500,
 #'                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1)
+#'                               prior_delta_c = 2, prior_delta_d = 0.2, prior_var_phi = 0.1)
 #'
 #'
-detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_theta_c = 1, par_theta_d = 1, prior_var_phi = 0.1, print_progress = TRUE, user_seed = 1234L) {
-    .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, S_0, m_0, par_theta_c, par_theta_d, prior_var_phi, print_progress, user_seed)
+detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_delta_c = 1, prior_delta_d = 1, prior_var_phi = 0.1, print_progress = TRUE, user_seed = 1234L) {
+    .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_delta_c, prior_delta_d, prior_var_phi, print_progress, user_seed)
 }
 
 #' @name detect_cp_epi
@@ -112,7 +112,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_thet
 #' @param q probability of performing a split at each iteration.
 #' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
 #' @param xi recovery rate fixed constant for each population at each time.
-#' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
+#' @param a0,b0 parameters for the computation of the integrated likelihood of the epidemic_diffusions.
 #' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #' @param print_progress If TRUE (default) print the progress bar.
 #'
@@ -151,7 +151,7 @@ detect_cp_epi <- function(data, n_iterations, q, M, xi, a0, b0, I0_var = 0.01, p
     .Call(`_BayesChange_detect_cp_epi`, data, n_iterations, q, M, xi, a0, b0, I0_var, print_progress, user_seed)
 }
 
-#' Clustering Epidemiological survival functions with common changes in time
+#' Clustering Epidemiological epidemic_diffusions with common changes in time
 #'
 #' @param data a matrix where each entry is the number of infected for a population (row) at a specific discrete time (column).
 #' @param n_iterations Second value
@@ -161,7 +161,7 @@ detect_cp_epi <- function(data, n_iterations, q, M, xi, a0, b0, I0_var = 0.01, p
 #' @param xi recovery rate fixed constant for each population at each time.
 #' @param alpha_SM \eqn{\alpha} parameter for the main split-merge algorithm.
 #' @param q probability of performing a split when updating the single order for the proposal procedure.
-#' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
+#' @param a0,b0 parameters for the computation of the integrated likelihood of the epidemic_diffusions.
 #' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 #' @param avg_blk average number of change points for the random generated orders.
 #' @param print_progress If TRUE (default) print the progress bar.

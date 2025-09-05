@@ -29,8 +29,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // detect_cp_uni
-Rcpp::List detect_cp_uni(arma::vec data, int n_iterations, double q, double a, double b, double c, double prior_var_phi, double par_theta_c, double par_theta_d, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesChange_detect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP prior_var_phiSEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+Rcpp::List detect_cp_uni(arma::vec data, int n_iterations, double q, double a, double b, double c, double prior_var_phi, double prior_delta_c, double prior_delta_d, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesChange_detect_cp_uni(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP aSEXP, SEXP bSEXP, SEXP cSEXP, SEXP prior_var_phiSEXP, SEXP prior_delta_cSEXP, SEXP prior_delta_dSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -41,17 +41,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     Rcpp::traits::input_parameter< double >::type c(cSEXP);
     Rcpp::traits::input_parameter< double >::type prior_var_phi(prior_var_phiSEXP);
-    Rcpp::traits::input_parameter< double >::type par_theta_c(par_theta_cSEXP);
-    Rcpp::traits::input_parameter< double >::type par_theta_d(par_theta_dSEXP);
+    Rcpp::traits::input_parameter< double >::type prior_delta_c(prior_delta_cSEXP);
+    Rcpp::traits::input_parameter< double >::type prior_delta_d(prior_delta_dSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(detect_cp_uni(data, n_iterations, q, a, b, c, prior_var_phi, par_theta_c, par_theta_d, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(detect_cp_uni(data, n_iterations, q, a, b, c, prior_var_phi, prior_delta_c, prior_delta_d, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }
 // detect_cp_multi
-Rcpp::List detect_cp_multi(arma::mat data, int n_iterations, double q, double k_0, double nu_0, arma::mat S_0, arma::vec m_0, double par_theta_c, double par_theta_d, double prior_var_phi, bool print_progress, unsigned long user_seed);
-RcppExport SEXP _BayesChange_detect_cp_multi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP S_0SEXP, SEXP m_0SEXP, SEXP par_theta_cSEXP, SEXP par_theta_dSEXP, SEXP prior_var_phiSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
+Rcpp::List detect_cp_multi(arma::mat data, int n_iterations, double q, double k_0, double nu_0, arma::mat S_0, arma::vec m_0, double prior_delta_c, double prior_delta_d, double prior_var_phi, bool print_progress, unsigned long user_seed);
+RcppExport SEXP _BayesChange_detect_cp_multi(SEXP dataSEXP, SEXP n_iterationsSEXP, SEXP qSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP S_0SEXP, SEXP m_0SEXP, SEXP prior_delta_cSEXP, SEXP prior_delta_dSEXP, SEXP prior_var_phiSEXP, SEXP print_progressSEXP, SEXP user_seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -62,12 +62,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type nu_0(nu_0SEXP);
     Rcpp::traits::input_parameter< arma::mat >::type S_0(S_0SEXP);
     Rcpp::traits::input_parameter< arma::vec >::type m_0(m_0SEXP);
-    Rcpp::traits::input_parameter< double >::type par_theta_c(par_theta_cSEXP);
-    Rcpp::traits::input_parameter< double >::type par_theta_d(par_theta_dSEXP);
+    Rcpp::traits::input_parameter< double >::type prior_delta_c(prior_delta_cSEXP);
+    Rcpp::traits::input_parameter< double >::type prior_delta_d(prior_delta_dSEXP);
     Rcpp::traits::input_parameter< double >::type prior_var_phi(prior_var_phiSEXP);
     Rcpp::traits::input_parameter< bool >::type print_progress(print_progressSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type user_seed(user_seedSEXP);
-    rcpp_result_gen = Rcpp::wrap(detect_cp_multi(data, n_iterations, q, k_0, nu_0, S_0, m_0, par_theta_c, par_theta_d, prior_var_phi, print_progress, user_seed));
+    rcpp_result_gen = Rcpp::wrap(detect_cp_multi(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_delta_c, prior_delta_d, prior_var_phi, print_progress, user_seed));
     return rcpp_result_gen;
 END_RCPP
 }

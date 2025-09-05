@@ -30,7 +30,7 @@
 \item{...}{parameter of the generic method.}
 }
 \value{
-The function returns a ggplot object representing the time series or the survival functions colored according to the final partition.
+The function returns a ggplot object representing the time series or the epidemic_diffusions colored according to the final partition.
 }
 \description{
 The \code{plot} method plots the estimates partition through the salso algorithm, for a \code{ClustCpObj} class object.
@@ -54,7 +54,7 @@ out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
 plot(out)
 
 
-## Survival functions
+## Epidemic_diffusions
 
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 

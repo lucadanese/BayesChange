@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{clust_cp_epi}
 \alias{clust_cp_epi}
-\title{Clustering Epidemiological survival functions with common changes in time}
+\title{Clustering Epidemiological epidemic_diffusions with common changes in time}
 \usage{
 clust_cp_epi(
   data,
@@ -38,7 +38,7 @@ clust_cp_epi(
 
 \item{q}{probability of performing a split when updating the single order for the proposal procedure.}
 
-\item{a0, b0}{parameters for the computation of the integrated likelihood of the survival functions.}
+\item{a0, b0}{parameters for the computation of the integrated likelihood of the epidemic_diffusions.}
 
 \item{I0_var}{variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.}
 
@@ -58,7 +58,7 @@ Function \code{clust_cp_epi} returns a list containing the following components:
 }
 }
 \description{
-Clustering Epidemiological survival functions with common changes in time
+Clustering Epidemiological epidemic_diffusions with common changes in time
 }
 \examples{
 \donttest{

@@ -14,7 +14,7 @@ DetectCpObj(
   phi_MCMC_01 = NULL,
   sigma_MCMC = NULL,
   sigma_MCMC_01 = NULL,
-  theta_MCMC = NULL,
+  delta_MCMC = NULL,
   I0_MCMC = NULL,
   I0_MCMC_01 = NULL,
   kernel_ts = NULL,
@@ -41,7 +41,7 @@ DetectCpObj(
 
 \item{sigma_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.}
 
-\item{theta_MCMC}{traceplot for \eqn{\theta}.}
+\item{delta_MCMC}{traceplot for \eqn{\delta}.}
 
 \item{I0_MCMC}{traceplot for \eqn{I_0}.}
 
@@ -49,7 +49,7 @@ DetectCpObj(
 
 \item{kernel_ts}{if TRUE data are time series.}
 
-\item{kernel_epi}{if TRUE data are survival functions.}
+\item{kernel_epi}{if TRUE data are epidemic diffusions.}
 
 \item{univariate_ts}{TRUE/FALSE if time series is univariate or not.}
 }

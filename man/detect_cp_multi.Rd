@@ -12,8 +12,8 @@ detect_cp_multi(
   nu_0,
   S_0,
   m_0,
-  par_theta_c = 1,
-  par_theta_d = 1,
+  prior_delta_c = 1,
+  prior_delta_d = 1,
   prior_var_phi = 0.1,
   print_progress = TRUE,
   user_seed = 1234L
@@ -28,7 +28,7 @@ detect_cp_multi(
 
 \item{k_0, nu_0, S_0, m_0}{parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.}
 
-\item{par_theta_c, par_theta_d}{parameters for the shifted Gamma prior for \eqn{\theta}.}
+\item{prior_delta_c, prior_delta_d}{parameters for the shifted Gamma prior for \eqn{\delta}.}
 
 \item{prior_var_phi}{parameters for the correlation coefficient in the likelihood.}
 
@@ -44,7 +44,7 @@ Function \code{detect_cp_multi} returns a list containing the following componen
 \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
-\item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+\item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 }
 }
 \description{
@@ -61,7 +61,7 @@ data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
 out <- detect_cp_multi(data = data_mat,
                               n_iterations = 2500,
                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-                              par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1)
+                              prior_delta_c = 2, prior_delta_d = 0.2, prior_var_phi = 0.1)
 
 
 }

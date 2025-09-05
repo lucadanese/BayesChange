@@ -43,7 +43,7 @@ ClustCpObj(
 
 \item{kernel_ts}{if TRUE data are time series.}
 
-\item{kernel_epi}{if TRUE data are survival functions.}
+\item{kernel_epi}{if TRUE data are epidemic_diffusions.}
 
 \item{univariate_ts}{TRUE/FALSE if time series is univariate or not;}
 }

@@ -497,7 +497,7 @@ double Likelihood_MultiTS(arma::mat data, arma::vec order,
 }
 
 double Prior_TS(arma::vec order,
-                double theta, double sigma){
+                double delta, double sigma){
 
   arma::vec table_order = table_cpp(order), vec_a3;
 
@@ -509,10 +509,10 @@ double Prior_TS(arma::vec order,
   double a2 = 0;
 
   for(int i = 1; i < k; i++){
-    a2 += log(theta + i*sigma);
+    a2 += log(delta + i*sigma);
   }
 
-  a2 = a2 - gsl_sf_lnpoch(theta + 1, n - 1);
+  a2 = a2 - gsl_sf_lnpoch(delta + 1, n - 1);
 
   vec_a3.resize(k);
 
@@ -529,15 +529,15 @@ double Prior_TS(arma::vec order,
 
 double Posterior_MultiTS(arma::mat data, arma::vec order,
                          double gamma, double k_0, double nu_0,
-                         double theta, double sigma,
+                         double delta, double sigma,
                          arma::mat S_0, arma::vec m_0){
-  return Prior_TS(order, theta, sigma) + Likelihood_MultiTS(data, order, gamma, k_0, nu_0, S_0, m_0);
+  return Prior_TS(order, delta, sigma) + Likelihood_MultiTS(data, order, gamma, k_0, nu_0, S_0, m_0);
 }
 
 double Posterior_UniTS(arma::mat data, arma::vec order,
-                       double theta, double sigma, double phi,
+                       double delta, double sigma, double phi,
                        double a, double b, double c){
-  return Prior_TS(order, theta, sigma) + Likelihood_UniTS(data, order, phi, a, b, c);
+  return Prior_TS(order, delta, sigma) + Likelihood_UniTS(data, order, phi, a, b, c);
 }
 
 
@@ -930,7 +930,7 @@ double AlphaSplit_Clust(arma::vec lkl_proposal_i,
 
 
 double AlphaSplit_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
-                             double q, double index, double theta, double sigma, double phi,
+                             double q, double index, double delta, double sigma, double phi,
                              double a, double b, double c){
 
   double k = max(old_order) + 1, a11 = 0, a12 = 0, a13 = 0;
@@ -938,11 +938,11 @@ double AlphaSplit_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order
 
   if((k < data.n_cols) & (k > 1)){
     a11 = log((1-q)/q);
-    a12 = Posterior_UniTS(data, new_order, theta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, theta, sigma, phi, a, b, c);
+    a12 = Posterior_UniTS(data, new_order, delta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, delta, sigma, phi, a, b, c);
     a13 = log(( table_oldorder.n_elem - std::count(table_oldorder.begin(),table_oldorder.end(),1) *(table_oldorder(index) - 1))/k);
   } else if (k == 1) {
     a11 = log(1-q);
-    a12 = Posterior_UniTS(data, new_order, theta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, theta, sigma, phi, a, b, c);
+    a12 = Posterior_UniTS(data, new_order, delta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, delta, sigma, phi, a, b, c);
     a13 = log(data.n_cols-1);
   }
 
@@ -954,7 +954,7 @@ double AlphaSplit_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order
 }
 
 double AlphaMerge_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
-                             double q, double index, double theta, double sigma, double phi,
+                             double q, double index, double delta, double sigma, double phi,
                              double a, double b, double c){
 
   double k = max(old_order) + 1, a11 = 0, a12 = 0, a13 = 0;
@@ -962,11 +962,11 @@ double AlphaMerge_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order
 
   if((k < data.n_cols) & (k > 1)){
     a11 = log(q/(1-q));
-    a12 = Posterior_UniTS(data, new_order, theta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, theta, sigma, phi, a, b, c);
+    a12 = Posterior_UniTS(data, new_order, delta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, delta, sigma, phi, a, b, c);
     a13 = log((k-1) / ((table_oldorder.n_elem - std::count(table_oldorder.begin(),table_oldorder.end(),1) + 1) * (table_oldorder(index) + table_oldorder(index + 1) - 1)) );
   } else if (k == data.n_cols){
     a11 = log(q);
-    a12 = Posterior_UniTS(data, new_order, theta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, theta, sigma, phi, a, b, c);
+    a12 = Posterior_UniTS(data, new_order, delta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, delta, sigma, phi, a, b, c);
     a13 = log(data.n_cols - 1);
   }
 
@@ -977,10 +977,10 @@ double AlphaMerge_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order
 }
 
 double AlphaShuffle_UniTS(arma::mat data, arma::vec new_order, arma::vec old_order,
-                               double theta, double sigma, double phi,
+                               double delta, double sigma, double phi,
                                double a, double b, double c){
 
-  double a1 = Posterior_UniTS(data, new_order, theta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, theta, sigma, phi, a, b, c);
+  double a1 = Posterior_UniTS(data, new_order, delta, sigma, phi, a, b, c) - Posterior_UniTS(data, old_order, delta, sigma, phi, a, b, c);
   double a2 = log(1);
 
   return  my_min(a1,a2);
@@ -988,18 +988,18 @@ double AlphaShuffle_UniTS(arma::mat data, arma::vec new_order, arma::vec old_ord
 
 double AlphaSplit_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                                double q, double index, double gamma, double k_0, double nu_0,
-                               double theta, double sigma,arma::mat S_0, arma::vec m_0){
+                               double delta, double sigma,arma::mat S_0, arma::vec m_0){
 
   double k = max(old_order) + 1, a11 = 0, a12 = 0, a13 = 0;
   arma::vec table_oldorder = table_cpp(old_order);
 
   if((k < data.n_cols) & (k > 1)){
     a11 = log((1-q)/q);
-    a12 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0);
+    a12 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0);
     a13 = log(( table_oldorder.n_elem - std::count(table_oldorder.begin(),table_oldorder.end(),1) *(table_oldorder(index) - 1))/k);
   } else {
     a11 = log(1-q);
-    a12 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0);
+    a12 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0);
     a13 = log(data.n_cols-1);
   }
 
@@ -1012,18 +1012,18 @@ double AlphaSplit_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_ord
 
 double AlphaMerge_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                                double q, double index, double gamma, double k_0, double nu_0,
-                               double theta, double sigma,arma::mat S_0, arma::vec m_0){
+                               double delta, double sigma,arma::mat S_0, arma::vec m_0){
 
   double k = max(old_order) + 1, a11, a12, a13;
   arma::vec table_oldorder = table_cpp(old_order);
 
   if((k < data.n_cols) & (k > 1)){
     a11 = log(q/(1-q));
-    a12 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0);
+    a12 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0);
     a13 = log((k-1) / ((table_oldorder.n_elem - std::count(table_oldorder.begin(),table_oldorder.end(),1) + 1) * (table_oldorder(index) + table_oldorder(index + 1) - 1)) );
   } else {
     a11 = log(q);
-    a12 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0);
+    a12 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0);
     a13 = log(data.n_cols - 1);
   }
 
@@ -1035,9 +1035,9 @@ double AlphaMerge_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_ord
 
 double AlphaShuffle_MultiTS(arma::mat data, arma::vec new_order, arma::vec old_order,
                                  double gamma, double k_0, double nu_0,
-                                 double theta, double sigma,arma::mat S_0, arma::vec m_0){
+                                 double delta, double sigma,arma::mat S_0, arma::vec m_0){
 
-  double a1 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, theta, sigma, S_0, m_0);
+  double a1 = Posterior_MultiTS(data, new_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0) - Posterior_MultiTS(data, old_order, gamma, k_0, nu_0, delta, sigma, S_0, m_0);
   double a2 = log(1);
 
   return  my_min(a1,a2);
@@ -1592,7 +1592,7 @@ arma::vec norm_constant_epi(arma::mat data,
 // -------------------
 
 double FullConditionalPhi(arma::mat data, arma::vec order, double gamma,
-                            double theta, double sigma, double k_0, double nu_0,
+                            double delta, double sigma, double k_0, double nu_0,
                             arma::mat S_0, arma::vec m_0){
 
   double k = max(order) + 1, n = data.n_cols, d = data.n_rows;
@@ -1601,12 +1601,12 @@ double FullConditionalPhi(arma::mat data, arma::vec order, double gamma,
   arma::vec table_order = table_cpp(order);
 
   for(int i = 0; i < k-1; i++){
-    vec_num(i) = theta + (i+1)*sigma;
+    vec_num(i) = delta + (i+1)*sigma;
   }
 
   double num = gsl_sf_lnfact(n) + (k*d/2)*log(k_0) + (k*nu_0/2) * log(arma::det(S_0)) + sum(log(vec_num));
 
-  double den = gsl_sf_lnfact(k) + gsl_sf_lnpoch((theta+1),(n-1)) + (n*d/2) * log(M_PI) + ((n-k)/2)*log(1-std::pow(gamma,2)) + k * lgamma_multi(d, nu_0/2);
+  double den = gsl_sf_lnfact(k) + gsl_sf_lnpoch((delta+1),(n-1)) + (n*d/2) * log(M_PI) + ((n-k)/2)*log(1-std::pow(gamma,2)) + k * lgamma_multi(d, nu_0/2);
 
   for(int i = 0; i < k; i++){
 
@@ -1632,7 +1632,7 @@ double FullConditionalPhi(arma::mat data, arma::vec order, double gamma,
 
 }
 
-double FullConditionalSigma(arma::vec order, double theta, double sigma,
+double FullConditionalSigma(arma::vec order, double delta, double sigma,
                             double a, double b, double c, double d){
 
 
@@ -1643,21 +1643,21 @@ double FullConditionalSigma(arma::vec order, double theta, double sigma,
   arma::vec vec_2(k);
 
   for(int i = 0; i < k - 1; i++){
-    vec_1(i) = log(theta + (i+1)*sigma);
+    vec_1(i) = log(delta + (i+1)*sigma);
   }
 
   for(int i = 0; i < k; i++){
     vec_2(i) = gsl_sf_lnpoch(1 - sigma, table_order(i) - 1);
   }
 
-  double res = (a-1) * log(sigma) + (b-1) * log(1-sigma) + (c-1) * log(theta + sigma) + log(exp(-d*sigma)) + sum(vec_1) + sum(vec_2);
+  double res = (a-1) * log(sigma) + (b-1) * log(1-sigma) + (c-1) * log(delta + sigma) + log(exp(-d*sigma)) + sum(vec_1) + sum(vec_2);
 
   return res;
 
 }
 
 void UpdatePhi(double phi_old, arma::mat data, arma::vec order,
-                 double theta, double sigma, double k_0, double nu_0,
+                 double delta, double sigma, double k_0, double nu_0,
                  arma::mat S_0, arma::vec m_0,
                  arma::vec &phi_inf, arma::vec &phi_inf_10, gsl_rng *r, double prior_var_phi){
 
@@ -1675,8 +1675,8 @@ void UpdatePhi(double phi_old, arma::mat data, arma::vec order,
 
   double deriv_inv = abs(exp(tau) / std::pow(1+exp(tau),2));
 
-  double alpha_MH = FullConditionalPhi(data, order, phi_new, theta, sigma, k_0,
-                                       nu_0, S_0, m_0) + log(deriv_inv_star) - FullConditionalPhi(data, order, phi_old, theta, sigma, k_0,
+  double alpha_MH = FullConditionalPhi(data, order, phi_new, delta, sigma, k_0,
+                                       nu_0, S_0, m_0) + log(deriv_inv_star) - FullConditionalPhi(data, order, phi_old, delta, sigma, k_0,
                                        nu_0, S_0, m_0) - log(deriv_inv);
 
   if(log(arma::randu()) <= my_min(alpha_MH,log(1))){
@@ -1689,14 +1689,14 @@ void UpdatePhi(double phi_old, arma::mat data, arma::vec order,
 
 }
 
-void UpdateSigma(arma::vec order, double theta, double sigma,
+void UpdateSigma(arma::vec order, double delta, double sigma,
                  arma::vec &sigma_inf, arma::vec &sigma_inf_10, gsl_rng *r){
 
   sigma_inf.resize(sigma_inf.n_elem + 1);
   sigma_inf_10.resize(sigma_inf_10.n_elem + 1);
 
   double sigma_new = gsl_ran_beta(r, 1, 1);
-  double alpha_MH = FullConditionalSigma(order, theta, sigma_new, 1, 1, 1, 1) - FullConditionalSigma(order, theta, sigma, 1, 1, 1, 1);
+  double alpha_MH = FullConditionalSigma(order, delta, sigma_new, 1, 1, 1, 1) - FullConditionalSigma(order, delta, sigma, 1, 1, 1, 1);
 
   if(log(arma::randu()) <= my_min(alpha_MH,log(1))){
     sigma_inf(sigma_inf.n_elem - 1) = sigma_new;
@@ -1708,20 +1708,20 @@ void UpdateSigma(arma::vec order, double theta, double sigma,
 
 }
 
-void UpdateTheta(double theta,double sigma, arma::vec order,  arma::vec &theta_inf,  double prior_theta_c, double prior_theta_d, gsl_rng *r){
+void UpdateDelta(double delta,double sigma, arma::vec order,  arma::vec &delta_inf,  double prior_delta_c, double prior_delta_d, gsl_rng *r){
 
-  theta_inf.resize(theta_inf.n_elem + 1);
+  delta_inf.resize(delta_inf.n_elem + 1);
 
   double k = max(order) + 1;
   double n = order.n_elem;
   arma::vec vec(k+1);
 
-  double z = gsl_ran_beta(r, theta + 2, n);
-  double f = gsl_ran_exponential(r, theta + 1);
+  double z = gsl_ran_beta(r, delta + 2, n);
+  double f = gsl_ran_exponential(r, delta + 1);
 
   for(int i = 0; i < k + 1; i++){
-    double omega_j_num = (n - sigma) * (n+1-sigma) * AbsStirling1st(k-1,i) + (2*n + 1 - 2*sigma) * sigma * AbsStirling1st(k-1,i-1) + std::pow(sigma,2) * AbsStirling1st(k-1,i-2) + gsl_sf_gamma(prior_theta_c + i);
-    double omega_j_den = std::pow(sigma*(prior_theta_d + f - log(z)), i);
+    double omega_j_num = (n - sigma) * (n+1-sigma) * AbsStirling1st(k-1,i) + (2*n + 1 - 2*sigma) * sigma * AbsStirling1st(k-1,i-1) + std::pow(sigma,2) * AbsStirling1st(k-1,i-2) + gsl_sf_gamma(prior_delta_c + i);
+    double omega_j_den = std::pow(sigma*(prior_delta_d + f - log(z)), i);
     vec(i) = omega_j_num / omega_j_den;
 
   }
@@ -1740,7 +1740,7 @@ void UpdateTheta(double theta,double sigma, arma::vec order,  arma::vec &theta_i
 
   }
 
-  theta_inf(theta_inf.n_elem - 1) = rshiftedgamma(prior_theta_c + (component - 1), prior_theta_d + f - std::log(z), sigma, r) ;
+  delta_inf(delta_inf.n_elem - 1) = rshiftedgamma(prior_delta_c + (component - 1), prior_delta_d + f - std::log(z), sigma, r) ;
 
 }
 
@@ -2534,7 +2534,7 @@ return infection_times;
 //' @param q probability of performing a split at each iterations.
 //' @param a,b,c parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
 //' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
-//' @param par_theta_c,par_theta_d parameters of the shifted Gamma prior for \eqn{\theta}.
+//' @param prior_delta_c,prior_delta_d parameters of the shifted Gamma prior for \eqn{\delta}.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
 //' @return Function \code{detect_cp_uni} returns a list containing the following components: \itemize{
@@ -2542,7 +2542,7 @@ return infection_times;
 //' \item{\code{time}} computational time in seconds.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 //' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
-//' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+//' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 //' }
 //'
 //' @examples
@@ -2559,8 +2559,8 @@ Rcpp::List detect_cp_uni(arma::vec data,
                                 int n_iterations, double q,
                                 double a = 1, double b = 1, double c = 0.1,
                                 double prior_var_phi = 0.1,
-                                double par_theta_c = 1,
-                                double par_theta_d = 1,
+                                double prior_delta_c = 1,
+                                double prior_delta_d = 1,
                                 bool print_progress = true,
                                 unsigned long user_seed = 1234){
 
@@ -2577,7 +2577,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
  gsl_rng_set(r, user_seed);
  //
 
- arma::vec res_order, probs(2), phi_inf(1), phi_inf_10(1), sigma_inf(1), sigma_inf_10(1), theta_inf(1);
+ arma::vec res_order, probs(2), phi_inf(1), phi_inf_10(1), sigma_inf(1), sigma_inf_10(1), delta_inf(1);
  arma::mat data_mat(1,data.n_elem), res_mat(n_iterations, data_mat.n_cols);
 
  // add a random initialisation for the gamma param
@@ -2585,7 +2585,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
  phi_inf_10(0) = 0;
  sigma_inf(0) = 0.1;
  sigma_inf_10(0) = 0;
- theta_inf(0) = 0.1;
+ delta_inf(0) = 0.1;
 
  for(arma::uword i = 0; i < data.n_elem; i++){
    data_mat.row(0).col(i) = data(i);
@@ -2619,7 +2619,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_split = AlphaSplit_UniTS(data_mat, split_order, order, q, split_index, theta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
+     double alpha_split = AlphaSplit_UniTS(data_mat, split_order, order, q, split_index, delta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
 
 
      if(log(arma::randu()) <= alpha_split){
@@ -2643,7 +2643,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_merge = AlphaMerge_UniTS(data_mat, merge_order, order, q, merge_index, theta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
+     double alpha_merge = AlphaMerge_UniTS(data_mat, merge_order, order, q, merge_index, delta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
 
      if(log(arma::randu()) <= alpha_merge){
        res_order = merge_order;
@@ -2665,7 +2665,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
      /// evaluate the proposed order
 
-     double alpha_shuffle = AlphaShuffle_UniTS(data_mat, shuffle_order, order, theta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
+     double alpha_shuffle = AlphaShuffle_UniTS(data_mat, shuffle_order, order, delta_inf(iter), sigma_inf(iter), phi_inf(iter), a, b, c);
 
      if(log(arma::randu()) <= alpha_shuffle){
        res_order = shuffle_order;
@@ -2686,12 +2686,12 @@ Rcpp::List detect_cp_uni(arma::vec data,
    double nu_0 = 1;
 
    // Posterior infererence on main parameters
-   UpdatePhi(phi_inf(iter), data_mat, order, theta_inf(iter), sigma_inf(iter), k_0, nu_0,
+   UpdatePhi(phi_inf(iter), data_mat, order, delta_inf(iter), sigma_inf(iter), k_0, nu_0,
              S_0, m_0, phi_inf, phi_inf_10, r, prior_var_phi);
 
-   UpdateSigma(order, theta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
+   UpdateSigma(order, delta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
 
-   UpdateTheta(theta_inf(iter), sigma_inf(iter+1), order, theta_inf, par_theta_c, par_theta_d, r);
+   UpdateDelta(delta_inf(iter), sigma_inf(iter+1), order, delta_inf, prior_delta_c, prior_delta_d, r);
    //
 
    res_mat.row(iter) = order.t();
@@ -2714,7 +2714,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
  out_list["phi_MCMC_01"] = phi_inf_10;
  out_list["sigma_MCMC"] = sigma_inf;
  out_list["sigma_MCMC_01"] = sigma_inf_10;
- out_list["theta_MCMC"] = theta_inf;
+ out_list["delta_MCMC"] = delta_inf;
 
  gsl_rng_free (r);
 
@@ -2734,7 +2734,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //' @param n_iterations number of MCMC iterations.
 //' @param q probability of performing a split at each iteration.
 //' @param k_0,nu_0,S_0,m_0 parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-//' @param par_theta_c,par_theta_d parameters for the shifted Gamma prior for \eqn{\theta}.
+//' @param prior_delta_c,prior_delta_d parameters for the shifted Gamma prior for \eqn{\delta}.
 //' @param prior_var_phi parameters for the correlation coefficient in the likelihood.
 //' @param print_progress If TRUE (default) print the progress bar.
 //' @param user_seed seed for random distribution generation.
@@ -2745,7 +2745,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
 //' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
-//' \item{\code{$theta_MCMC}} traceplot for \eqn{\theta}.
+//' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 //' }
 //'
 //' @examples
@@ -2759,14 +2759,14 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //' out <- detect_cp_multi(data = data_mat,
 //'                               n_iterations = 2500,
 //'                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-//'                               par_theta_c = 2, par_theta_d = 0.2, prior_var_phi = 0.1)
+//'                               prior_delta_c = 2, prior_delta_d = 0.2, prior_var_phi = 0.1)
 //'
 //'
 // [[Rcpp::export]]
 Rcpp::List detect_cp_multi(arma::mat data,
                                   int n_iterations, double q, double k_0, double nu_0,
                                   arma::mat S_0, arma::vec m_0,
-                                  double par_theta_c = 1, double par_theta_d = 1, double prior_var_phi = 0.1,
+                                  double prior_delta_c = 1, double prior_delta_d = 1, double prior_var_phi = 0.1,
                                   bool print_progress = true, unsigned long user_seed = 1234){
 
    // set seed for gsl random distribution generator
@@ -2778,14 +2778,14 @@ Rcpp::List detect_cp_multi(arma::mat data,
    gsl_rng_set(r, user_seed);
    //
 
-   arma::vec res_order, probs(2), phi_inf(1), phi_inf_10(1), sigma_inf(1), sigma_inf_10(1), theta_inf(1);
+   arma::vec res_order, probs(2), phi_inf(1), phi_inf_10(1), sigma_inf(1), sigma_inf_10(1), delta_inf(1);
    arma::mat res_mat(n_iterations, data.n_cols);
 
    phi_inf(0) = 0.5; // add a random initialisation for the gamma param
    phi_inf_10(0) = 0;
    sigma_inf(0) = 0.1;
    sigma_inf_10(0) = 0;
-   theta_inf(0) = 0.1;
+   delta_inf(0) = 0.1;
 
    //generate random starting order
    arma::vec order = generate_random_order(data.n_cols, 2/data.n_cols, r);
@@ -2819,7 +2819,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_split = AlphaSplit_MultiTS(data, split_order, order, q, split_index, phi_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
+       double alpha_split = AlphaSplit_MultiTS(data, split_order, order, q, split_index, phi_inf(iter), k_0, nu_0, delta_inf(iter), sigma_inf(iter), S_0, m_0);
 
        if(log(arma::randu()) <= alpha_split){
          res_order = split_order;
@@ -2842,7 +2842,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_merge = AlphaMerge_MultiTS(data, merge_order, order, q, merge_index, phi_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
+       double alpha_merge = AlphaMerge_MultiTS(data, merge_order, order, q, merge_index, phi_inf(iter), k_0, nu_0, delta_inf(iter), sigma_inf(iter), S_0, m_0);
 
        if(log(arma::randu()) <= alpha_merge){
          res_order = merge_order;
@@ -2864,7 +2864,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
        /// evaluate the proposed order
 
-       double alpha_shuffle = AlphaShuffle_MultiTS(data, shuffle_order, order, phi_inf(iter), k_0, nu_0, theta_inf(iter), sigma_inf(iter), S_0, m_0);
+       double alpha_shuffle = AlphaShuffle_MultiTS(data, shuffle_order, order, phi_inf(iter), k_0, nu_0, delta_inf(iter), sigma_inf(iter), S_0, m_0);
 
        if(log(arma::randu()) <= alpha_shuffle){
          res_order = shuffle_order;
@@ -2876,12 +2876,12 @@ Rcpp::List detect_cp_multi(arma::mat data,
      order = res_order;
 
      // Posterior infererence on main parameters
-     UpdatePhi(phi_inf(iter), data, order, theta_inf(iter), sigma_inf(iter), k_0, nu_0,
+     UpdatePhi(phi_inf(iter), data, order, delta_inf(iter), sigma_inf(iter), k_0, nu_0,
                  S_0, m_0, phi_inf, phi_inf_10, r, prior_var_phi);
 
-     UpdateSigma(order, theta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
+     UpdateSigma(order, delta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
 
-     UpdateTheta(theta_inf(iter), sigma_inf(iter+1), order, theta_inf, par_theta_c, par_theta_d, r);
+     UpdateDelta(delta_inf(iter), sigma_inf(iter+1), order, delta_inf, prior_delta_c, prior_delta_d, r);
      //
 
      res_mat.row(iter) = order.t();
@@ -2904,7 +2904,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
    out_list["phi_MCMC_01"] = phi_inf_10;
    out_list["sigma_MCMC"] = sigma_inf;
    out_list["sigma_MCMC_01"] = sigma_inf_10;
-   out_list["theta_MCMC"] = theta_inf;
+   out_list["delta_MCMC"] = delta_inf;
 
    gsl_rng_free (r);
 
@@ -2923,7 +2923,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @param q probability of performing a split at each iteration.
 //' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
 //' @param xi recovery rate fixed constant for each population at each time.
-//' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
+//' @param a0,b0 parameters for the computation of the integrated likelihood of the epidemic_diffusions.
 //' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 //' @param print_progress If TRUE (default) print the progress bar.
 //'
@@ -3029,7 +3029,7 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
 
 
 
-//' Clustering Epidemiological survival functions with common changes in time
+//' Clustering Epidemiological epidemic_diffusions with common changes in time
 //'
 //' @param data a matrix where each entry is the number of infected for a population (row) at a specific discrete time (column).
 //' @param n_iterations Second value
@@ -3039,7 +3039,7 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
 //' @param xi recovery rate fixed constant for each population at each time.
 //' @param alpha_SM \eqn{\alpha} parameter for the main split-merge algorithm.
 //' @param q probability of performing a split when updating the single order for the proposal procedure.
-//' @param a0,b0 parameters for the computation of the integrated likelihood of the survival functions.
+//' @param a0,b0 parameters for the computation of the integrated likelihood of the epidemic_diffusions.
 //' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
 //' @param avg_blk average number of change points for the random generated orders.
 //' @param print_progress If TRUE (default) print the progress bar.

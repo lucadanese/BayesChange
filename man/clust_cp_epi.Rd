@@ -26,7 +26,7 @@ clust_cp_epi(
 
 \item{n_iterations}{Second value}
 
-\item{M}{number of Monte Carlo iterations when computing the likelihood of the survival function.}
+\item{M}{number of Monte Carlo iterations when computing the likelihood of the epidemic diffusion.}
 
 \item{B}{number of orders for the normalisation constant.}
 

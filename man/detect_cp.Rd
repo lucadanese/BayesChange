@@ -16,9 +16,7 @@ detect_cp(
 )
 }
 \arguments{
-\item{data}{a vector or a matrix. If a vector the algorithm for
-univariate time series is used. If a matrix, where rows are the observations
-and columns are the times, then the algorithm for multivariate time series is used.}
+\item{data}{if kernel = "ts" a vector or a matrix. If kernel = "epi" a matrix.}
 
 \item{n_iterations}{number of MCMC iterations.}
 
@@ -49,7 +47,7 @@ If the time series is multivariate the following must be specified:
 If data are epidemic diffusions:
 
 \itemize{
-\item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
+\item \code{M} number of Monte Carlo iterations when computing the likelihood of the epidemic diffusion.
 \item \code{xi} recovery rate fixed constant for each population at each time.
 \item \code{a0},\code{b0} parameters for the computation of the integrated likelihood of the epidemic diffusions.
 \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
@@ -113,7 +111,7 @@ print(out)
 \donttest{
 ## Epidemic diffusions
 
-data_mat <- matrix(NA, nrow = 1, ncol = 100)
+data_mat <- matrix(NA, nrow = 100, ncol = 1)
 
 betas <- c(rep(0.45, 25),rep(0.14,75))
 
@@ -128,7 +126,7 @@ for(j in 1:100){
  }
 }
 
-data_mat[1,] <- inf_times_vec
+data_mat[,1] <- inf_times_vec
 
 out <- detect_cp(data = data_mat, n_iterations = 500, n_burnin = 100,
                  params = list(M = 250, xi = 1/8, a0 = 40, b0 = 10), kernel = "epi")

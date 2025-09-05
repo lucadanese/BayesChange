@@ -35,7 +35,7 @@
 #' If data are epidemic diffusions:
 #'
 #' \itemize{
-#'   \item \code{M} number of Monte Carlo iterations when computing the likelihood of the survival function.
+#'   \item \code{M} number of Monte Carlo iterations when computing the likelihood of the epidemic diffusion.
 #'   \item \code{xi} recovery rate fixed constant for each population at each time.
 #'   \item \code{a0}, \code{b0} parameters for the computation of the integrated likelihood of the epidemic diffusions.
 #'   \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
@@ -56,7 +56,7 @@
 #'   \item \code{I0_MCMC} traceplot for \eqn{I_0}.
 #'   \item \code{I0_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #'   \item \code{$kernel_ts} if TRUE data are time series.
-#'   \item \code{$kernel_epi} if TRUE data are survival function.
+#'   \item \code{$kernel_epi} if TRUE data are epidemic diffusion.
 #'   \item \code{$univariate_ts} TRUE if data is an univariate time series, FALSE if it is a multivariate time series.
 #' }
 #'

@@ -2915,13 +2915,13 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' @name detect_cp_epi
 //' @export detect_cp_epi
 //'
-//' @title Detect Change Points on a survival function
-//' @description Detect Change Points on a survival function
+//' @title Detect Change Points on a epidemic diffusion
+//' @description Detect Change Points on a epidemic diffusion
 //'
-//' @param data a matrix where each row is a component of the time series and the columns correspond to the times.
+//' @param data a matrix where each column is a component of the epidemic diffusion and the rows correspond to the times.
 //' @param n_iterations number of MCMC iterations.
 //' @param q probability of performing a split at each iteration.
-//' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
+//' @param M number of Monte Carlo iterations when computing the likelihood of the epidemic diffusion.
 //' @param xi recovery rate fixed constant for each population at each time.
 //' @param a0,b0 parameters for the computation of the integrated likelihood of the epidemic_diffusions.
 //' @param I0_var variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
@@ -2952,7 +2952,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'  table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]}
 //' }
 //'
-//' data_mat[1,] <- inf_times_vec
+//' data_mat[,1] <- inf_times_vec
 //'
 //' out <- detect_cp_epi(data = data_mat, n_iterations = 250, q = 0.5,
 //'                      xi = 1/8, a0 = 40, b0 = 10, M = 250)
@@ -2971,6 +2971,8 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
    r = gsl_rng_alloc (T);
    gsl_rng_set(r, user_seed);
    //
+
+   data = data.t();
 
    arma::vec clust(data.n_rows), llik(data.n_rows), rho(data.n_rows), rho01(data.n_rows);
 
@@ -3033,7 +3035,7 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
 //'
 //' @param data a matrix where each entry is the number of infected for a population (row) at a specific discrete time (column).
 //' @param n_iterations Second value
-//' @param M number of Monte Carlo iterations when computing the likelihood of the survival function.
+//' @param M number of Monte Carlo iterations when computing the likelihood of the epidemic diffusion.
 //' @param B number of orders for the normalisation constant.
 //' @param L number of split-merge steps for the proposal step.
 //' @param xi recovery rate fixed constant for each population at each time.

@@ -360,7 +360,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         }
 
         .data_plot <- as.data.frame(cbind(vec_data, sort(rep(1:nrow(x$data),ncol(x$data)))))
-        .data_plot$V2 <- factor(.data_plot$V2, labels = unique(paste0("obs ", .data_plot$V2)) )
+        .data_plot$V2 <- factor(.data_plot$V2, labels = unique(paste0("d = ", .data_plot$V2)) )
         .data_plot$time <- rep(1:ncol(x$data),nrow(x$data))
 
         p1 <- ggplot2::ggplot(.data_plot) +

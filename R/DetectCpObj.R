@@ -89,7 +89,7 @@ print.DetectCpObj <- function(x, ...) {
     }
   }
   if(x$kernel_epi){
-    cat("Type: change points detection on a epidemic diffusion")
+    cat("Type: change points detection on an epidemic diffusion")
   }
 
 }
@@ -135,7 +135,7 @@ summary.DetectCpObj <- function(object, ...) {
   }
 
   if(object$kernel_epi){
-    cat("Detecting change points on a epidemic diffusion:\n",
+    cat("Detecting change points on an epidemic diffusion:\n",
         "Number of burn-in iterations:", object$n_burnin, "\n",
         "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
         "Computational time:", round(object$time, digits = 2), "seconds\n")

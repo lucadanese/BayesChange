@@ -384,6 +384,8 @@ plot.DetectCpObj <- function(x, y = NULL,
       est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                   nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
+      data = t(data)
+
       .df_sf_plot <- data.frame(as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
                                 rep(1:ncol(x$data), nrow(x$data)),
                                 rep(1:ncol(x$data),nrow(x$data)),
@@ -524,6 +526,8 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                   nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
+
+      data = t(data)
 
       .df_sf_plot <- data.frame(as.vector(sapply(1:nrow(x$data), function(y) 1 - cumsum(x$data[y,]) / sum(x$data[y,]))),
                                 rep(1:ncol(x$data), nrow(x$data)),

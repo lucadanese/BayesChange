@@ -1,3 +1,5 @@
+# BayesChange 2.1.1
+
 # BayesChange 2.1.0
 
 * Now with BayesChange is possible to detect change points also on survival functions. 

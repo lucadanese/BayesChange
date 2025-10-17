@@ -25,12 +25,12 @@ devtools::install_github("lucadanese/BayesChange")
 
 The package contains two main functions: 
 
-* `detect_cp` change points detection on time series and survival functions. 
-* `clust_cp` clustering of time series or survival functions with common change points. 
+* `detect_cp` change points detection on time series and epidemic diffusions. 
+* `clust_cp` clustering of time series or epidemic diffusions with common change points. 
 
 Additional methods and functions are included: 
 
-* `print()` and `summary()` give informations about the algorithm.
+* `print()` and `summary()` return information about the algorithm.
 * `posterior_estimate()` estimates the change points or the final partition of the data. 
 * `plot()` provides a graphical representation of the results. 
 * `sim_epi_data()` generates an arbitrary number of simulated survival functions. 
@@ -52,6 +52,7 @@ print(out)
 summary(out)
 posterior_estimate(out)
 plot(out)
+
 
 ``` 
 
@@ -78,7 +79,7 @@ plot(out)
 
 ``` r
 
-## Survival functions 
+## Epidemic diffusions
 
 data_mat <- matrix(NA, nrow = 1, ncol = 100)
 
@@ -172,7 +173,7 @@ plot(out)
 
 ``` r
 
-## Epidemiological data
+## Epidemic diffusions
 
 data_mat <- matrix(NA, nrow = 5, ncol = 50)
 

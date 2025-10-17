@@ -8,7 +8,7 @@
 #' @param clust a matrix with the clustering of each iteration.
 #' @param orders a matrix where each row corresponds to the output order of the corresponding iteration;
 #' @param time computational time in seconds;
-#' @param lkl a vector with the likelihood of the final clustering.
+#' @param lkl a vector with the likelihood of the final partition
 #' @param norm_vec a vector with the estimated normalization constant.
 #' @param I0_MCMC traceplot for \eqn{I_0}.
 #' @param I0_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.

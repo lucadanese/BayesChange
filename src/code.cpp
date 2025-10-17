@@ -334,10 +334,7 @@ double Likelihood_UniTS(arma::mat data, arma::vec order,
     } else {
       arma::vec table_order_temp = table_order.subvec(0,i-1);
       gamma_k = data.row(0).cols(sum(table_order_temp), sum(table_order_temp) + n_i - 1);
-
     }
-
-
 
     if((n_i != 1) & (n_i != 2)){
 
@@ -351,13 +348,13 @@ double Likelihood_UniTS(arma::mat data, arma::vec order,
 
       S_i(n_i-1,n_i-1) = 1;
 
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1+std::pow(phi,2)) - std::log(c) - std::log(n_i) + std::log(phi) + std::log(n_i-c-2)) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).cols(1,gamma_k.n_cols - 2)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
+      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1-std::pow(phi,2)) - std::log(c + n_i - phi * (n_i-c-2))) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).cols(1,gamma_k.n_cols - 2)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
     } else if (n_i == 1) {
 
       arma::mat S_i(1,1,arma::fill::zeros);
       S_i(0,0) = 1;
 
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1+std::pow(phi,2)) - std::log(c) - std::log(n_i) + std::log(phi) + std::log(n_i-c-2)) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
+      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1-std::pow(phi,2)) - std::log(c + n_i - phi * (n_i-c-2))) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
     } else if (n_i == 2) {
 
       arma::mat S_i(n_i,n_i,arma::fill::zeros);
@@ -370,15 +367,10 @@ double Likelihood_UniTS(arma::mat data, arma::vec order,
 
       S_i(n_i-1,n_i-1) = 1;
 
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1+std::pow(phi,2)) - std::log(c) - std::log(n_i) + std::log(phi) + std::log(n_i-c-2)) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).col(1)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
-
+      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1-std::pow(phi,2)) - std::log(c + n_i - phi * (n_i-c-2))) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).col(1)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
     }
-
-
   }
-
   return sum(vec_likelihood);
-
 }
 
 
@@ -1746,7 +1738,7 @@ void UpdateDelta(double delta,double sigma, arma::vec order,  arma::vec &delta_i
 
 
 
-void update_rho(arma::mat data,
+void update_I0(arma::mat data,
                 arma::vec &rho,
                 arma::vec &rho01,
                 double a0,
@@ -2355,7 +2347,7 @@ Rcpp::List marginal_CP(arma::mat data,
   // start
   for(int iter = 0; iter < niter; iter++){
 
-    update_rho(data, rho, rho01, a0, b0, c0, d0, I0_var, gamma, dt, M,
+    update_I0(data, rho, rho01, a0, b0, c0, d0, I0_var, gamma, dt, M,
                S0, R0, llik, clust, orders);
 
     for(arma::uword j = 0; j < orders.n_rows; j++){
@@ -3001,7 +2993,7 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
    }
 
    for(int iter = 0; iter < n_iterations; iter++){
-    update_rho(data, rho, rho01, a0, b0, c0, d0, I0_var, xi, dt, M, S0, R0, llik, clust, order);
+    update_I0(data, rho, rho01, a0, b0, c0, d0, I0_var, xi, dt, M, S0, R0, llik, clust, order);
     update_single_order(data, clust, 0, order, llik, q, dt, a0, b0, xi, rho, M, S0, R0);
 
     orders_output.row(iter) = order.row(0);
@@ -3160,7 +3152,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
  // start
  for(int iter = 0; iter < n_iterations; iter++){
 
-   update_rho(data, rho, rho01, a0, b0, c0, d0, I0_var, xi, dt, M,
+   update_I0(data, rho, rho01, a0, b0, c0, d0, I0_var, xi, dt, M,
               S0, R0, llik, clust, orders);
 
 

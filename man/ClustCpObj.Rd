@@ -33,7 +33,7 @@ ClustCpObj(
 
 \item{time}{computational time in seconds;}
 
-\item{lkl}{a vector with the likelihood of the final clustering.}
+\item{lkl}{a vector with the likelihood of the final partition}
 
 \item{norm_vec}{a vector with the estimated normalization constant.}
 

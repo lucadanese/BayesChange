@@ -8,11 +8,11 @@
 #' univariate time series is used, where each row is a time series. If an array, the algorithm is run for multivariate time series. Each slice of the array is a matrix where the rows are the dimensions of the time series.
 #' @param n_iterations number of MCMC iterations.
 #' @param n_burnin number of iterations that must be excluded when computing the posterior estimate.
+#' @param alpha_SM \eqn{\alpha} for the split-merge main algorithm.
 #' @param B number of orders for the normalization constant.
 #' @param L number of split-merge steps for the proposal step.
 #' @param q probability of a split in the split-merge proposal and acceleration step.
 #' @param print_progress If TRUE (default) print the progress bar.
-#' @param alpha_SM \eqn{\alpha} for the split-merge main algorithm.
 #' @param user_seed seed for random distribution generation.
 #' @param kernel can be "ts" if data are time series or "epi" if data are epidemic diffusions.
 #'

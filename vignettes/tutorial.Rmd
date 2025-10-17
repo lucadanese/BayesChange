@@ -87,7 +87,7 @@ plot(out, loss = "binder", plot_freq = TRUE)
 Function `detect_cp` can also be used to detect change points on survival functions. We define a matrix of one row and a vector with the infection rates.
 
 ```{r}
-data_mat <- matrix(NA, nrow = 1, ncol = 100)
+data_mat <- matrix(NA, nrow = 100, ncol = 1)
 
 betas <- c(rep(0.45, 25),rep(0.14,75))
 ```
@@ -101,12 +101,12 @@ inf_times_vec <- rep(0,100)
 names(inf_times_vec) <- as.character(1:100)
 
 for(j in 1:100){
-  if(as.character(j) %in% names(table(floor(inf_times)))){
-    inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
-  }
+ if(as.character(j) %in% names(table(floor(inf_times)))){
+   inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
+ }
 }
 
-data_mat[1,] <- inf_times_vec
+data_mat[,1] <- inf_times_vec
 ```
 
 To run `detect_cp` on epidemiological data we need to set `kernel = "epi"`. Moreover, besides the usual parameters, we need to set the number of Monte Carlo replications `M` for the approximation of the integrated likelihood and the recovery rate `xi`. `a0` and `b0` are optional and correspond to the parameters of the gamma distribution for the integration of the likelihood. 

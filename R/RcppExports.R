@@ -126,7 +126,7 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_de
 #'
 #' @examples
 #' \donttest{
-#' data_mat <- matrix(NA, nrow = 1, ncol = 100)
+#' data_mat <- matrix(NA, nrow = 100, ncol = 1)
 #'
 #' betas <- c(rep(0.45, 25),rep(0.14,75))
 #'
@@ -137,8 +137,8 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_de
 #'
 #' for(j in 1:100){
 #'  if(as.character(j) %in% names(table(floor(inf_times)))){
-#'  inf_times_vec[j] =
-#'  table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]}
+#'  inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
+#'  }
 #' }
 #'
 #' data_mat[,1] <- inf_times_vec

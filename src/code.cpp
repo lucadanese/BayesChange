@@ -2929,7 +2929,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'
 //' @examples
 //' \donttest{
-//' data_mat <- matrix(NA, nrow = 1, ncol = 100)
+//' data_mat <- matrix(NA, nrow = 100, ncol = 1)
 //'
 //' betas <- c(rep(0.45, 25),rep(0.14,75))
 //'
@@ -2940,8 +2940,8 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'
 //' for(j in 1:100){
 //'  if(as.character(j) %in% names(table(floor(inf_times)))){
-//'  inf_times_vec[j] =
-//'  table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]}
+//'  inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
+//'  }
 //' }
 //'
 //' data_mat[,1] <- inf_times_vec

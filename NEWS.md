@@ -1,3 +1,5 @@
+# BayesChange 2.1.2
+
 # BayesChange 2.1.1
 
 # BayesChange 2.1.0

@@ -1,3 +1,4 @@
 # BayesChange 2.1.2
 
-* Added a `NEWS.md` file to track changes to the package.
+* Fix position of change points in plot() 
+* Add updated reference to the work for clustering of time dependent data

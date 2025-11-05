@@ -325,7 +325,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                     nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-        cp <- cumsum(table(est_cp))[-length(table(est_cp))]
+        cp <- cumsum(table(est_cp))[-length(table(est_cp))] + 1
 
         vec_data <- x$data
 
@@ -351,7 +351,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                     nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-        cp <- cumsum(table(est_cp))[-length(table(est_cp))]
+        cp <- cumsum(table(est_cp))[-length(table(est_cp))] + 1
 
         vec_data <- as.numeric()
 
@@ -393,7 +393,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       colnames(.df_sf_plot) <- c("y","x","time","obs")
 
-      cp <- cumsum(table(est_cp))[-length(table(est_cp))]
+      cp <- cumsum(table(est_cp))[-length(table(est_cp))] + 1
 
 
       p1 <- ggplot2::ggplot(.df_sf_plot, ggplot2::aes(x = x, y = y, color = obs)) +
@@ -420,7 +420,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                     nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-        cp <- cumsum(table(est_cp))[-length(table(est_cp))]
+        cp <- cumsum(table(est_cp))[-length(table(est_cp))] + 1
 
         vec_data <- x$data
 
@@ -471,7 +471,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                     nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-        cp <- cumsum(table(est_cp))[-length(table(est_cp))]
+        cp <- cumsum(table(est_cp))[-length(table(est_cp))] + 1
 
         vec_data <- as.numeric()
 
@@ -536,7 +536,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       colnames(.df_sf_plot) <- c("y","x","time","obs")
 
-      cp <- cumsum(table(est_cp))[-length(table(est_cp))]
+      cp <- cumsum(table(est_cp))[-length(table(est_cp))] + 1
 
 
       p1 <- ggplot2::ggplot(.df_sf_plot, ggplot2::aes(x = x, y = y, color = obs)) +

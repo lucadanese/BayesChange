@@ -148,7 +148,7 @@
 #'
 #' @references
 #'
-#' Corradin, R., Danese, L., KhudaBukhsh, W. R., & Ongaro, A. (2024). \emph{Model-based clustering of time-dependent observations with common structural changes}. arXiv preprint arXiv:2410.09552.
+#' Corradin, R., Danese, L., KhudaBukhsh, W.R. et al. \emph{Model-based clustering of time-dependent observations with common structural changes}. Stat Comput 36, 7 (2026). https://doi.org/10.1007/s11222-025-10756-x
 #'
 clust_cp <- function(data,
                      n_iterations,

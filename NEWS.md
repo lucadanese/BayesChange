@@ -1,3 +1,5 @@
+# BayesChange 2.1.4
+
 # BayesChange 2.1.2
 
 * Fix position of change points in plot() 

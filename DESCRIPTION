@@ -1,6 +1,6 @@
 Package: BayesChange
 Title: Bayesian Methods for Change Points Analysis
-Version: 2.1.2
+Version: 2.1.3
 Authors@R: c(
     person("Luca", "Danese", role = c("aut", "cre", "cph"), email = "l.danese1@campus.unimib.it", comment = c(ORCID = "0000-0001-8444-8563")), 
     person("Riccardo", "Corradin", role = "aut"),
@@ -9,7 +9,7 @@ Description: Perform change points detection on univariate and multivariate time
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 LinkingTo: 
     Rcpp,
     RcppArmadillo,

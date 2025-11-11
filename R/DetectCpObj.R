@@ -444,7 +444,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
         for(i in 1:x$n_iterations){
 
-          cp_iteration <- cumsum(table(x$orders[i,]))[-length(table(x$orders[i,]))]
+          cp_iteration <- cumsum(table(x$orders[i,]))[-length(table(x$orders[i,]))] + 1
 
           b[cp_iteration] = b[cp_iteration] + 1
 
@@ -499,7 +499,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
         for(i in 1:x$n_iterations){
 
-          cp_iteration <- cumsum(table(x$orders[i,]))[-length(table(x$orders[i,]))]
+          cp_iteration <- cumsum(table(x$orders[i,]))[-length(table(x$orders[i,]))] + 1
 
           b[cp_iteration] = b[cp_iteration] + 1
 
@@ -555,7 +555,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
       for(i in 1:x$n_iterations){
 
-        cp_iteration <- cumsum(table(x$orders[i,]))[-length(table(x$orders[i,]))]
+        cp_iteration <- cumsum(table(x$orders[i,]))[-length(table(x$orders[i,]))] + 1
 
         b[cp_iteration] = b[cp_iteration] + 1
 

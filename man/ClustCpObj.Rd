@@ -11,10 +11,10 @@ ClustCpObj(
   clust = NULL,
   orders = NULL,
   time = NULL,
+  entropy_MCMC = NULL,
   lkl = NULL,
   norm_vec = NULL,
   I0_MCMC = NULL,
-  I0_MCMC_01 = NULL,
   kernel_ts = NULL,
   kernel_epi = NULL,
   univariate_ts = NULL
@@ -38,8 +38,6 @@ ClustCpObj(
 \item{norm_vec}{a vector with the estimated normalization constant.}
 
 \item{I0_MCMC}{traceplot for \eqn{I_0}.}
-
-\item{I0_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.}
 
 \item{kernel_ts}{if TRUE data are time series.}
 

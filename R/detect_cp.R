@@ -53,12 +53,9 @@
 #'   \item \code{$orders} matrix where each entries is the assignment of the realization to a block. Rows are the iterations and columns the times.
 #'   \item \code{$time} computational time.
 #'   \item \code{$phi_MCMC} traceplot for \eqn{\gamma}.
-#'   \item \code{$phi_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
 #'   \item \code{$sigma_MCMC} traceplot for \eqn{\sigma}.
-#'   \item \code{$sigma_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 #'   \item \code{$delta_MCMC} traceplot for \eqn{\delta}.
 #'   \item \code{I0_MCMC} traceplot for \eqn{I_0}.
-#'   \item \code{I0_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #'   \item \code{kernel_ts} if TRUE data are time series.
 #'   \item \code{kernel_epi} if TRUE data are epidemic diffusions.
 #'   \item \code{$univariate_ts} TRUE if data is an univariate time series, FALSE if it is a multivariate time series.
@@ -181,18 +178,23 @@ detect_cp <- function(data,
                            print_progress = print_progress_input,
                            user_seed = user_seed_input)
 
-      # save output
+      # create coda objects
+      entropy_mcmc <- coda::mcmc(out$entropy)
+      lkl_mcmc <- coda::mcmc(out$lkl)
+      phi_mcmc <- coda::mcmc(out$phi_MCMC)
+      sigma_mcmc <- coda::mcmc(out$sigma_MCMC)
+      delta_mcmc <- coda::mcmc(out$delta_MCMC)
 
       result <- DetectCpObj(data = data_input,
                             n_iterations = n_iterations_input,
                             n_burnin = n_burnin_input,
                             orders = out$orders,
                             time = out$time,
-                            phi_MCMC = out$phi_MCMC,
-                            phi_MCMC_01 = out$phi_MCMC_01,
-                            sigma_MCMC = out$sigma_MCMC,
-                            sigma_MCMC_01 = out$sigma_MCMC_01,
-                            delta_MCMC = out$delta_MCMC,
+                            entropy_MCMC = entropy_mcmc,
+                            lkl_MCMC = lkl_mcmc,
+                            phi_MCMC = phi_mcmc,
+                            sigma_MCMC = sigma_mcmc,
+                            delta_MCMC = delta_mcmc,
                             kernel_ts = TRUE,
                             kernel_epi = FALSE,
                             univariate_ts = TRUE)
@@ -236,18 +238,23 @@ detect_cp <- function(data,
                              print_progress = print_progress_input,
                              user_seed = user_seed_input)
 
-      # save output
+      # create coda objects
+      entropy_mcmc <- coda::mcmc(out$entropy)
+      lkl_mcmc <- coda::mcmc(out$lkl)
+      phi_mcmc <- coda::mcmc(out$phi_MCMC)
+      sigma_mcmc <- coda::mcmc(out$sigma_MCMC)
+      delta_mcmc <- coda::mcmc(out$delta_MCMC)
 
       result <- DetectCpObj(data = data_input,
                             n_iterations = n_iterations_input,
                             n_burnin = n_burnin_input,
                             orders = out$orders,
                             time = out$time,
-                            phi_MCMC = out$phi_MCMC,
-                            phi_MCMC_01 = out$phi_MCMC_01,
+                            entropy_MCMC = entropy_mcmc,
+                            lkl_MCMC = lkl_mcmc,
+                            phi_MCMC = phi_mcmc,
                             sigma_MCMC = out$sigma_MCMC,
-                            sigma_MCMC_01 = out$sigma_MCMC_01,
-                            delta_MCMC = out$delta_MCMC,
+                            delta_MCMC = delta_mcmc,
                             kernel_ts = TRUE,
                             kernel_epi = FALSE,
                             univariate_ts = FALSE)
@@ -293,13 +300,19 @@ detect_cp <- function(data,
                          print_progress = print_progress_input,
                          user_seed = user_seed_input)
 
+    # create coda objects
+    entropy_mcmc <- coda::mcmc(out$entropy)
+    lkl_mcmc <- coda::mcmc(out$lkl)
+    I0_mcmc <- coda::mcmc(out$I0_MCMC)
+
     result <- DetectCpObj(data = data_input,
                           n_iterations = n_iterations_input,
                           n_burnin = n_burnin_input,
                           orders = out$orders,
                           time = out$time,
-                          I0_MCMC = out$I0_MCMC,
-                          I0_MCMC_01 = out$I0_MCMC_01,
+                          entropy_MCMC = entropy_mcmc,
+                          lkl_MCMC = lkl_mcmc,
+                          I0_MCMC = I0_mcmc,
                           kernel_ts = FALSE,
                           kernel_epi = TRUE,
                           univariate_ts = FALSE)

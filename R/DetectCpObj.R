@@ -8,12 +8,9 @@
 #' @param orders a matrix where each row corresponds to the output order of the corresponding iteration;
 #' @param time computational time in seconds;
 #' @param phi_MCMC traceplot for \eqn{\gamma}.
-#' @param phi_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 #' @param sigma_MCMC traceplot for \eqn{\sigma}.
-#' @param sigma_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 #' @param delta_MCMC traceplot for \eqn{\delta}.
 #' @param I0_MCMC traceplot for \eqn{I_0}.
-#' @param I0_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #' @param kernel_ts if TRUE data are time series.
 #' @param kernel_epi if TRUE data are epidemic diffusions.
 #' @param univariate_ts TRUE/FALSE if time series is univariate or not.
@@ -26,13 +23,12 @@ DetectCpObj <- function(data = NULL,
                          n_burnin = NULL,
                          orders = NULL,
                          time = NULL,
+                         entropy_MCMC = NULL,
+                         lkl_MCMC = NULL,
                          phi_MCMC = NULL,
-                         phi_MCMC_01 = NULL,
                          sigma_MCMC = NULL,
-                         sigma_MCMC_01 = NULL,
                          delta_MCMC = NULL,
                          I0_MCMC = NULL,
-                         I0_MCMC_01 = NULL,
                          kernel_ts = NULL,
                          kernel_epi = NULL,
                          univariate_ts = NULL){
@@ -42,13 +38,12 @@ DetectCpObj <- function(data = NULL,
                 n_burnin = n_burnin,
                 orders = orders,
                 time = time,
+                entropy_MCMC = entropy_MCMC,
+                lkl_MCMC = lkl_MCMC,
                 phi_MCMC = phi_MCMC,
-                phi_MCMC_01 = phi_MCMC_01,
                 sigma_MCMC = sigma_MCMC,
-                sigma_MCMC_01 = sigma_MCMC_01,
                 delta_MCMC = delta_MCMC,
                 I0_MCMC = I0_MCMC,
-                I0_MCMC_01 = I0_MCMC_01,
                 kernel_ts = kernel_ts,
                 kernel_epi = kernel_epi,
                 univariate_ts = univariate_ts)
@@ -331,7 +326,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
         .data_plot <- as.data.frame(cbind(vec_data))
         .data_plot$time <- rep(1:length(x$data))
-        .data_plot$obs <- as.factor(rep(1, ncol(.data_plot)))
+        .data_plot$obs <- as.factor(rep(1, nrow(.data_plot)))
 
         p1 <- ggplot2::ggplot(.data_plot) +
           ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = obs),  linetype = 1) +
@@ -339,7 +334,7 @@ plot.DetectCpObj <- function(x, y = NULL,
           ggplot2::labs(x = "Time",
                         y = "Value",
                         color = NULL) +
-          ggplot2::scale_colour_brewer(palette = "Set1") +
+          ggplot2::scale_color_viridis_d() +
           ggplot2::theme_minimal() +
           ggplot2::theme(legend.position="none")
 
@@ -369,7 +364,7 @@ plot.DetectCpObj <- function(x, y = NULL,
           ggplot2::labs(x = "Time",
                         y = "Value",
                         color = NULL) +
-          ggplot2::scale_colour_brewer(palette = "Set1") +
+          ggplot2::scale_color_viridis_d() +
           ggplot2::theme_minimal() +
           ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
 
@@ -402,7 +397,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::labs(x = "Time",
                       y = "Proportion of Infected Individuals",
                       color = NULL) +
-        ggplot2::scale_colour_brewer(palette = "Set1") +
+        ggplot2::scale_color_viridis_d() +
         ggplot2::theme_minimal() +
         ggplot2::theme(legend.position="none")
 
@@ -426,7 +421,7 @@ plot.DetectCpObj <- function(x, y = NULL,
 
         .data_plot <- as.data.frame(cbind(vec_data))
         .data_plot$time <- 1:length(vec_data)
-        .data_plot$obs <- as.factor(rep(1, ncol(.data_plot)))
+        .data_plot$obs <- as.factor(rep(1, nrow(.data_plot)))
 
         p1 <- ggplot2::ggplot(.data_plot) +
           ggplot2::geom_line(ggplot2::aes(x = time, y = vec_data, color = obs),  linetype = 1) +
@@ -459,7 +454,7 @@ plot.DetectCpObj <- function(x, y = NULL,
           ggplot2::scale_y_continuous(breaks = c(0,.5,1)) +
           ggplot2::ylab("Prob.") +
           ggplot2::xlab("Time") +
-          ggplot2::scale_colour_brewer(palette = "Set1") +
+          ggplot2::scale_color_viridis_d() +
           ggplot2::theme_minimal()
 
         p2 <- p2 + ggplot2::theme(legend.position="none")
@@ -489,7 +484,7 @@ plot.DetectCpObj <- function(x, y = NULL,
           ggplot2::labs(x = " ",
                         y = "Value",
                         color = NULL) +
-          ggplot2::scale_colour_brewer(palette = "Set1") +
+          ggplot2::scale_color_viridis_d() +
           ggplot2::theme_minimal() +
           ggplot2::theme(legend.position="top", legend.key.width = ggplot2::unit(1, 'cm'))
 
@@ -545,7 +540,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::labs(x = "Time",
                       y = "Proportion of Infected Individuals",
                       color = NULL) +
-        ggplot2::scale_colour_brewer(palette = "Set1") +
+        ggplot2::scale_color_viridis_d() +
         ggplot2::theme_minimal()
 
       p1 <- p1 + ggplot2::theme(legend.position="none")
@@ -570,7 +565,7 @@ plot.DetectCpObj <- function(x, y = NULL,
         ggplot2::scale_y_continuous(breaks = c(0,.5,1)) +
         ggplot2::ylab("Prob.") +
         ggplot2::xlab("Time") +
-        ggplot2::scale_colour_brewer(palette = "Set1") +
+        ggplot2::scale_color_viridis_d() +
         ggplot2::theme_minimal()
 
       p2 <- p2 + ggplot2::theme(legend.position="none")

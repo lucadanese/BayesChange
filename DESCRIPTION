@@ -20,7 +20,8 @@ Imports:
     dplyr,
     tidyr,
     ggplot2,
-    ggpubr
+    ggpubr,
+    coda
 Depends: R (>= 3.5.0)
 Suggests: 
     knitr,
@@ -30,3 +31,4 @@ Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://github.com/lucadanese/BayesChange
 BugReports: https://github.com/lucadanese/BayesChange/issues
+LazyData: true

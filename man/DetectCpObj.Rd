@@ -10,13 +10,12 @@ DetectCpObj(
   n_burnin = NULL,
   orders = NULL,
   time = NULL,
+  entropy_MCMC = NULL,
+  lkl_MCMC = NULL,
   phi_MCMC = NULL,
-  phi_MCMC_01 = NULL,
   sigma_MCMC = NULL,
-  sigma_MCMC_01 = NULL,
   delta_MCMC = NULL,
   I0_MCMC = NULL,
-  I0_MCMC_01 = NULL,
   kernel_ts = NULL,
   kernel_epi = NULL,
   univariate_ts = NULL
@@ -35,17 +34,11 @@ DetectCpObj(
 
 \item{phi_MCMC}{traceplot for \eqn{\gamma}.}
 
-\item{phi_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.}
-
 \item{sigma_MCMC}{traceplot for \eqn{\sigma}.}
-
-\item{sigma_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.}
 
 \item{delta_MCMC}{traceplot for \eqn{\delta}.}
 
 \item{I0_MCMC}{traceplot for \eqn{I_0}.}
-
-\item{I0_MCMC_01}{a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.}
 
 \item{kernel_ts}{if TRUE data are time series.}
 

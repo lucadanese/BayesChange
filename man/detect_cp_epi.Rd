@@ -41,7 +41,6 @@ Function \code{detect_cp_epi} returns a list containing the following components
 \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 \item{\code{time}} computational time in seconds.
 \item{\code{$I0_MCMC}} traceplot for \eqn{I_0}.
-\item{\code{$I0_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 }
 }
 \description{

@@ -42,7 +42,6 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{time}} computational time in seconds.
 #' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
-#' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 #' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 #' }
 #'
@@ -77,9 +76,7 @@ detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_va
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{time}} computational time in seconds.
 #' \item{\code{$phi_MCMC}} traceplot for \eqn{\gamma}.
-#' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 #' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
-#' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 #' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 #' }
 #'
@@ -121,7 +118,6 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_de
 #' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 #' \item{\code{time}} computational time in seconds.
 #' \item{\code{$I0_MCMC}} traceplot for \eqn{I_0}.
-#' \item{\code{$I0_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #' }
 #'
 #' @examples

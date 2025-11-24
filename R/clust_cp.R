@@ -54,7 +54,6 @@
 #'   \item \code{$lkl} a matrix where each row is the likelihood of each observation computed at the corresponding iteration.
 #'   \item \code{$norm_vec} a vector containing the normalization constant computed at the beginning of the algorithm.
 #'   \item \code{I0_MCMC} traceplot for \eqn{I_0}.
-#'   \item \code{I0_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #'   \item \code{$kernel_ts} if TRUE data are time series.
 #'   \item \code{$kernel_epi} if TRUE data are epidemic diffusion.
 #'   \item \code{$univariate_ts} TRUE if data is an univariate time series, FALSE if it is a multivariate time series.
@@ -209,7 +208,9 @@ clust_cp <- function(data,
                           alpha_SM = alpha_SM_input,
                           print_progress = print_progress_input, user_seed = user_seed_input)
 
-      # save output
+      # create coda objects
+      entropy_mcmc <- coda::mcmc(out$entropy)
+      lkl_mcmc <- coda::mcmc(out$lkl)
 
       result <- ClustCpObj(data = data_input,
                            n_iterations = n_iterations_input,
@@ -217,7 +218,8 @@ clust_cp <- function(data,
                            clust = out$clust,
                            orders = out$orders,
                            time = out$time,
-                           lkl = out$lkl,
+                           entropy_MCMC = entropy_mcmc,
+                           lkl = lkl_mcmc,
                            norm_vec = out$norm_vec,
                            kernel_ts = TRUE,
                            kernel_epi = FALSE,
@@ -245,7 +247,7 @@ clust_cp <- function(data,
       # substitute missing parameters with default
       if(is.null(params$m_0)){m_0_input = rep(0, nrow(data))} else{m_0_input = params$m_0}
       k_0_input = ifelse(is.null(params$k_0), 0.5, params$k_0)
-      phi_input = ifelse(is.null(params$phi), 1, params$phi)
+      phi_input = ifelse(is.null(params$phi), 0.1, params$phi)
       if(is.null(params$S_0)){S_0_input = diag(0.1, nrow(data), nrow(data))} else{S_0_input = params$S_0}
       nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
       #
@@ -258,13 +260,18 @@ clust_cp <- function(data,
                             print_progress = print_progress_input,
                             user_seed = user_seed_input)
 
+      # create coda objects
+      entropy_mcmc <- coda::mcmc(out$entropy)
+      lkl_mcmc <- coda::mcmc(out$lkl)
+
       result <- ClustCpObj(data = data_input,
                            n_iterations = n_iterations_input,
                            n_burnin = n_burnin_input,
                            clust = out$clust,
                            orders = out$orders,
                            time = out$time,
-                           lkl = out$lkl,
+                           entropy_MCMC = entropy_mcmc,
+                           lkl = lkl_mcmc,
                            norm_vec = out$norm_vec,
                            kernel_ts = TRUE,
                            kernel_epi = FALSE,
@@ -311,16 +318,21 @@ clust_cp <- function(data,
                         avg_blk = avg_blk_input, print_progress = print_progress_input,
                         user_seed = user_seed_input)
 
+    # create coda objects
+    entropy_mcmc <- coda::mcmc(out$entropy)
+    I0_mcmc <- coda::mcmc(out$I0_MCMC)
+    lkl_mcmc <- coda::mcmc(out$lkl)
+
     result <- ClustCpObj(data = data_input,
                          n_iterations = n_iterations_input,
                          n_burnin = n_burnin_input,
                          clust = out$clust,
                          orders = out$orders,
                          time = out$time,
-                         lkl = out$lkl,
+                         entropy_MCMC = entropy_mcmc,
+                         lkl = lkl_mcmc,
                          norm_vec = out$norm_vec,
-                         I0_MCMC = out$I0_MCMC,
-                         I0_MCMC_01 = out$I0_MCMC_01,
+                         I0_MCMC = I0_mcmc,
                          kernel_ts = FALSE,
                          kernel_epi = TRUE,
                          univariate_ts = TRUE)

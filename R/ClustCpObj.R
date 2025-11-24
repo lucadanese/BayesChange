@@ -11,7 +11,6 @@
 #' @param lkl a vector with the likelihood of the final partition
 #' @param norm_vec a vector with the estimated normalization constant.
 #' @param I0_MCMC traceplot for \eqn{I_0}.
-#' @param I0_MCMC_01 a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 #' @param kernel_ts if TRUE data are time series.
 #' @param kernel_epi if TRUE data are epidemic diffusions.
 #' @param univariate_ts TRUE/FALSE if time series is univariate or not;
@@ -25,10 +24,10 @@ ClustCpObj <- function(data = NULL,
                        clust = NULL,
                        orders = NULL,
                        time = NULL,
+                       entropy_MCMC = NULL,
                        lkl = NULL,
                        norm_vec = NULL,
                        I0_MCMC = NULL,
-                       I0_MCMC_01 = NULL,
                        kernel_ts = NULL,
                        kernel_epi = NULL,
                        univariate_ts = NULL){
@@ -39,10 +38,10 @@ ClustCpObj <- function(data = NULL,
                 clust = clust,
                 orders = orders,
                 time = time,
+                entropy_MCMC = entropy_MCMC,
                 lkl = lkl,
                 norm_vec = norm_vec,
                 I0_MCMC = I0_MCMC,
-                I0_MCMC_01 = I0_MCMC_01,
                 kernel_ts = kernel_ts,
                 kernel_epi = kernel_epi,
                 univariate_ts = univariate_ts)
@@ -341,7 +340,7 @@ plot.ClustCpObj <- function(x, y = NULL,
 
       .data_plot <- as.data.frame(t(x$data))
       .data_plot <- tidyr::pivot_longer(.data_plot, cols = dplyr::everything(), names_to = "Observation", values_to = "Value")
-      .data_plot <- dplyr::mutate(.data_plot, Observation = as.numeric(gsub("V", "", Observation)))
+      #.data_plot <- dplyr::mutate(.data_plot, Observation = as.numeric(gsub("V", "", Observation)))
       .data_plot <- dplyr::group_by(.data_plot, Observation)
       .data_plot <- dplyr::mutate(.data_plot, Time = dplyr::row_number())
       .data_plot <-  dplyr::ungroup(.data_plot)
@@ -355,7 +354,7 @@ plot.ClustCpObj <- function(x, y = NULL,
         ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Observation, group = Observation, linetype = Cluster)) +
         ggplot2::xlab("Time") +
         ggplot2::ylab("Value") +
-        ggplot2::scale_colour_brewer(palette = "Set1") +
+        ggplot2::scale_color_viridis_d() +
         ggplot2::theme_minimal()
 
     } else {
@@ -363,33 +362,51 @@ plot.ClustCpObj <- function(x, y = NULL,
       est_cp = posterior_estimate(x, loss = loss, maxNClusters = maxNClusters,
                                   nRuns = nRuns, maxZealousAttempts = maxZealousAttempts)
 
-
       .data_plot <- data.frame(Value = numeric(0))
+
+      obs_names <- dimnames(x$data)[[3]]
 
       count = 0
       for (i in 1:dim(x$data)[3]) {
         mat <- x$data[,,i]
-        for(j in 1:nrow(mat)){
+
+        obs_label <- if (!is.null(obs_names)) obs_names[i] else i
+
+        for (j in 1:nrow(mat)) {
           count = count + 1
-          .data_plot <- rbind(.data_plot, data.frame(Value = as.vector(mat[j,]),
-                                                     Observation = i,
-                                                     Cluster = est_cp[i],
-                                                     Time = 1:ncol(mat),
-                                                     Count = count))
+
+          .data_plot <- rbind(
+            .data_plot,
+            data.frame(
+              Value = as.vector(mat[j, ]),
+              Observation = obs_label,
+              Cluster = est_cp[i],
+              Time = 1:ncol(mat),
+              Count = count
+            )
+          )
         }
       }
-
 
       .data_plot$Observation <- as.factor(.data_plot$Observation)
       .data_plot$Cluster <- as.factor(.data_plot$Cluster)
       .data_plot$Count <- as.factor(.data_plot$Count)
 
       ggplot2::ggplot(.data_plot) +
-        ggplot2::geom_line(ggplot2::aes(x = Time, y = Value, color = Observation, group = Count, linetype = Cluster)) +
+        ggplot2::geom_line(
+          ggplot2::aes(
+            x = Time,
+            y = Value,
+            color = Observation,
+            group = Count,
+            linetype = Cluster
+          )
+        ) +
         ggplot2::xlab("Time") +
         ggplot2::ylab("Value") +
-        ggplot2::scale_colour_brewer(palette = "Set1") +
+        ggplot2::scale_color_viridis_d() +
         ggplot2::theme_minimal()
+
 
     }
   } else if(x$kernel_epi){
@@ -407,7 +424,7 @@ plot.ClustCpObj <- function(x, y = NULL,
       ggplot2::geom_line(lwd = 0.5) +
       ggplot2::xlab("Time") +
       ggplot2::ylab("Proportion of Infected Individuals") +
-      ggplot2::scale_colour_brewer(palette = "Set1") +
+      ggplot2::scale_color_viridis_d() +
       ggplot2::theme_minimal()
 
   }

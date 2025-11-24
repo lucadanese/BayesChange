@@ -69,12 +69,9 @@ A \code{DetectCpObj} class object containing
 \item \code{$orders} matrix where each entries is the assignment of the realization to a block. Rows are the iterations and columns the times.
 \item \code{$time} computational time.
 \item \code{$phi_MCMC} traceplot for \eqn{\gamma}.
-\item \code{$phi_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\gamma} was accepted, \eqn{0} otherwise.
 \item \code{$sigma_MCMC} traceplot for \eqn{\sigma}.
-\item \code{$sigma_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 \item \code{$delta_MCMC} traceplot for \eqn{\delta}.
 \item \code{I0_MCMC} traceplot for \eqn{I_0}.
-\item \code{I0_MCMC_01} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 \item \code{kernel_ts} if TRUE data are time series.
 \item \code{kernel_epi} if TRUE data are epidemic diffusions.
 \item \code{$univariate_ts} TRUE if data is an univariate time series, FALSE if it is a multivariate time series.

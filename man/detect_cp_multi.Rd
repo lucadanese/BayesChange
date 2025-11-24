@@ -41,9 +41,7 @@ Function \code{detect_cp_multi} returns a list containing the following componen
 \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 \item{\code{time}} computational time in seconds.
 \item{\code{$phi_MCMC}} traceplot for \eqn{\gamma}.
-\item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
-\item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 }
 }

@@ -15,6 +15,37 @@ using namespace RcppGSL;
 // UTILS
 //--------
 
+double compute_entropy_partition(const arma::vec &partition_temp) {
+
+  int n = partition_temp.n_elem;
+  if (n == 0) return 0.0;
+
+  arma::vec z = partition_temp;   // copy
+  z = arma::sort(z);              // sort in ascending order
+
+  double entropy = 0.0;
+  int count = 1;
+
+  // Count runs of identical labels
+  for (int i = 1; i < n; i++) {
+    if (z[i] == z[i-1]) {
+      count++;
+    } else {
+      double p = (double) count / n;
+      entropy -= p * std::log(p);
+      count = 1;
+    }
+  }
+
+  // Final cluster
+  double p = (double) count / n;
+  entropy -= p * std::log(p);
+
+  return entropy;
+}
+
+
+
 int which_min_cpp(arma::vec x) {
   int n = x.size();
   int min_index = 0; // 0-based index
@@ -121,6 +152,8 @@ int rint(arma::vec freqs){
 }
 
 arma::vec table_cpp(arma::vec vector){
+  vector = arma::round(vector);
+
   double k = max(vector) + 1.0;
   arma::vec table(k);
 
@@ -418,7 +451,6 @@ double LogLikelihood_TS(arma::mat data, arma::mat order,
   return(sum(lkl));
 }
 
-
 double Likelihood_MultiTS(arma::mat data, arma::vec order,
                           double gamma, double k_0, double nu_0,
                           arma::mat S_0, arma::vec m_0){
@@ -480,8 +512,7 @@ double Likelihood_MultiTS(arma::mat data, arma::vec order,
 
     }
 
-    vec_likelihood(j) = log(pow(k_n,(-d/2))) - log(std::pow(k_0,(-d/2))) + (nu_0/2) * log(arma::det(S_0)) + lgamma_multi(d, (nu_n/2)) - (nu_n/2)*log(arma::det(phi_n)) - lgamma_multi(d,(nu_0/2)) + log(std::pow(M_PI,(-n_i*d/2))) - log(pow((1-pow(gamma,2)),((n_i-1)/2)));
-
+    vec_likelihood(j) = log(pow(k_n,(-d/2))) - log(std::pow(k_0,(-d/2))) + (nu_0/2) * log(arma::det(S_0)) + lgamma_multi(d, (nu_n/2)) - (nu_n/2)*log(arma::det(phi_n)) - lgamma_multi(d,(nu_0/2)) + -(n_i * d / 2.0) * log(M_PI) - log(pow((1-pow(gamma,2)),((n_i-1)/2)));
   }
 
   return sum(vec_likelihood);
@@ -1651,10 +1682,9 @@ double FullConditionalSigma(arma::vec order, double delta, double sigma,
 void UpdatePhi(double phi_old, arma::mat data, arma::vec order,
                  double delta, double sigma, double k_0, double nu_0,
                  arma::mat S_0, arma::vec m_0,
-                 arma::vec &phi_inf, arma::vec &phi_inf_10, gsl_rng *r, double prior_var_phi){
+                 arma::vec &phi_inf, gsl_rng *r, double prior_var_phi){
 
   phi_inf.resize(phi_inf.n_elem + 1);
-  phi_inf_10.resize(phi_inf_10.n_elem + 1);
 
 
   double tau = log(phi_old/(1-phi_old));
@@ -1673,29 +1703,24 @@ void UpdatePhi(double phi_old, arma::mat data, arma::vec order,
 
   if(log(arma::randu()) <= my_min(alpha_MH,log(1))){
     phi_inf(phi_inf.n_elem - 1) = phi_new;
-    phi_inf_10(phi_inf_10.n_elem - 1) = 1;
   } else {
     phi_inf(phi_inf.n_elem - 1) = phi_old;
-    phi_inf_10(phi_inf_10.n_elem - 1) = 0;
   }
 
 }
 
 void UpdateSigma(arma::vec order, double delta, double sigma,
-                 arma::vec &sigma_inf, arma::vec &sigma_inf_10, gsl_rng *r){
+                 arma::vec &sigma_inf, gsl_rng *r){
 
   sigma_inf.resize(sigma_inf.n_elem + 1);
-  sigma_inf_10.resize(sigma_inf_10.n_elem + 1);
 
   double sigma_new = gsl_ran_beta(r, 1, 1);
   double alpha_MH = FullConditionalSigma(order, delta, sigma_new, 1, 1, 1, 1) - FullConditionalSigma(order, delta, sigma, 1, 1, 1, 1);
 
   if(log(arma::randu()) <= my_min(alpha_MH,log(1))){
     sigma_inf(sigma_inf.n_elem - 1) = sigma_new;
-    sigma_inf_10(sigma_inf_10.n_elem - 1) = 1;
   } else {
     sigma_inf(sigma_inf.n_elem - 1) = sigma;
-    sigma_inf_10(sigma_inf_10.n_elem - 1) = 0;
   }
 
 }
@@ -1740,7 +1765,6 @@ void UpdateDelta(double delta,double sigma, arma::vec order,  arma::vec &delta_i
 
 void update_I0(arma::mat data,
                 arma::vec &rho,
-                arma::vec &rho01,
                 double a0,
                 double b0,
                 double c0,
@@ -1754,8 +1778,6 @@ void update_I0(arma::mat data,
                 arma::vec &llik,
                 arma::vec clust,
                 arma::mat orders){
-
-  rho01.fill(0);
 
   for(arma::uword i = 0; i < data.n_rows; i++){
 
@@ -1779,7 +1801,6 @@ void update_I0(arma::mat data,
 
     if(log(arma::randu()) < acc_rate){
       rho(i) = rho_new;
-      rho01(i) = 1;
       llik(i) = new_llik;
     }
   }
@@ -2347,7 +2368,7 @@ Rcpp::List marginal_CP(arma::mat data,
   // start
   for(int iter = 0; iter < niter; iter++){
 
-    update_I0(data, rho, rho01, a0, b0, c0, d0, I0_var, gamma, dt, M,
+    update_I0(data, rho, a0, b0, c0, d0, I0_var, gamma, dt, M,
                S0, R0, llik, clust, orders);
 
     for(arma::uword j = 0; j < orders.n_rows; j++){
@@ -2533,7 +2554,6 @@ return infection_times;
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{time}} computational time in seconds.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
-//' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 //' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 //' }
 //'
@@ -2569,14 +2589,12 @@ Rcpp::List detect_cp_uni(arma::vec data,
  gsl_rng_set(r, user_seed);
  //
 
- arma::vec res_order, probs(2), phi_inf(1), phi_inf_10(1), sigma_inf(1), sigma_inf_10(1), delta_inf(1);
+ arma::vec res_order, res_entropy(n_iterations), res_lkl(n_iterations), probs(2), phi_inf(1), sigma_inf(1), delta_inf(1);
  arma::mat data_mat(1,data.n_elem), res_mat(n_iterations, data_mat.n_cols);
 
  // add a random initialisation for the gamma param
  phi_inf(0) = 0.5;
- phi_inf_10(0) = 0;
  sigma_inf(0) = 0.1;
- sigma_inf_10(0) = 0;
  delta_inf(0) = 0.1;
 
  for(arma::uword i = 0; i < data.n_elem; i++){
@@ -2679,14 +2697,16 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
    // Posterior infererence on main parameters
    UpdatePhi(phi_inf(iter), data_mat, order, delta_inf(iter), sigma_inf(iter), k_0, nu_0,
-             S_0, m_0, phi_inf, phi_inf_10, r, prior_var_phi);
+             S_0, m_0, phi_inf, r, prior_var_phi);
 
-   UpdateSigma(order, delta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
+   UpdateSigma(order, delta_inf(iter), sigma_inf(iter), sigma_inf, r);
 
    UpdateDelta(delta_inf(iter), sigma_inf(iter+1), order, delta_inf, prior_delta_c, prior_delta_d, r);
    //
 
    res_mat.row(iter) = order.t();
+   res_entropy(iter) = compute_entropy_partition(order);
+   res_lkl(iter) = Likelihood_UniTS(data_mat, order, phi_inf(iter), a, b, c);
 
    if(((iter + 1) % nupd == 0) & (print_progress == true)){
      current_s = clock();
@@ -2702,10 +2722,10 @@ Rcpp::List detect_cp_uni(arma::vec data,
  Rcpp::List out_list;
  out_list["orders"] = res_mat;
  out_list["time"] = time;
+ out_list["entropy"] = res_entropy;
+ out_list["lkl"] = res_lkl;
  out_list["phi_MCMC"] = phi_inf;
- out_list["phi_MCMC_01"] = phi_inf_10;
  out_list["sigma_MCMC"] = sigma_inf;
- out_list["sigma_MCMC_01"] = sigma_inf_10;
  out_list["delta_MCMC"] = delta_inf;
 
  gsl_rng_free (r);
@@ -2734,9 +2754,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{time}} computational time in seconds.
 //' \item{\code{$phi_MCMC}} traceplot for \eqn{\gamma}.
-//' \item{\code{$phi_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\phi} was accepted, \eqn{0} otherwise.
 //' \item{\code{$sigma_MCMC}} traceplot for \eqn{\sigma}.
-//' \item{\code{$sigma_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{\sigma} was accepted, \eqn{0} otherwise.
 //' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 //' }
 //'
@@ -2770,13 +2788,11 @@ Rcpp::List detect_cp_multi(arma::mat data,
    gsl_rng_set(r, user_seed);
    //
 
-   arma::vec res_order, probs(2), phi_inf(1), phi_inf_10(1), sigma_inf(1), sigma_inf_10(1), delta_inf(1);
+   arma::vec res_order, res_entropy(n_iterations), res_lkl(n_iterations), probs(2), phi_inf(1), sigma_inf(1), delta_inf(1);
    arma::mat res_mat(n_iterations, data.n_cols);
 
    phi_inf(0) = 0.5; // add a random initialisation for the gamma param
-   phi_inf_10(0) = 0;
    sigma_inf(0) = 0.1;
-   sigma_inf_10(0) = 0;
    delta_inf(0) = 0.1;
 
    //generate random starting order
@@ -2869,14 +2885,16 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
      // Posterior infererence on main parameters
      UpdatePhi(phi_inf(iter), data, order, delta_inf(iter), sigma_inf(iter), k_0, nu_0,
-                 S_0, m_0, phi_inf, phi_inf_10, r, prior_var_phi);
+                 S_0, m_0, phi_inf, r, prior_var_phi);
 
-     UpdateSigma(order, delta_inf(iter), sigma_inf(iter), sigma_inf, sigma_inf_10, r);
+     UpdateSigma(order, delta_inf(iter), sigma_inf(iter), sigma_inf, r);
 
      UpdateDelta(delta_inf(iter), sigma_inf(iter+1), order, delta_inf, prior_delta_c, prior_delta_d, r);
      //
 
      res_mat.row(iter) = order.t();
+     res_entropy(iter) = compute_entropy_partition(order);
+     res_lkl(iter) = Likelihood_MultiTS(data, order, phi_inf(iter), k_0, nu_0, S_0, m_0);
 
      if(((iter + 1) % nupd == 0) & (print_progress == true)){
        current_s = clock();
@@ -2892,10 +2910,10 @@ Rcpp::List detect_cp_multi(arma::mat data,
    Rcpp::List out_list;
    out_list["orders"] = res_mat;
    out_list["time"] = time;
+   out_list["entropy"] = res_entropy;
+   out_list["lkl"] = res_lkl;
    out_list["phi_MCMC"] = phi_inf;
-   out_list["phi_MCMC_01"] = phi_inf_10;
    out_list["sigma_MCMC"] = sigma_inf;
-   out_list["sigma_MCMC_01"] = sigma_inf_10;
    out_list["delta_MCMC"] = delta_inf;
 
    gsl_rng_free (r);
@@ -2924,7 +2942,6 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //' \item{\code{$orders}} a matrix where each row corresponds to the output order of the corresponding iteration.
 //' \item{\code{time}} computational time in seconds.
 //' \item{\code{$I0_MCMC}} traceplot for \eqn{I_0}.
-//' \item{\code{$I0_MCMC_01}} a \eqn{0/1} vector, the \eqn{n}-th element is equal to \eqn{1} if the proposed \eqn{I_0} was accepted, \eqn{0} otherwise.
 //' }
 //'
 //' @examples
@@ -2966,15 +2983,14 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
 
    data = data.t();
 
-   arma::vec clust(data.n_rows), llik(data.n_rows), rho(data.n_rows), rho01(data.n_rows);
+   arma::vec clust(data.n_rows), llik(data.n_rows), rho(data.n_rows), res_entropy(n_iterations), res_lkl(n_iterations), order_tmp;
 
    rho.fill(0.0045);
-   rho01.fill(0);
    clust = arma::regspace(0, data.n_rows-1);
 
    arma::mat order(1, data.n_cols);
    arma::mat orders_output(n_iterations, data.n_cols);
-   arma::mat rho_output(n_iterations, data.n_rows), rho01_output(n_iterations, data.n_rows);
+   arma::mat rho_output(n_iterations, data.n_rows);
    order.row(0).fill(0);
 
    int start_s = clock();
@@ -2993,12 +3009,14 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
    }
 
    for(int iter = 0; iter < n_iterations; iter++){
-    update_I0(data, rho, rho01, a0, b0, c0, d0, I0_var, xi, dt, M, S0, R0, llik, clust, order);
+    update_I0(data, rho, a0, b0, c0, d0, I0_var, xi, dt, M, S0, R0, llik, clust, order);
     update_single_order(data, clust, 0, order, llik, q, dt, a0, b0, xi, rho, M, S0, R0);
 
     orders_output.row(iter) = order.row(0);
     rho_output.row(iter) = rho;
-    rho01_output.row(iter) = rho01;
+    order_tmp = order_tmp = order.row(0).t();
+    res_entropy(iter) = compute_entropy_partition(order_tmp);
+    res_lkl(iter) = sum(llik);
 
      if(((iter + 1) % nupd == 0) & (print_progress == true)){
        current_s = clock();
@@ -3012,8 +3030,9 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
 
    Rcpp::List out_list;
    out_list["orders"] = orders_output;
+   out_list["entropy"] = res_entropy;
+   out_list["lkl"] = res_lkl;
    out_list["I0_MCMC"] = rho_output;
-   out_list["I0_MCMC_01"] = rho01_output;
    out_list["time"] = time;
 
    gsl_rng_free (r);
@@ -3102,9 +3121,8 @@ Rcpp::List clust_cp_epi(arma::mat data,
  gsl_rng_set(r, user_seed);
  //
 
- arma::vec rho(data.n_rows), rho01(data.n_rows);
+ arma::vec rho(data.n_rows), res_entropy(n_iterations);
  rho.fill(0.0045);
- rho01.fill(0);
 
  arma::vec clust(data.n_rows), llik(data.n_rows);
  clust = arma::regspace(0, data.n_rows-1);
@@ -3152,7 +3170,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
  // start
  for(int iter = 0; iter < n_iterations; iter++){
 
-   update_I0(data, rho, rho01, a0, b0, c0, d0, I0_var, xi, dt, M,
+   update_I0(data, rho, a0, b0, c0, d0, I0_var, xi, dt, M,
               S0, R0, llik, clust, orders);
 
 
@@ -3168,8 +3186,8 @@ Rcpp::List clust_cp_epi(arma::mat data,
 
    res_clust.row(iter) = clust.t();
    res_llik.row(iter).cols(0,data.n_rows-1) = llik.t();
+   res_entropy(iter) = compute_entropy_partition(clust);
    res_rho.row(iter).cols(0,data.n_rows-1) = rho.t();
-   res_rho_01.row(iter).cols(0,data.n_rows-1) = rho01.t();
    res_orders.slice(iter).rows(0, orders.n_rows-1) = orders;
 
    // print time
@@ -3190,9 +3208,9 @@ Rcpp::List clust_cp_epi(arma::mat data,
  results["clust"] = res_clust;
  results["orders"] = res_orders;
  results["time"] = time;
+ results["entropy"] = res_entropy;
  results["llik"] = res_llik;
  results["I0_MCMC"] = res_rho;
- results["I0_MCMC_01"] = res_rho_01;
  return results;
 }
 
@@ -3250,7 +3268,7 @@ arma::mat res_clust(n_iterations, data.n_rows), res_lkl(n_iterations, data.n_row
 arma::cube res_orders(data.n_rows, data.n_cols, n_iterations);
 arma::vec freq_temp(data.n_rows), prob_temp(data.n_rows), proposed_order_i(data.n_cols), proposed_order_j(data.n_cols), order_i(data.n_cols), order_j(data.n_cols),
 proposed_order(data.n_cols), proposed_partition(data.n_rows), prob_temp_j(data.n_rows), prob_temp_i(data.n_rows), proposed_partition_clean(data.n_cols),
-merge_i(data.n_rows), merge_j(data.n_rows), old_order, order_0, lkl_proposal_m, lkl_old_i_m, lkl_old_j_m, lkl_old_s, lkl_proposal_i_s,lkl_proposal_j_s;
+merge_i(data.n_rows), merge_j(data.n_rows), old_order, order_0, lkl_proposal_m, lkl_old_i_m, lkl_old_j_m, lkl_old_s, lkl_proposal_i_s,lkl_proposal_j_s, res_entropy(n_iterations);
 int id1, id2, id3, id4;
 double alpha;
 
@@ -3510,6 +3528,7 @@ for(int iter = 0; iter < n_iterations; iter++){
       }
 
   res_clust.row(iter) = partition_temp.t();
+  res_entropy(iter) = compute_entropy_partition(partition_temp);
   res_orders.slice(iter) = orders_temp;
   res_lkl.row(iter) = lkl_temp.t();
 
@@ -3529,6 +3548,7 @@ Rcpp::List out_list;
 out_list["clust"] = res_clust;
 out_list["orders"] = res_orders;
 out_list["time"] = time;
+out_list["entropy"] = res_entropy;
 out_list["lkl"] = res_lkl;
 out_list["norm_vec"] = norm_const;
 
@@ -3600,7 +3620,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
   arma::cube res_orders(data.n_slices, data.slice(0).n_cols, n_iterations);
   arma::vec freq_temp(data.n_slices), prob_temp(data.n_slices), proposed_order_i(data.slice(0).n_cols), proposed_order_j(data.slice(0).n_cols), order_i(data.slice(0).n_cols), order_j(data.slice(0).n_cols),
   proposed_order(data.slice(0).n_cols), proposed_partition(data.n_slices), prob_temp_j(data.n_slices), prob_temp_i(data.n_slices), proposed_partition_clean(data.slice(0).n_cols),
-  merge_i(data.n_slices), merge_j(data.n_slices), old_order, order_0, lkl_proposal_m, lkl_old_i_m, lkl_old_j_m, lkl_old_s, lkl_proposal_i_s,lkl_proposal_j_s;
+  merge_i(data.n_slices), merge_j(data.n_slices), old_order, order_0, lkl_proposal_m, lkl_old_i_m, lkl_old_j_m, lkl_old_s, lkl_proposal_i_s,lkl_proposal_j_s, res_entropy(n_iterations);
   int id1, id2, id3, id4;
   double alpha;
 
@@ -3661,6 +3681,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
       // MERGE
 
       proposed_partition = partition_temp;
+
 
       merge_i.fill(0.0);
       merge_j.fill(0.0);
@@ -3739,11 +3760,9 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
       //
 
-
     } else {
 
       // SPLIT
-
       proposed_partition = partition_temp;
 
       prob_temp.fill(0.0);
@@ -3853,6 +3872,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
         }
 
     res_clust.row(iter) = partition_temp.t();
+    res_entropy(iter) = compute_entropy_partition(partition_temp);
     res_orders.slice(iter) = orders_temp;
     res_lkl.row(iter) = lkl_temp.t();
 
@@ -3874,6 +3894,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
   out_list["clust"] = res_clust;
   out_list["orders"] = res_orders;
   out_list["time"] = time;
+  out_list["entropy"] = res_entropy;
   out_list["lkl"] = res_lkl;
   out_list["norm_vec"] = norm_const;
 

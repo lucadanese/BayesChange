@@ -1,20 +1,27 @@
 #' DetectCpObj class constructor
 #'
-#' @description A constructor for the \code{DetectCpObj} class. The class \code{DetectCpObj} contains...
+#' @description
+#' Constructor for the \code{DetectCpObj} class. This class stores the output
+#' of the Bayesian change–point detection algorithm, including MCMC traces,
+#' allocation orders, and computational information.
 #'
-#' @param data a vector or a matrix containing the values of the time series;
-#' @param n_iterations number of iterations of the MCMC algorithm;
-#' @param n_burnin number of MCMC iterations to exclude in the posterior estimate;
-#' @param orders a matrix where each row corresponds to the output order of the corresponding iteration;
-#' @param time computational time in seconds;
-#' @param phi_MCMC traceplot for \eqn{\gamma}.
-#' @param sigma_MCMC traceplot for \eqn{\sigma}.
-#' @param delta_MCMC traceplot for \eqn{\delta}.
-#' @param I0_MCMC traceplot for \eqn{I_0}.
-#' @param kernel_ts if TRUE data are time series.
-#' @param kernel_epi if TRUE data are epidemic diffusions.
-#' @param univariate_ts TRUE/FALSE if time series is univariate or not.
+#' @param data A vector or matrix containing the observed time series.
+#' @param n_iterations Total number of MCMC iterations.
+#' @param n_burnin Number of burn-in iterations to discard.
+#' @param orders A matrix where each row corresponds to the latent block
+#'        assignment (order) of the time indices at each MCMC iteration.
+#' @param time Computational time in seconds.
 #'
+#' @param entropy_MCMC A \code{coda::mcmc} object containing MCMC samples of the entropy measure.
+#' @param lkl_MCMC A \code{coda::mcmc} object containing MCMC samples of the log-likelihood.
+#' @param phi_MCMC A \code{coda::mcmc} object containing MCMC draws for \eqn{\gamma}.
+#' @param sigma_MCMC A \code{coda::mcmc} object containing MCMC draws for \eqn{\sigma}.
+#' @param delta_MCMC A \code{coda::mcmc} object containing MCMC draws for \eqn{\delta}.
+#' @param I0_MCMC A \code{coda::mcmc} object containing MCMC draws for \eqn{I_0}.
+#'
+#' @param kernel_ts Logical; TRUE if the model for time series data is used.
+#' @param kernel_epi Logical; TRUE if the epidemic diffusion model is used.
+#' @param univariate_ts Logical; TRUE if the time series is univariate, FALSE otherwise.
 #'
 #' @export
 #'
@@ -58,17 +65,15 @@ DetectCpObj <- function(data = NULL,
 #' @param ... parameter of the generic method.
 #'
 #' @examples
-#' data_mat <- matrix(NA, nrow = 3, ncol = 100)
 #'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+#' data("eu_inflation")
 #'
-#' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4,
-#'                               S_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               prior_delta_c = 2, prior_delta_d = 0.2,
-#'                               prior_var_phi = 0.1), kernel = "ts")
+#' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+#'                    prior_delta_c = 1, prior_delta_d = 1)
+#'
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
+#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#'                  kernel = "ts")
 #' print(out)
 #'
 #' @rdname print.DetectCpObj
@@ -77,7 +82,7 @@ DetectCpObj <- function(data = NULL,
 print.DetectCpObj <- function(x, ...) {
   cat("DetectCpObj object\n")
   if(x$kernel_ts){
-    if(x$univariate){
+    if(x$univariate_ts){
       cat("Type: change points detection on univariate time series\n")
     } else {
       cat("Type: change points detection on multivariate time series\n")
@@ -86,6 +91,8 @@ print.DetectCpObj <- function(x, ...) {
   if(x$kernel_epi){
     cat("Type: change points detection on an epidemic diffusion\n")
   }
+
+  invisible(x)
 
 }
 
@@ -97,17 +104,16 @@ print.DetectCpObj <- function(x, ...) {
 #'
 #' @examples
 #'
-#' data_mat <- matrix(NA, nrow = 3, ncol = 100)
+#' ## Univariate time series
 #'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+#' data("eu_inflation")
 #'
-#' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                 params = list(q = 0.25, k_0 = 0.25, nu_0 = 4,
-#'                               S_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               prior_delta_c = 2, prior_delta_d = 0.2,
-#'                               prior_var_phi = 0.1), kernel = "ts")
+#' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+#'                    prior_delta_c = 1, prior_delta_d = 1)
+#'
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
+#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#'                  kernel = "ts")
 #' summary(out)
 #'
 #' @rdname summary.DetectCpObj
@@ -166,18 +172,12 @@ posterior_estimate <- function (object, ...) {
 #'
 #' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
 #'
-#' @param object an object of class \code{DetectCPObj}.
+#' @param object an object of class \code{DetectCpObj}.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #' @param ... parameter of the generic method.
-#'
-#'
-#'
-#' @details
-#'
-#' put details here
 #'
 #' @return
 #'
@@ -191,11 +191,16 @@ posterior_estimate <- function (object, ...) {
 #'
 #' @examples
 #'
-#' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+#' ## Univariate time series
 #'
+#' data("eu_inflation")
 #'
-#' out <- detect_cp(data = data_vec, n_iterations = 1000, n_burnin = 100,
-#'                  params = list(q = 0.25, phi = 0.1, a = 1, b = 1, c = 0.1), kernel = "ts")
+#' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+#'                    prior_delta_c = 1, prior_delta_d = 1)
+#'
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
+#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#'                  kernel = "ts")
 #'
 #' posterior_estimate(out)
 #'
@@ -278,9 +283,9 @@ posterior_estimate.DetectCpObj <- function(object,
 
 #' Plot estimated change points
 #'
-#' @description  The \code{plot} method plots the estimates change points estimated through the salso algorithm, for a \code{DetectCpObj} class object.
+#' @description  The \code{plot} method plots the estimated change points estimated through the salso algorithm, for a \code{DetectCpObj} class object.
 #'
-#' @param x an object of class \code{DetectCPObj}.
+#' @param x an object of class \code{DetectCpObj}.
 #' @param plot_freq if TRUE also the histogram with the empirical frequency of each change point is plotted.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
 #' @param maxNClusters maximum number of clusters in salso procedure.
@@ -289,27 +294,24 @@ posterior_estimate.DetectCpObj <- function(object,
 #' @param y,... parameters of the generic method.
 #'
 #'
-#'
 #' @return
 #'
 #' The function returns a ggplot object representing the detected change points. If \code{plot_freq = TRUE} is plotted also an histogram with the frequency of times that a change point has been detected in the MCMC chain.
 #'
-#'
 #' @examples
 #'
-#' data_mat <- matrix(NA, nrow = 3, ncol = 100)
+#' ## Univariate time series
 #'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+#' data("eu_inflation")
 #'
-#' out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-#'                  params = list(q = 0.25, k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3),
-#'                                m_0 = rep(0,3), prior_delta_c = 2, prior_delta_d = 0.2,
-#'                                prior_var_phi = 0.1), kernel = "ts")
+#' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+#'                    prior_delta_c = 1, prior_delta_d = 1)
+#'
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
+#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#'                  kernel = "ts")
+#'
 #' plot(out)
-#'
-#'
 #'
 #' @rdname plot.DetectCpObj
 #' @export

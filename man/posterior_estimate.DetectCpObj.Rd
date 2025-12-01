@@ -14,7 +14,7 @@
 )
 }
 \arguments{
-\item{object}{an object of class \code{DetectCPObj}.}
+\item{object}{an object of class \code{DetectCpObj}.}
 
 \item{loss}{The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".}
 
@@ -32,16 +32,18 @@ The function returns a vector with the cluster assignment of each observation.
 \description{
 The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
 }
-\details{
-put details here
-}
 \examples{
 
-data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+## Univariate time series
 
+data("eu_inflation")
 
-out <- detect_cp(data = data_vec, n_iterations = 1000, n_burnin = 100,
-                 params = list(q = 0.25, phi = 0.1, a = 1, b = 1, c = 0.1), kernel = "ts")
+params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+                   prior_delta_c = 1, prior_delta_d = 1)
+
+out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
+                 n_burnin = 2500, q = 0.5, params = params_uni,
+                 kernel = "ts")
 
 posterior_estimate(out)
 

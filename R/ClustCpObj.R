@@ -1,21 +1,26 @@
 #' ClustCpObj class constructor
 #'
-#' @description A constructor for the \code{ClustCpObj} class. The class \code{ClustCpObj} contains...
+#' @description
+#' A constructor for the \code{ClustCpObj} class, which stores the output of
+#' the change point detection and clustering algorithms.
 #'
-#' @param data a vector or a matrix containing the values of the time series;
-#' @param n_iterations number of iterations of the MCMC algorithm;
-#' @param n_burnin number of MCMC iterations to exclude in the posterior estimate;
-#' @param clust a matrix with the clustering of each iteration.
-#' @param orders a matrix where each row corresponds to the output order of the corresponding iteration;
-#' @param time computational time in seconds;
-#' @param lkl a vector with the likelihood of the final partition
-#' @param norm_vec a vector with the estimated normalization constant.
-#' @param I0_MCMC traceplot for \eqn{I_0}.
-#' @param kernel_ts if TRUE data are time series.
-#' @param kernel_epi if TRUE data are epidemic diffusions.
-#' @param univariate_ts TRUE/FALSE if time series is univariate or not;
+#' @param data A vector or matrix containing the observed data.
+#' @param n_iterations Total number of MCMC iterations.
+#' @param n_burnin Number of burn-in iterations removed from posterior summaries.
+#' @param clust A matrix where each row contains the cluster assignments for one iteration.
+#' @param orders A multidimensional array where each slice is a matrix representing
+#'   the latent order at each iteration.
+#' @param time Total computational time (in seconds).
+#' @param entropy_MCMC A \code{coda::mcmc} object containing the MCMC samples of the entropy.
+#' @param lkl A \code{coda::mcmc} object containing the log-likelihood values at each iteration.
+#' @param norm_vec A vector containing precomputed normalization constants.
+#' @param I0_MCMC A \code{coda::mcmc} object with the MCMC trace of the initial infection proportion \eqn{I_0}.
+#' @param kernel_ts Logical; TRUE if the kernel corresponds to time-series data.
+#' @param kernel_epi Logical; TRUE if the kernel corresponds to epidemic diffusion data.
+#' @param univariate_ts Logical; TRUE if the data represent a univariate time series,
+#'   FALSE for multivariate time series.
 #'
-#'
+#' @return An object of class \code{ClustCpObj}.
 #' @export
 #'
 ClustCpObj <- function(data = NULL,
@@ -58,16 +63,15 @@ ClustCpObj <- function(data = NULL,
 #'
 #' @examples
 #'
-#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
+#' data("stock_uni")
 #'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+#' params_uni <- list(a = 1,
+#'                    b = 1,
+#'                    c = 1,
+#'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
+#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
 #'
 #' print(out)
 #'
@@ -77,7 +81,7 @@ ClustCpObj <- function(data = NULL,
 print.ClustCpObj <- function(x, ...) {
   cat("ClustCpObj object\n")
   if(x$kernel_ts){
-    if(x$univariate){
+    if(x$univariate_ts){
       cat("Type: clustering univariate time series with common change points\n")
     } else {
       cat("Type: clustering multivariate time series with common change points\n")
@@ -96,16 +100,15 @@ print.ClustCpObj <- function(x, ...) {
 #'
 #' @examples
 #'
-#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
+#' data("stock_uni")
 #'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+#' params_uni <- list(a = 1,
+#'                    b = 1,
+#'                    c = 1,
+#'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
+#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
 #'
 #' summary(out)
 #'
@@ -143,8 +146,6 @@ summary.ClustCpObj <- function(object, ...) {
   }
 }
 
-
-
 #' Estimate the change points of the data
 #'
 #' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
@@ -155,10 +156,6 @@ summary.ClustCpObj <- function(object, ...) {
 #' @param nRuns number of runs in salso procedure.
 #' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
 #' @param ... parameter of the generic method.
-#'
-#' @details
-#'
-#' put details here
 #'
 #' @return
 #'
@@ -172,16 +169,15 @@ summary.ClustCpObj <- function(object, ...) {
 #'
 #' @examples
 #'
-#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
+#' data("stock_uni")
 #'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+#' params_uni <- list(a = 1,
+#'                    b = 1,
+#'                    c = 1,
+#'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
+#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
 #'
 #' posterior_estimate(out)
 #'
@@ -282,48 +278,34 @@ posterior_estimate.ClustCpObj <- function(object,
 #'\donttest{
 #' ## Time series
 #'
-#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
+#' data("stock_uni")
 #'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+#' params_uni <- list(a = 1,
+#'                    b = 1,
+#'                    c = 1,
+#'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-#'                 params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
+#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
 #'
 #' plot(out)
-#'
 #'
 #' ## Epidemic diffusions
 #'
-#' data_mat <- matrix(NA, nrow = 5, ncol = 50)
+#' data("epi_synthetic_multi")
 #'
-#' betas <- list(c(rep(0.45, 25),rep(0.14,25)),
-#'               c(rep(0.55, 25),rep(0.11,25)),
-#'               c(rep(0.50, 25),rep(0.12,25)),
-#'               c(rep(0.52, 10),rep(0.15,40)),
-#'               c(rep(0.53, 10),rep(0.13,40)))
+#' params_epi <- list(M = 1000, xi = 1/8,
+#'                    alpha_SM = 1,
+#'                    a0 = 4,
+#'                    b0 = 10,
+#'                    I0_var = 0.1,
+#'                    avg_blk = 2)
 #'
-#' inf_times <- list()
-#'
-#' for(i in 1:5){
-#'   inf_times[[i]] <- sim_epi_data(10000, 10, 50, betas[[i]], 1/8)
-#'   vec <- rep(0,50)
-#'   names(vec) <- as.character(1:50)
-#'   for(j in 1:50){
-#'     if(as.character(j) %in% names(table(floor(inf_times[[i]])))){
-#'       vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
-#'     }
-#'   }
-#'   data_mat[i,] <- vec
-#' }
-#'
-#' out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
-#'                 params = list(M = 100, L = 1, B = 100), kernel = "epi")
+#' out <- clust_cp(epi_synthetic_multi, n_iterations = 5000, n_burnin = 2000,
+#'                 L = 1, B = 1000, params = params_epi, kernel = "epi")
 #'
 #' plot(out)
+#'
 #' }
 #'
 #' @rdname plot.ClustCpObj

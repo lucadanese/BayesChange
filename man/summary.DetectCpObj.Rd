@@ -16,17 +16,16 @@ The \code{DetectCpObj} method returns a summary of the algorithm.
 }
 \examples{
 
-data_mat <- matrix(NA, nrow = 3, ncol = 100)
+## Univariate time series
 
-data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+data("eu_inflation")
 
-out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-                params = list(q = 0.25, k_0 = 0.25, nu_0 = 4,
-                              S_0 = diag(1,3,3), m_0 = rep(0,3),
-                              prior_delta_c = 2, prior_delta_d = 0.2,
-                              prior_var_phi = 0.1), kernel = "ts")
+params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+                   prior_delta_c = 1, prior_delta_d = 1)
+
+out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
+                 n_burnin = 2500, q = 0.5, params = params_uni,
+                 kernel = "ts")
 summary(out)
 
 }

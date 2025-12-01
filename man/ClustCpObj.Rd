@@ -21,30 +21,38 @@ ClustCpObj(
 )
 }
 \arguments{
-\item{data}{a vector or a matrix containing the values of the time series;}
+\item{data}{A vector or matrix containing the observed data.}
 
-\item{n_iterations}{number of iterations of the MCMC algorithm;}
+\item{n_iterations}{Total number of MCMC iterations.}
 
-\item{n_burnin}{number of MCMC iterations to exclude in the posterior estimate;}
+\item{n_burnin}{Number of burn-in iterations removed from posterior summaries.}
 
-\item{clust}{a matrix with the clustering of each iteration.}
+\item{clust}{A matrix where each row contains the cluster assignments for one iteration.}
 
-\item{orders}{a matrix where each row corresponds to the output order of the corresponding iteration;}
+\item{orders}{A multidimensional array where each slice is a matrix representing
+the latent order at each iteration.}
 
-\item{time}{computational time in seconds;}
+\item{time}{Total computational time (in seconds).}
 
-\item{lkl}{a vector with the likelihood of the final partition}
+\item{entropy_MCMC}{A \code{coda::mcmc} object containing the MCMC samples of the entropy.}
 
-\item{norm_vec}{a vector with the estimated normalization constant.}
+\item{lkl}{A \code{coda::mcmc} object containing the log-likelihood values at each iteration.}
 
-\item{I0_MCMC}{traceplot for \eqn{I_0}.}
+\item{norm_vec}{A vector containing precomputed normalization constants.}
 
-\item{kernel_ts}{if TRUE data are time series.}
+\item{I0_MCMC}{A \code{coda::mcmc} object with the MCMC trace of the initial infection proportion \eqn{I_0}.}
 
-\item{kernel_epi}{if TRUE data are epidemic diffusions.}
+\item{kernel_ts}{Logical; TRUE if the kernel corresponds to time-series data.}
 
-\item{univariate_ts}{TRUE/FALSE if time series is univariate or not;}
+\item{kernel_epi}{Logical; TRUE if the kernel corresponds to epidemic diffusion data.}
+
+\item{univariate_ts}{Logical; TRUE if the data represent a univariate time series,
+FALSE for multivariate time series.}
+}
+\value{
+An object of class \code{ClustCpObj}.
 }
 \description{
-A constructor for the \code{ClustCpObj} class. The class \code{ClustCpObj} contains...
+A constructor for the \code{ClustCpObj} class, which stores the output of
+the change point detection and clustering algorithms.
 }

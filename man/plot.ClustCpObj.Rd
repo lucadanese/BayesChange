@@ -40,48 +40,34 @@ The \code{plot} method plots the estimates partition through the salso algorithm
 \donttest{
 ## Time series
 
-data_mat <- matrix(NA, nrow = 5, ncol = 100)
+data("stock_uni")
 
-data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
+params_uni <- list(a = 1,
+                   b = 1,
+                   c = 1,
+                   phi = 0.1)
 
-out <- clust_cp(data = data_mat, n_iterations = 5000, n_burnin = 1000,
-                params = list(L = 1, B = 1000, phi = 0.5), kernel = "ts")
+out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
+                L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
 
 plot(out)
-
 
 ## Epidemic diffusions
 
-data_mat <- matrix(NA, nrow = 5, ncol = 50)
+data("epi_synthetic_multi")
 
-betas <- list(c(rep(0.45, 25),rep(0.14,25)),
-              c(rep(0.55, 25),rep(0.11,25)),
-              c(rep(0.50, 25),rep(0.12,25)),
-              c(rep(0.52, 10),rep(0.15,40)),
-              c(rep(0.53, 10),rep(0.13,40)))
+params_epi <- list(M = 1000, xi = 1/8,
+                   alpha_SM = 1,
+                   a0 = 4,
+                   b0 = 10,
+                   I0_var = 0.1,
+                   avg_blk = 2)
 
-inf_times <- list()
-
-for(i in 1:5){
-  inf_times[[i]] <- sim_epi_data(10000, 10, 50, betas[[i]], 1/8)
-  vec <- rep(0,50)
-  names(vec) <- as.character(1:50)
-  for(j in 1:50){
-    if(as.character(j) \%in\% names(table(floor(inf_times[[i]])))){
-      vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
-    }
-  }
-  data_mat[i,] <- vec
-}
-
-out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10,
-                params = list(M = 100, L = 1, B = 100), kernel = "epi")
+out <- clust_cp(epi_synthetic_multi, n_iterations = 5000, n_burnin = 2000,
+                L = 1, B = 1000, params = params_epi, kernel = "epi")
 
 plot(out)
+
 }
 
 }

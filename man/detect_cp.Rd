@@ -60,21 +60,25 @@ If data are epidemic diffusions:
 \item{user_seed}{seed for random distribution generation.}
 }
 \value{
-A \code{DetectCpObj} class object containing
+A \code{DetectCpObj} object containing:
 
 \itemize{
-\item \code{$data} vector or matrix with the data.
-\item \code{$n_iterations} number of iterations.
-\item \code{$n_burnin} number of burn-in iterations.
-\item \code{$orders} matrix where each entries is the assignment of the realization to a block. Rows are the iterations and columns the times.
-\item \code{$time} computational time.
-\item \code{$phi_MCMC} traceplot for \eqn{\gamma}.
-\item \code{$sigma_MCMC} traceplot for \eqn{\sigma}.
-\item \code{$delta_MCMC} traceplot for \eqn{\delta}.
-\item \code{I0_MCMC} traceplot for \eqn{I_0}.
-\item \code{kernel_ts} if TRUE data are time series.
-\item \code{kernel_epi} if TRUE data are epidemic diffusions.
-\item \code{$univariate_ts} TRUE if data is an univariate time series, FALSE if it is a multivariate time series.
+\item \code{$data} Vector or matrix with the input data.
+\item \code{$n_iterations} Total number of MCMC iterations.
+\item \code{$n_burnin} Number of burn-in iterations removed from posterior summaries.
+\item \code{$orders} Matrix of change–point allocations. Each row corresponds to an iteration; columns correspond to time indices.
+\item \code{$time} Computational time (in seconds).
+
+\item \code{$entropy_MCMC} A \code{coda::mcmc} object containing the MCMC samples of the entropy measure.
+\item \code{$lkl_MCMC} A \code{coda::mcmc} object containing the MCMC samples of the log-likelihood.
+\item \code{$phi_MCMC} A \code{coda::mcmc} object storing MCMC draws of \eqn{\gamma}.
+\item \code{$sigma_MCMC} A \code{coda::mcmc} object storing MCMC draws of \eqn{\sigma}.
+\item \code{$delta_MCMC} A \code{coda::mcmc} object storing MCMC draws of \eqn{\delta}.
+\item \code{$I0_MCMC} A \code{coda::mcmc} object storing MCMC draws of \eqn{I_0}.
+
+\item \code{$kernel_ts} Logical; TRUE if the data are time series.
+\item \code{$kernel_epi} Logical; TRUE if the data follow an epidemic diffusion process.
+\item \code{$univariate_ts} Logical; TRUE if the time series is univariate, FALSE for multivariate.
 }
 }
 \description{
@@ -84,49 +88,43 @@ The \code{detect_cp} function detect change points on univariate and multivariat
 
 ## Univariate time series
 
-data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+data("eu_inflation")
 
-out <- detect_cp(data = data_vec, n_iterations = 2500, n_burnin = 500,
-                 params = list(a = 1, b = 1, c = 0.1), kernel = "ts")
+params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+                   prior_delta_c = 1, prior_delta_d = 1)
+
+out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
+                 n_burnin = 2500, q = 0.5, params = params_uni,
+                 kernel = "ts")
 
 print(out)
 
 ## Multivariate time series
 
-data_mat <- matrix(NA, nrow = 3, ncol = 100)
+data("eu_inflation")
 
-data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+params_multi <- list(m_0 = rep(0,3),
+                     k_0 = 1,
+                     nu_0 = 10,
+                     S_0 = diag(0.1,3,3),
+                     prior_var_phi = 0.1,
+                     prior_delta_c = 1,
+                     prior_delta_d = 1)
 
-out <- detect_cp(data = data_mat, n_iterations = 2500, n_burnin = 500,
-                 params = list(m_0 = rep(0,3), k_0 = 0.25, nu_0 = 4,
-                               S_0 = diag(1,3,3)), kernel = "ts")
+out <- detect_cp(data = eu_inflation[1:3,], n_iterations = 7500,
+                 n_burnin = 2500, q = 0.5, params = params_multi, kernel = "ts")
 
 print(out)
 
 \donttest{
 ## Epidemic diffusions
 
-data_mat <- matrix(NA, nrow = 100, ncol = 1)
+data("epi_synthetic")
 
-betas <- c(rep(0.45, 25),rep(0.14,75))
+params_epi <- list(M = 1000, xi = 1/8, a0 = 4, b0 = 10, I0_var = 0.1)
 
-inf_times <- sim_epi_data(10000, 10, 100, betas, 1/8)
-
-inf_times_vec <- rep(0,100)
-names(inf_times_vec) <- as.character(1:100)
-
-for(j in 1:100){
- if(as.character(j) \%in\% names(table(floor(inf_times)))){
-   inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
- }
-}
-
-data_mat[,1] <- inf_times_vec
-
-out <- detect_cp(data = data_mat, n_iterations = 500, n_burnin = 100,
-                 params = list(M = 250, xi = 1/8, a0 = 40, b0 = 10), kernel = "epi")
+out <- detect_cp(data = epi_synthetic, n_iterations = 5000, n_burnin = 2000,
+                 q = 0.25, params = params_epi, kernel = "epi")
 
 print(out)
 }
@@ -136,6 +134,4 @@ print(out)
 Martínez, A. F., & Mena, R. H. (2014). On a Nonparametric Change Point Detection Model in Markovian Regimes. \emph{Bayesian Analysis}, 9(4), 823–858. \doi{10.1214/14-BA878}
 
 Corradin, R., Danese, L., & Ongaro, A. (2022). Bayesian nonparametric change point detection for multivariate time series with missing observations. \emph{International Journal of Approximate Reasoning}, 143, 26--43. \doi{10.1016/j.ijar.2021.12.019}
-
-Corradin, R., Danese, L., KhudaBukhsh, W. R., & Ongaro, A. (2024). \emph{Model-based clustering of time-dependent observations with common structural changes}. arXiv preprint arXiv:2410.09552.
 }

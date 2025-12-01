@@ -116,23 +116,30 @@ summary.ClustCpObj <- function(object, ...) {
   cat("ClustCpObj object\n")
   if(object$kernel_ts){
     if(object$univariate){
-      cat("Clustering univariate time series:\n",
-          "Number of burn-in iterations:", object$n_burnin, "\n",
-          "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
-          "Computational time:", round(object$time, digits = 2), "seconds\n")
+      cat("Clustering summary (univariate time series):\n",
+          "- Burn-in iterations:", object$n_burnin, "\n",
+          "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+          "- Average number of clusters:",
+          round(mean(apply(object$clust[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) length(unique(x)))), 2), "\n",
+          "- Computational time:", round(object$time, 2), "seconds\n",
+          "Use plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
     } else {
-      cat("Clustering ", paste0(nrow(object$data[,,1]),"-dimensional time series:\n"),
-          "Number of burn-in iterations:", object$n_burnin, "\n",
-          "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
-          "Computational time:", round(object$time, digits = 2), "seconds\n")
+      cat("Clustering ", paste0(nrow(object$data[,,1]), "-dimensional time series:\n"),
+          "- Burn-in iterations:", object$n_burnin, "\n",
+          "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+          "- Average number of clusters:",
+          round(mean(apply(object$clust[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) length(unique(x)))), 2), "\n",
+          "- Computational time:", round(object$time, 2), "seconds\n",
+          "Use plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
     }
   } else if (object$kernel_epi){
-
     cat("Clustering epidemic diffusions:\n",
-        "Number of burn-in iterations:", object$n_burnin, "\n",
-        "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
-        "Computational time:", round(object$time, digits = 2), "seconds\n")
-
+        "- Burn-in iterations:", object$n_burnin, "\n",
+        "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+        "- Average number of clusters:",
+        round(mean(apply(object$clust[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) length(unique(x)))), 2), "\n",
+        "- Computational time:", round(object$time, 2), "seconds\n",
+        "Use plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
   }
 }
 

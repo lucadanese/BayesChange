@@ -117,23 +117,36 @@ summary.DetectCpObj <- function(object, ...) {
   cat("DetectCpObj object\n")
   if(object$kernel_ts){
     if(object$univariate){
-      cat("Detecting change points on an univariate time series:\n",
-          "Number of burn-in iterations:", object$n_burnin, "\n",
-          "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
-          "Computational time:", round(object$time, digits = 2), "seconds\n")
+      cat("Change point detection summary:\n",
+          "- Data: univariate time series\n",
+          "- Burn-in iterations:", object$n_burnin, "\n",
+          "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+          "- Average number of detected change points:", round(mean(apply(object$orders[(object$n_burnin+1):object$n_iterations,], 1,  function(x) max(x) + 1)),2), "\n",
+          "- Computational time:", round(object$time, 2), "seconds\n",
+          "Use plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
     } else {
-      cat("Detecting change points on a", paste0(nrow(object$data),"-dimensional time series:\n"),
-          "Number of burn-in iterations:", object$n_burnin, "\n",
-          "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
-          "Computational time:", round(object$time, digits = 2), "seconds\n")
+      cat("Change point detection summary:\n",
+          "- Data:", nrow(object$data), "-dimensional time series\n",
+          "- Burn-in iterations:", object$n_burnin, "\n",
+          "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+          "- Average number of detected change points:",
+          round(mean(apply(object$orders[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) max(x) + 1)), 2), "\n",
+          "- Computational time:", round(object$time, 2), "seconds\n",
+          "Use plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
+
     }
   }
 
   if(object$kernel_epi){
-    cat("Detecting change points on an epidemic diffusion:\n",
-        "Number of burn-in iterations:", object$n_burnin, "\n",
-        "Number of MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
-        "Computational time:", round(object$time, digits = 2), "seconds\n")
+    cat("Change point detection summary:\n",
+        "- Data: epidemic diffusion\n",
+        "- Burn-in iterations:", object$n_burnin, "\n",
+        "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
+        "- Average number of detected change points:",
+        round(mean(apply(object$orders[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) max(x) + 1)), 2), "\n",
+        "- Computational time:", round(object$time, 2), "seconds\n",
+        "Use plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
+
   }
 
 

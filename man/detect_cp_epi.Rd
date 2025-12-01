@@ -69,4 +69,6 @@ out <- detect_cp_epi(data = data_mat, n_iterations = 250, q = 0.5,
                      xi = 1/8, a0 = 40, b0 = 10, M = 250)
 
 }
+
 }
+\keyword{internal}

@@ -78,12 +78,12 @@ print.ClustCpObj <- function(x, ...) {
   cat("ClustCpObj object\n")
   if(x$kernel_ts){
     if(x$univariate){
-      cat("Type: clustering univariate time series with common change points")
+      cat("Type: clustering univariate time series with common change points\n")
     } else {
-      cat("Type: clustering multivariate time series with common change points")
+      cat("Type: clustering multivariate time series with common change points\n")
     }
   } else if(x$kernel_epi){
-    cat("Type: clustering epidemic diffusions with common change points")
+    cat("Type: clustering epidemic diffusions with common change points\n")
   }
 }
 

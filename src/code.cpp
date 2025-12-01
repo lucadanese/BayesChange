@@ -20,29 +20,24 @@ double compute_entropy_partition(const arma::vec &partition_temp) {
   int n = partition_temp.n_elem;
   if (n == 0) return 0.0;
 
-  arma::vec z = partition_temp;   // copy
-  z = arma::sort(z);              // sort in ascending order
+  // Count cluster frequencies
+  std::unordered_map<double, int> counts;
+  counts.reserve(n);
 
-  double entropy = 0.0;
-  int count = 1;
-
-  // Count runs of identical labels
-  for (int i = 1; i < n; i++) {
-    if (z[i] == z[i-1]) {
-      count++;
-    } else {
-      double p = (double) count / n;
-      entropy -= p * std::log(p);
-      count = 1;
-    }
+  for (int i = 0; i < n; i++) {
+    counts[partition_temp[i]]++;
   }
 
-  // Final cluster
-  double p = (double) count / n;
-  entropy -= p * std::log(p);
+  // Compute entropy
+  double entropy = 0.0;
+  for (auto &kv : counts) {
+    double p = (double) kv.second / n;
+    entropy -= p * std::log(p);
+  }
 
   return entropy;
 }
+
 
 
 
@@ -1810,8 +1805,8 @@ void update_I0(arma::mat data,
 // FUNCTIONS FOR CLUSTERING EPI DATA
 //------------------------------------
 
-void update_single_order(arma::mat data,
-                         arma::vec clust,
+void update_single_order(const arma::mat& data,
+                         const arma::vec& clust,
                          int clust_id,
                          arma::mat &orders,
                          arma::vec &llik,
@@ -1820,151 +1815,233 @@ void update_single_order(arma::mat data,
                          double a0,
                          double b0,
                          double gamma,
-                         arma::vec rho,
+                         const arma::vec& rho,
                          int M,
                          double S0 = 1,
                          double R0 = 0){
 
-  int k = max(orders.row(clust_id)) + 1, temp_id, temp_obs,
-    T = orders.n_cols, bound = 0, temp_count;
-  arma::vec temp_llik = llik, temp_prob, new_order, freq_temp;
-  arma::mat curve_mat;
-  bool check;
-  double u = arma::randu(), acc_rate;
+  // dimensions
+  const int T = orders.n_cols;
+  //const arma::uword N = clust.n_elem;
 
-  if(k == 1 || (u < q && k < T)){
-    check = true;
-  } else {
-    check = false;
-  }
+  // Preallocate temporaries once per call
+  arma::vec temp_llik = llik;        // copy of current llik to try changes
+  arma::rowvec order_row = orders.row(clust_id); // work on a row (no transpose needed)
+  arma::rowvec new_order_row = order_row;       // proposed order (rowvec)
+  arma::vec freq_temp;               // frequency of blocks
+  arma::uvec obs_idx;                // indices of observations in this cluster
+  arma::mat curve_mat;               // reuse for curve computations
 
-  if(check == true){
+  // find current number of blocks k in this cluster
+  int k = static_cast<int>(arma::max(order_row)) + 1;
 
-    freq_temp.resize(k);
-    for(arma::uword l = 0; l < freq_temp.n_elem; l++){
-      if(std::count(orders.row(clust_id).begin(), orders.row(clust_id).end(), l) > 1){
-        freq_temp(l) = 1;
-      } else {
-        freq_temp(l) = 0;
-      }
+  // sample decision for split (true) vs merge (false)
+  double u = arma::randu();
+  bool do_split;
+  if (k == 1 || (u < q && k < T)) do_split = true;
+  else do_split = false;
+
+  // precompute indices of observations in this cluster (only loop these)
+  obs_idx = arma::find(clust == clust_id);
+  // If no observations in cluster, nothing to update
+  if (obs_idx.n_elem == 0) return;
+
+  // Helper lambda: sample a single element index uniformly from an uvec of indices
+  auto sample_from_uvec = [&](const arma::uvec& v)->int{
+    if (v.n_elem == 0) return -1;
+    arma::uword pick = static_cast<arma::uword>(std::floor(arma::randu() * v.n_elem));
+    if (pick >= v.n_elem) pick = v.n_elem - 1;
+    return static_cast<int>(v(pick));
+  };
+
+  if (do_split){
+    // --- SPLIT proposal: choose a block with multiplicity >1 then split one of its members outwards ---
+
+    // compute block frequencies (0..k-1)
+    freq_temp.zeros(k);
+    for (int t = 0; t < T; ++t){
+      arma::uword b = static_cast<arma::uword>(order_row(t));
+      if (b < freq_temp.n_elem) freq_temp(b) += 1.0;
     }
 
-    temp_id = rint(freq_temp);
-    temp_prob.resize(T);
-    temp_prob.fill(0.0);
-    for(int i = 0; i < T; i++){
-      if(orders(clust_id,i) == temp_id){
-        temp_prob(i) += 1.0;
-        bound = i;
-      }
-    }
-    temp_prob(bound) = 0.0;
-    temp_obs = rint(temp_prob);
-    new_order = orders.row(clust_id).t();
-    for(int i = temp_obs + 1; i < T; i++){
-      new_order(i) += 1;
-    }
-
-    for(arma::uword i = 0; i < clust.n_elem; i++){
-      if(clust(i) == clust_id){
-        curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho(i), M, S0 = 1, R0 = 0);
-        temp_llik(i) = log_sum_exp(curve_mat.cols(0,T-1) * data.row(i).t() - curve_mat.col(T)) - log(M);
-      }
-    }
-
-    if(k == 1){
-      acc_rate = my_min(0, log(1 - q) - log(q) + sum(temp_llik) - sum(llik) +
-        log(sum(freq_temp)) + log(std::count(orders.row(clust_id).begin(), orders.row(clust_id).end(), temp_id)) - log(k));
+    // get blocks with freq > 1
+    arma::uvec multi_blocks = arma::find(freq_temp > 1.0);
+    if (multi_blocks.n_elem == 0){
+      // nothing to split; skip to end
     } else {
-      acc_rate = my_min(0, log(1 - q) + log(T - 1) + sum(temp_llik) - sum(llik));
-    }
+      // choose block id uniformly among multi_blocks
+      int temp_id = sample_from_uvec(multi_blocks);
+      if (temp_id >= 0){
+        // gather positions (time indices) in that block
+        arma::uvec pos = arma::find(order_row == temp_id);
+        if (pos.n_elem == 0){
+          // unexpected, do nothing
+        } else {
+          // choose a position to split out, but exclude the last occurrence (bound) per original code
+          arma::uword bound = pos.max(); // original code tracked 'bound' as last occurrence
+          // create vector of candidate positions excluding bound
+          arma::uvec cand = arma::find(order_row == temp_id);
+          // remove bound from cand
+          arma::uvec cand_no_bound;
+          if (cand.n_elem > 1){
+            cand_no_bound.set_size(cand.n_elem - 1);
+            arma::uword idxc = 0;
+            for (arma::uword ii = 0; ii < cand.n_elem; ++ii){
+              if (cand(ii) != bound){
+                cand_no_bound(idxc++) = cand(ii);
+              }
+            }
+            cand_no_bound.resize(idxc);
+          } else {
+            cand_no_bound.reset(); // empty
+          }
 
-    u = arma::randu();
-    if(u <= exp(acc_rate)){
-      orders.row(clust_id) = new_order.t();
-      llik = temp_llik;
+          if (cand_no_bound.n_elem > 0){
+            int temp_obs = sample_from_uvec(cand_no_bound); // index in 0..T-1
+            if (temp_obs >= 0){
+              // form new_order: increment labels after temp_obs
+              new_order_row = order_row;
+              for (int ii = temp_obs + 1; ii < T; ++ii){
+                new_order_row(ii) = new_order_row(ii) + 1.0;
+              }
+
+              // compute proposed llik only for observations in this cluster
+              for (arma::uword idx = 0; idx < obs_idx.n_elem; ++idx){
+                arma::uword i = obs_idx(idx);
+                // compute curve_mat for observation i with new_order_row
+                curve_mat = integrated_curves_mat(dt, new_order_row.t(), a0, b0, gamma, rho(i), M, S0, R0);
+                temp_llik(i) = log_sum_exp(curve_mat.cols(0, T-1) * data.row(i).t() - curve_mat.col(T)) - std::log((double)M);
+              }
+
+              // compute acceptance ratio
+              double acc_rate;
+              if (k == 1){
+                // need counts: sum(freq_temp) == T, but we follow original formula
+                double sum_freq = arma::sum(freq_temp);
+                double cnt_block_members = static_cast<double>( std::count(order_row.begin(), order_row.end(), temp_id) ); // still cheap: T small-ish
+                acc_rate = my_min(0.0, std::log(1.0 - q) - std::log(q) + arma::sum(temp_llik) - arma::sum(llik) +
+                  std::log(sum_freq) + std::log(cnt_block_members) - std::log((double)k));
+              } else {
+                acc_rate = my_min(0.0, std::log(1.0 - q) + std::log((double)(T - 1)) + arma::sum(temp_llik) - arma::sum(llik));
+              }
+
+              if (arma::randu() <= std::exp(acc_rate)){
+                // accept
+                orders.row(clust_id) = new_order_row;
+                llik = temp_llik;
+              }
+            }
+          }
+        }
+      }
     }
 
   } else {
+    // --- MERGE proposal: choose a block id < k-1 uniformly and merge labels > temp_id downward ---
 
-    freq_temp.resize(k - 1);
-    freq_temp.fill(1.0);
-    temp_id = rint(freq_temp);
-    new_order = orders.row(clust_id).t();
-    for(int i = 0; i < T; i++){
-      if(orders(clust_id, i) > temp_id){
-        new_order(i) -= 1;
-      }
-    }
-
-    for(arma::uword i = 0; i < clust.n_elem; i++){
-      if(clust(i) == clust_id){
-        curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho(i), M, S0 = 1, R0 = 0);
-        temp_llik(i) = log_sum_exp(curve_mat.cols(0,T-1) * data.row(i).t() - curve_mat.col(T)) - log(M);
-
-      }
-    }
-
-    temp_count = 0;
-    for(int i = 0; i < k - 1; i++){
-      if(std::count(orders.row(clust_id).begin(),orders.row(clust_id).end(), i) > 1){
-        temp_count += 1;
-      }
-    }
-
-    if(k == 1){
-      acc_rate = my_min(0, log(q) - log(1 - q) + sum(temp_llik) - sum(llik) +
-        log(k - 1) - log(temp_count) - log(std::count(new_order.begin(), new_order.end(), temp_id) - 1));
+    if (k <= 1){
+      // nothing to merge
     } else {
-      acc_rate = my_min(0, log(q) + log(T - 1) + sum(temp_llik) - sum(llik));
-    }
+      // candidate block ids are 0..k-2
+      arma::uvec blocks = arma::regspace<arma::uvec>(0, (arma::uword)k - 2);
+      int temp_id = sample_from_uvec(blocks);
+      if (temp_id >= 0){
+        // proposed new_order: decrement labels greater than temp_id
+        new_order_row = order_row;
+        for (int ii = 0; ii < T; ++ii){
+          if (new_order_row(ii) > temp_id) new_order_row(ii) = new_order_row(ii) - 1.0;
+        }
 
-    u = arma::randu();
-    if(u <= exp(acc_rate)){
-      orders.row(clust_id) = new_order.t();
-      llik = temp_llik;
+        // compute temp_llik only for obs in this cluster
+        for (arma::uword idx = 0; idx < obs_idx.n_elem; ++idx){
+          arma::uword i = obs_idx(idx);
+          curve_mat = integrated_curves_mat(dt, new_order_row.t(), a0, b0, gamma, rho(i), M, S0, R0);
+          temp_llik(i) = log_sum_exp(curve_mat.cols(0, T-1) * data.row(i).t() - curve_mat.col(T)) - std::log((double)M);
+        }
+
+        // compute temp_count = number of blocks with multiplicity > 1 (before merge)
+        int temp_count = 0;
+        for (int bi = 0; bi < k - 1; ++bi){
+          arma::uword cnt = static_cast<arma::uword>( std::count(order_row.begin(), order_row.end(), bi) );
+          if (cnt > 1) temp_count += 1;
+        }
+
+        double acc_rate;
+        if (k == 1){
+          // improbable branch (k==1 shouldn't be here), keep original formula
+          acc_rate = my_min(0.0, std::log(q) - std::log(1.0 - q) + arma::sum(temp_llik) - arma::sum(llik) +
+            std::log(k - 1.0) - std::log((double)temp_count) - std::log((double)(std::count(new_order_row.begin(), new_order_row.end(), temp_id) - 1)));
+        } else {
+          acc_rate = my_min(0.0, std::log(q) + std::log((double)(T - 1)) + arma::sum(temp_llik) - arma::sum(llik));
+        }
+
+        if (arma::randu() <= std::exp(acc_rate)){
+          orders.row(clust_id) = new_order_row;
+          llik = temp_llik;
+        }
+      }
     }
   }
 
-  k = max(orders.row(clust_id)) + 1;
-  if(k > 1){
-    freq_temp.resize(k - 1);
-    freq_temp.fill(1.0);
-    temp_id = rint(freq_temp);
+  // --- Third move: adjacent-block relabeling (as in original code) ---
+  // recompute k
+  order_row = orders.row(clust_id);
+  k = static_cast<int>(arma::max(order_row)) + 1;
+  if (k > 1){
+    // choose temp_id in 0..k-2
+    arma::uvec blocks2 = arma::regspace<arma::uvec>(0, (arma::uword)k - 2);
+    if (blocks2.n_elem > 0){
+      int temp_id = sample_from_uvec(blocks2);
+      if (temp_id >= 0){
+        // build temp_prob: positions where order == temp_id or temp_id+1
+        arma::uvec pos = arma::find( (order_row == temp_id) || (order_row == (temp_id + 1)) );
+        if (pos.n_elem > 0){
+          // pick a time index to be the split point (exclude last occurrence)
+          arma::uword bound = pos.max();
+          // build candidates excluding bound
+          arma::uvec cand;
+          if (pos.n_elem > 1){
+            cand.set_size(pos.n_elem - 1);
+            arma::uword idxc = 0;
+            for (arma::uword ii = 0; ii < pos.n_elem; ++ii){
+              if (pos(ii) != bound) cand(idxc++) = pos(ii);
+            }
+            cand.resize(idxc);
+          } else {
+            cand.reset();
+          }
 
-    temp_prob.resize(T);
-    temp_prob.fill(0.0);
-    for(int i = 0; i < T; i++){
-      if(orders(clust_id,i) == temp_id || orders(clust_id,i) == temp_id + 1){
-        temp_prob(i) += 1.0;
-        bound = i;
+          if (cand.n_elem > 0){
+            int temp_obs = sample_from_uvec(cand);
+            if (temp_obs >= 0){
+              new_order_row = order_row;
+              for (int ii = temp_obs + 1; ii < T; ++ii){
+                if (new_order_row(ii) == temp_id || new_order_row(ii) == (temp_id + 1)){
+                  new_order_row(ii) = temp_id + 1;
+                }
+              }
+
+              // compute temp_llik for affected cluster observations only
+              for (arma::uword idx = 0; idx < obs_idx.n_elem; ++idx){
+                arma::uword i = obs_idx(idx);
+                curve_mat = integrated_curves_mat(dt, new_order_row.t(), a0, b0, gamma, rho(i), M, S0, R0);
+                temp_llik(i) = log_sum_exp(curve_mat.cols(0, T-1) * data.row(i).t() - curve_mat.col(T)) - std::log((double)M);
+              }
+
+              double acc_rate = my_min(0.0, arma::sum(temp_llik) - arma::sum(llik));
+              if (arma::randu() <= std::exp(acc_rate)){
+                orders.row(clust_id) = new_order_row;
+                llik = temp_llik;
+              }
+            }
+          }
+        }
       }
-    }
-    temp_prob(bound) = 0.0;
-    temp_obs = rint(temp_prob);
-    new_order = orders.row(clust_id).t();
-    for(int i = temp_obs + 1; i < T; i++){
-      if(new_order(i) == temp_id || new_order(i) == temp_id + 1){
-        new_order(i) = temp_id + 1;
-      }
-    }
-
-    for(arma::uword i = 0; i < clust.n_elem; i++){
-      if(clust(i) == clust_id){
-        curve_mat = integrated_curves_mat(dt, new_order, a0, b0, gamma, rho(i), M, S0, R0);
-        temp_llik(i) = log_sum_exp(curve_mat.cols(0,T-1) * data.row(i).t() - curve_mat.col(T)) - log(M);
-      }
-    }
-
-    acc_rate = my_min(0, sum(temp_llik) - sum(llik));
-
-    u = arma::randu();
-    if(u <= exp(acc_rate)){
-      orders.row(clust_id) = new_order.t();
-      llik = temp_llik;
     }
   }
-}
+
+} // end function
+
 
 void update_partition(arma::mat data,
                       arma::vec &clust,
@@ -2093,12 +2170,15 @@ void update_partition(arma::mat data,
     sum3vec(0) = log(1);
     sum3vec(1) = -sum3;
 
-    acc_rate = my_min(0, ((std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id1)) +  std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id2)) - 2) * log(0.5) +
+    int cnt_id1 = (int) arma::accu(temp_clust == temp_clust(id1));
+    int cnt_id2 = (int) arma::accu(temp_clust == temp_clust(id2));
+
+    acc_rate = my_min(0, ((cnt_id1 +  cnt_id2 - 2) * log(0.5) +
       lgamma(alpha) +
       log_sum_exp(sum1vec) -
       log_sum_exp(sum2vec) +
-      lgamma(alpha + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id1)) +  std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id2))) -
-      lgamma(alpha + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id1))) - lgamma(alpha + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id2))) +
+      lgamma(alpha + cnt_id1 +  cnt_id2) -
+      lgamma(alpha + cnt_id1) - lgamma(alpha + cnt_id2) +
       sum(temp_llik) - sum(llik) +
       log_sum_exp(temp_vec1) - log_sum_exp(temp_vec2)));
 
@@ -2254,8 +2334,11 @@ void update_partition(arma::mat data,
     sum3vec(0) = log(1);
     sum3vec(1) = -sum3;
 
-    acc_rate = my_min(0, (- (std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id1)) +  std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id2)) - 2) * log(0.5) +
-      - lgamma(alpha + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id1)) + std::count(temp_clust.begin(),temp_clust.end(),temp_clust(id2))) +
+    int cnt_id1 = (int) arma::accu(temp_clust == temp_clust(id1));
+    int cnt_id2 = (int) arma::accu(temp_clust == temp_clust(id2));
+
+    acc_rate = my_min(0, (- (cnt_id1 +  cnt_id2 - 2) * log(0.5) +
+      - lgamma(alpha + cnt_id1 + cnt_id2) +
       log_sum_exp(sum1vec) -
       log_sum_exp(sum3vec) +
       sum(temp_llik) - sum(llik) + log_sum_exp(temp_vec1) -
@@ -2276,9 +2359,9 @@ void update_partition(arma::mat data,
   k = orders.n_rows;
   for(int i = 0; i < k; i++){
 
-    if((int) std::count(clust.begin(), clust.end(), i) == 0){
+    if((int) arma::accu(clust == i) == 0){
       for(int j = k; j > i; j--){
-        if((int) std::count(clust.begin(), clust.end(), j) != 0){
+        if((int) arma::accu(clust == j) != 0){
           clust(find(clust == j)).fill(i);
           orders.swap_rows(i,j);
           break;
@@ -2289,7 +2372,7 @@ void update_partition(arma::mat data,
 
   u_bound = 1;
   for(int i = 1; i < k + 1; i++){
-    if(std::count(clust.begin(), clust.end(),i) > 0){
+    if((int) arma::accu(clust == i) > 0){
       u_bound += 1;
     }
   }
@@ -2537,7 +2620,6 @@ return infection_times;
 //-----------------
 
 //' @name detect_cp_uni
-//' @export detect_cp_uni
 //'
 //' @title Detect Change Points on an univariate time series.
 //' @description Detect Change Points on an univariate time series.
@@ -2565,7 +2647,7 @@ return infection_times;
 //'                             n_iterations = 2500,
 //'                             q = 0.25)
 //'
-//'
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List detect_cp_uni(arma::vec data,
                                 int n_iterations, double q,
@@ -2737,7 +2819,6 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
 
 //' @name detect_cp_multi
-//' @export detect_cp_multi
 //'
 //' @title Detect Change Points on multivariate time series
 //' @description Detect Change Points on multivariate time series
@@ -2771,7 +2852,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 //'                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
 //'                               prior_delta_c = 2, prior_delta_d = 0.2, prior_var_phi = 0.1)
 //'
-//'
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List detect_cp_multi(arma::mat data,
                                   int n_iterations, double q, double k_0, double nu_0,
@@ -2923,7 +3004,6 @@ Rcpp::List detect_cp_multi(arma::mat data,
  }
 
 //' @name detect_cp_epi
-//' @export detect_cp_epi
 //'
 //' @title Detect Change Points on a epidemic diffusion
 //' @description Detect Change Points on a epidemic diffusion
@@ -2967,6 +3047,8 @@ Rcpp::List detect_cp_multi(arma::mat data,
 //'                      xi = 1/8, a0 = 40, b0 = 10, M = 250)
 //'
 //'}
+//'
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
                          double M, double xi, double a0, double b0, double I0_var = 0.01,
@@ -3095,7 +3177,7 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
 //'  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
 //'
 //'}
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List clust_cp_epi(arma::mat data,
                           int n_iterations,
@@ -3185,10 +3267,12 @@ Rcpp::List clust_cp_epi(arma::mat data,
 
 
    res_clust.row(iter) = clust.t();
-   res_llik.row(iter).cols(0,data.n_rows-1) = llik.t();
+   //res_llik.row(iter).cols(0,data.n_rows-1) = llik.t();
+   res_llik.row(iter) = llik.t();
    res_entropy(iter) = compute_entropy_partition(clust);
-   res_rho.row(iter).cols(0,data.n_rows-1) = rho.t();
+   //res_rho.row(iter).cols(0,data.n_rows-1) = rho.t();
    res_orders.slice(iter).rows(0, orders.n_rows-1) = orders;
+   res_rho.row(iter) = rho.t();
 
    // print time
    if(((iter + 1) % nupd == 0) & (print_progress == true)){
@@ -3246,7 +3330,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
 //'
 //' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, phi = 0.5)
 //'}
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List clust_cp_uni(arma::mat data,
                           int n_iterations,
@@ -3601,7 +3685,7 @@ return out_list;
 //' out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
 //'                         phi = 0.1, k_0 = 0.25, nu_0 = 5, S_0 = diag(0.1,3,3), m_0 = rep(0,3))
 //'}
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List clust_cp_multi(arma::cube data,
                             int n_iterations,

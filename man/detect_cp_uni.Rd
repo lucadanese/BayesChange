@@ -54,5 +54,5 @@ out <- detect_cp_uni(data = data_vec,
                             n_iterations = 2500,
                             q = 0.25)
 
-
 }
+\keyword{internal}

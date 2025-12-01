@@ -25,7 +25,6 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 }
 
 #' @name detect_cp_uni
-#' @export detect_cp_uni
 #'
 #' @title Detect Change Points on an univariate time series.
 #' @description Detect Change Points on an univariate time series.
@@ -53,13 +52,12 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #'                             n_iterations = 2500,
 #'                             q = 0.25)
 #'
-#'
+#' @keywords internal
 detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_var_phi = 0.1, prior_delta_c = 1, prior_delta_d = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, a, b, c, prior_var_phi, prior_delta_c, prior_delta_d, print_progress, user_seed)
 }
 
 #' @name detect_cp_multi
-#' @export detect_cp_multi
 #'
 #' @title Detect Change Points on multivariate time series
 #' @description Detect Change Points on multivariate time series
@@ -93,13 +91,12 @@ detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_va
 #'                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
 #'                               prior_delta_c = 2, prior_delta_d = 0.2, prior_var_phi = 0.1)
 #'
-#'
+#' @keywords internal
 detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_delta_c = 1, prior_delta_d = 1, prior_var_phi = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_delta_c, prior_delta_d, prior_var_phi, print_progress, user_seed)
 }
 
 #' @name detect_cp_epi
-#' @export detect_cp_epi
 #'
 #' @title Detect Change Points on a epidemic diffusion
 #' @description Detect Change Points on a epidemic diffusion
@@ -143,6 +140,8 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_de
 #'                      xi = 1/8, a0 = 40, b0 = 10, M = 250)
 #'
 #'}
+#'
+#' @keywords internal
 detect_cp_epi <- function(data, n_iterations, q, M, xi, a0, b0, I0_var = 0.01, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_epi`, data, n_iterations, q, M, xi, a0, b0, I0_var, print_progress, user_seed)
 }
@@ -200,7 +199,7 @@ detect_cp_epi <- function(data, n_iterations, q, M, xi, a0, b0, I0_var = 0.01, p
 #'  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
 #'
 #'}
-#' @export
+#' @keywords internal
 clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q = 0.1, a0 = 4, b0 = 10, I0_var = 0.01, avg_blk = 0.003, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, I0_var, avg_blk, print_progress, user_seed)
 }
@@ -235,7 +234,7 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q 
 #'
 #' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, phi = 0.5)
 #'}
-#' @export
+#' @keywords internal
 clust_cp_uni <- function(data, n_iterations, B, L, phi, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_uni`, data, n_iterations, B, L, phi, a, b, c, q, alpha_SM, print_progress, user_seed)
 }
@@ -285,7 +284,7 @@ clust_cp_uni <- function(data, n_iterations, B, L, phi, a = 1, b = 1, c = 1, q =
 #' out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
 #'                         phi = 0.1, k_0 = 0.25, nu_0 = 5, S_0 = diag(0.1,3,3), m_0 = rep(0,3))
 #'}
-#' @export
+#' @keywords internal
 clust_cp_multi <- function(data, n_iterations, B, L, phi, k_0, nu_0, S_0, m_0, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_multi`, data, n_iterations, B, L, phi, k_0, nu_0, S_0, m_0, q, alpha_SM, print_progress, user_seed)
 }

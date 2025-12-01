@@ -78,13 +78,13 @@ print.DetectCpObj <- function(x, ...) {
   cat("DetectCpObj object\n")
   if(x$kernel_ts){
     if(x$univariate){
-      cat("Type: change points detection on univariate time series")
+      cat("Type: change points detection on univariate time series\n")
     } else {
-      cat("Type: change points detection on multivariate time series")
+      cat("Type: change points detection on multivariate time series\n")
     }
   }
   if(x$kernel_epi){
-    cat("Type: change points detection on an epidemic diffusion")
+    cat("Type: change points detection on an epidemic diffusion\n")
   }
 
 }

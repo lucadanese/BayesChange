@@ -78,3 +78,4 @@ out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
                         phi = 0.1, k_0 = 0.25, nu_0 = 5, S_0 = diag(0.1,3,3), m_0 = rep(0,3))
 }
 }
+\keyword{internal}

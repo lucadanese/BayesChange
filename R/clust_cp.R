@@ -321,7 +321,7 @@ clust_cp <- function(data,
     # create coda objects
     entropy_mcmc <- coda::mcmc(out$entropy)
     I0_mcmc <- coda::mcmc(out$I0_MCMC)
-    lkl_mcmc <- coda::mcmc(out$lkl)
+    lkl_mcmc <- coda::mcmc(out$llik)
 
     result <- ClustCpObj(data = data_input,
                          n_iterations = n_iterations_input,

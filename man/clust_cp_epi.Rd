@@ -91,3 +91,4 @@ betas <- list(c(rep(0.45, 25),rep(0.14,25)),
 
 }
 }
+\keyword{internal}

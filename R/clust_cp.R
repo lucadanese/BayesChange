@@ -305,5 +305,4 @@ clust_cp <- function(data,
 
   return(result)
 
-
 }

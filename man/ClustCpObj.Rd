@@ -11,9 +11,9 @@ ClustCpObj(
   clust = NULL,
   orders = NULL,
   time = NULL,
-  entropy_MCMC = NULL,
-  lkl = NULL,
   norm_vec = NULL,
+  entropy_MCMC = NULL,
+  lkl_MCMC = NULL,
   I0_MCMC = NULL,
   kernel_ts = NULL,
   kernel_epi = NULL,
@@ -34,11 +34,11 @@ the latent order at each iteration.}
 
 \item{time}{Total computational time (in seconds).}
 
+\item{norm_vec}{A vector containing precomputed normalization constants.}
+
 \item{entropy_MCMC}{A \code{coda::mcmc} object containing the MCMC samples of the entropy.}
 
-\item{lkl}{A \code{coda::mcmc} object containing the log-likelihood values at each iteration.}
-
-\item{norm_vec}{A vector containing precomputed normalization constants.}
+\item{lkl_MCMC}{A \code{coda::mcmc} object containing the log-likelihood values at each iteration.}
 
 \item{I0_MCMC}{A \code{coda::mcmc} object with the MCMC trace of the initial infection proportion \eqn{I_0}.}
 

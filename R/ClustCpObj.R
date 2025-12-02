@@ -11,9 +11,9 @@
 #' @param orders A multidimensional array where each slice is a matrix representing
 #'   the latent order at each iteration.
 #' @param time Total computational time (in seconds).
-#' @param entropy_MCMC A \code{coda::mcmc} object containing the MCMC samples of the entropy.
-#' @param lkl A \code{coda::mcmc} object containing the log-likelihood values at each iteration.
 #' @param norm_vec A vector containing precomputed normalization constants.
+#' @param entropy_MCMC A \code{coda::mcmc} object containing the MCMC samples of the entropy.
+#' @param lkl_MCMC A \code{coda::mcmc} object containing the log-likelihood values at each iteration.
 #' @param I0_MCMC A \code{coda::mcmc} object with the MCMC trace of the initial infection proportion \eqn{I_0}.
 #' @param kernel_ts Logical; TRUE if the kernel corresponds to time-series data.
 #' @param kernel_epi Logical; TRUE if the kernel corresponds to epidemic diffusion data.
@@ -29,9 +29,9 @@ ClustCpObj <- function(data = NULL,
                        clust = NULL,
                        orders = NULL,
                        time = NULL,
-                       entropy_MCMC = NULL,
-                       lkl = NULL,
                        norm_vec = NULL,
+                       entropy_MCMC = NULL,
+                       lkl_MCMC = NULL,
                        I0_MCMC = NULL,
                        kernel_ts = NULL,
                        kernel_epi = NULL,
@@ -43,9 +43,9 @@ ClustCpObj <- function(data = NULL,
                 clust = clust,
                 orders = orders,
                 time = time,
-                entropy_MCMC = entropy_MCMC,
-                lkl = lkl,
                 norm_vec = norm_vec,
+                entropy_MCMC = entropy_MCMC,
+                lkl_MCMC = lkl_MCMC,
                 I0_MCMC = I0_MCMC,
                 kernel_ts = kernel_ts,
                 kernel_epi = kernel_epi,

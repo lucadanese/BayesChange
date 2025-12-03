@@ -33,10 +33,6 @@ for(i in 1:3){
   data[i, as.numeric(names(inf_times[[i]]))] <- as.numeric(inf_times[[i]])
 }
 
-# ---- 5. Shrink time window ----
-
-data <- data[,10:150]
-
 # ---- 4. Save dataset ----
 epi_synthetic_multi <- data
 

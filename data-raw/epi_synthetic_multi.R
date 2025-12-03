@@ -4,6 +4,8 @@
 
 library(usethis)
 
+set.seed(3122025)
+
 # ---- 1. Prepare storage ----
 data <- matrix(0, nrow = 3, ncol = 200)
 inf_times <- vector("list", 3)

@@ -5,6 +5,8 @@
 library(usethis)
 library(readr)
 
+set.seed(3122025)
+
 # ---- 1. Create synthetic beta vector ----
 betas <- c(rep(0.2, 130), rep(0.55, 70))
 

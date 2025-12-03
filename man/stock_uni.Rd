@@ -20,7 +20,7 @@ data(stock_uni)
 \description{
 This dataset contains detrended and standardized daily mean stock prices for
 the 50 largest companies (by market capitalization) in the S&P 500 index.
-Data cover the period from January 1, 2020 to January 2, 2022.
+Data cover the period from January 1, 2020 to January 1, 2022.
 }
 \details{
 For each company, the mean price is computed as the average between the

@@ -477,19 +477,40 @@ plot_psm <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
 
   # Plot
   plot_heat <- ggplot2::ggplot(psm_melt) +
-    ggplot2::geom_tile(ggplot2::aes(x = rlang::.data$Obs1, y = rlang::.data$Obs2, fill = rlang::.data$Similarity), na.rm = TRUE, size = 0.0) +
+    ggplot2::geom_tile(
+      ggplot2::aes(x = .data$Obs1, y = .data$Obs2, fill = .data$Similarity),
+      na.rm = TRUE,
+      linewidth = 0
+    ) +
     ggplot2::scale_fill_gradient(low = "transparent", high = "#470D60FF") +
-    ggplot2::labs(title = title, fill = "Co-clustering\nProbability", x = " ", y = " ") +
+    ggplot2::labs(
+      title = title,
+      fill = "Co-clustering\nProbability",
+      x = " ",
+      y = " "
+    ) +
     ggplot2::theme_linedraw() +
-    ggplot2::coord_cartesian(xlim = c(0, ncol(psm) + 1), ylim = c(0, ncol(psm) + 1), expand = FALSE) +
-    ggplot2::scale_x_continuous(breaks = seq(1, ncol(psm), by = 1), labels = obs_labels) +
-    ggplot2::scale_y_continuous(breaks = seq(1, ncol(psm), by = 1),labels = obs_labels) +
-    ggplot2::theme(legend.position = "right",
-          plot.title = ggplot2::element_text(hjust = 0.5),
-          axis.text.x = ggplot2::element_text(size = 8),
-          axis.text.y = ggplot2::element_text(size = 8),
-          panel.grid.major = ggplot2::element_blank(),
-          panel.grid.minor = ggplot2::element_line(size=0.1))
+    ggplot2::coord_cartesian(
+      xlim = c(0, ncol(psm) + 1),
+      ylim = c(0, ncol(psm) + 1),
+      expand = FALSE
+    ) +
+    ggplot2::scale_x_continuous(
+      breaks = seq(1, ncol(psm), by = 1),
+      labels = obs_labels
+    ) +
+    ggplot2::scale_y_continuous(
+      breaks = seq(1, ncol(psm), by = 1),
+      labels = obs_labels
+    ) +
+    ggplot2::theme(
+      legend.position = "right",
+      plot.title = ggplot2::element_text(hjust = 0.5),
+      axis.text.x = ggplot2::element_text(size = 8),
+      axis.text.y = ggplot2::element_text(size = 8),
+      panel.grid.major = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_line(linewidth = 0.1)
+    )
 
   return(plot_heat)
 }

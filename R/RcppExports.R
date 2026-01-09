@@ -44,14 +44,6 @@ sim_epi_data <- function(S0, I0, max_time, beta_vec, xi_0, user_seed = 1234L) {
 #' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 #' }
 #'
-#' @examples
-#'
-#' data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
-#'
-#' out <- detect_cp_uni(data = data_vec,
-#'                             n_iterations = 2500,
-#'                             q = 0.25)
-#'
 #' @keywords internal
 detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_var_phi = 0.1, prior_delta_c = 1, prior_delta_d = 1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_uni`, data, n_iterations, q, a, b, c, prior_var_phi, prior_delta_c, prior_delta_d, print_progress, user_seed)
@@ -78,19 +70,6 @@ detect_cp_uni <- function(data, n_iterations, q, a = 1, b = 1, c = 0.1, prior_va
 #' \item{\code{$delta_MCMC}} traceplot for \eqn{\delta}.
 #' }
 #'
-#' @examples
-#'
-#' data_mat <- matrix(NA, nrow = 3, ncol = 100)
-#'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#'
-#' out <- detect_cp_multi(data = data_mat,
-#'                               n_iterations = 2500,
-#'                               q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-#'                               prior_delta_c = 2, prior_delta_d = 0.2, prior_var_phi = 0.1)
-#'
 #' @keywords internal
 detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_delta_c = 1, prior_delta_d = 1, prior_var_phi = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_detect_cp_multi`, data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_delta_c, prior_delta_d, prior_var_phi, print_progress, user_seed)
@@ -116,30 +95,6 @@ detect_cp_multi <- function(data, n_iterations, q, k_0, nu_0, S_0, m_0, prior_de
 #' \item{\code{time}} computational time in seconds.
 #' \item{\code{$I0_MCMC}} traceplot for \eqn{I_0}.
 #' }
-#'
-#' @examples
-#' \donttest{
-#' data_mat <- matrix(NA, nrow = 100, ncol = 1)
-#'
-#' betas <- c(rep(0.45, 25),rep(0.14,75))
-#'
-#' inf_times <- sim_epi_data(10000, 10, 100, betas, 1/8)
-#'
-#' inf_times_vec <- rep(0,100)
-#' names(inf_times_vec) <- as.character(1:100)
-#'
-#' for(j in 1:100){
-#'  if(as.character(j) %in% names(table(floor(inf_times)))){
-#'  inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
-#'  }
-#' }
-#'
-#' data_mat[,1] <- inf_times_vec
-#'
-#' out <- detect_cp_epi(data = data_mat, n_iterations = 250, q = 0.5,
-#'                      xi = 1/8, a0 = 40, b0 = 10, M = 250)
-#'
-#'}
 #'
 #' @keywords internal
 detect_cp_epi <- function(data, n_iterations, q, M, xi, a0, b0, I0_var = 0.01, print_progress = TRUE, user_seed = 1234L) {
@@ -169,36 +124,6 @@ detect_cp_epi <- function(data, n_iterations, q, M, xi, a0, b0, I0_var = 0.01, p
 #' \item{\code{$rho}} traceplot for the proportion of infected individuals at time 0.
 #' }
 #'
-#'@examples
-#'\donttest{
-#' data_mat <- matrix(NA, nrow = 5, ncol = 50)
-#'
-#' betas <- list(c(rep(0.45, 25),rep(0.14,25)),
-#'               c(rep(0.55, 25),rep(0.11,25)),
-#'               c(rep(0.50, 25),rep(0.12,25)),
-#'               c(rep(0.52, 10),rep(0.15,40)),
-#'               c(rep(0.53, 10),rep(0.13,40)))
-#'
-#'  inf_times <- list()
-#'
-#'  for(i in 1:5){
-#'
-#'    inf_times[[i]] <- sim_epi_data(10000, 10, 50, betas[[i]], 1/8)
-#'
-#'    vec <- rep(0,50)
-#'    names(vec) <- as.character(1:50)
-#'
-#'    for(j in 1:50){
-#'      if(as.character(j) %in% names(table(floor(inf_times[[i]])))){
-#'        vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
-#'      }
-#'    }
-#'    data_mat[i,] <- vec
-#'  }
-#'
-#'  out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
-#'
-#'}
 #' @keywords internal
 clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q = 0.1, a0 = 4, b0 = 10, I0_var = 0.01, avg_blk = 0.003, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_epi`, data, n_iterations, M, B, L, xi, alpha_SM, q, a0, b0, I0_var, avg_blk, print_progress, user_seed)
@@ -222,18 +147,6 @@ clust_cp_epi <- function(data, n_iterations, M, B, L, xi = 1/8, alpha_SM = 1, q 
 #' \item{\code{$norm_vec}} a vector containing the normalisation constant computed at the beginning of the algorithm.
 #' }
 #'
-#' @examples
-#'\donttest{
-#' data_mat <- matrix(NA, nrow = 5, ncol = 100)
-#'
-#' data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-#' data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#' data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-#' data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-#'
-#' out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, phi = 0.5)
-#'}
 #' @keywords internal
 clust_cp_uni <- function(data, n_iterations, B, L, phi, a = 1, b = 1, c = 1, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_uni`, data, n_iterations, B, L, phi, a, b, c, q, alpha_SM, print_progress, user_seed)
@@ -257,33 +170,6 @@ clust_cp_uni <- function(data, n_iterations, B, L, phi, a = 1, b = 1, c = 1, q =
 #' \item{\code{$norm_vec}} a vector containing the normalisation constant computed at the beginning of the algorithm.
 #' }
 #'
-#' @examples
-#'\donttest{
-#' data_array <- array(data = NA, dim = c(3,100,5))
-#'
-#' data_array[1,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_array[2,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_array[3,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#'
-#' data_array[1,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_array[2,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#' data_array[3,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-#'
-#' data_array[1,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#' data_array[2,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#' data_array[3,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-#'
-#' data_array[1,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-#' data_array[2,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-#' data_array[3,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-#'
-#' data_array[1,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-#' data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-#' data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-#'
-#' out <- clust_cp_multi(data = data_array, n_iterations = 3000, B = 1000, L = 1,
-#'                         phi = 0.1, k_0 = 0.25, nu_0 = 5, S_0 = diag(0.1,3,3), m_0 = rep(0,3))
-#'}
 #' @keywords internal
 clust_cp_multi <- function(data, n_iterations, B, L, phi, k_0, nu_0, S_0, m_0, q = 0.5, alpha_SM = 0.1, print_progress = TRUE, user_seed = 1234L) {
     .Call(`_BayesChange_clust_cp_multi`, data, n_iterations, B, L, phi, k_0, nu_0, S_0, m_0, q, alpha_SM, print_progress, user_seed)

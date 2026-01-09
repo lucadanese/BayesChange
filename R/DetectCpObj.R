@@ -129,7 +129,7 @@ summary.DetectCpObj <- function(object, ...) {
           "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
           "- Average number of detected change points:", round(mean(apply(object$orders[(object$n_burnin+1):object$n_iterations,], 1,  function(x) max(x) + 1)),2), "\n",
           "- Computational time:", round(object$time, 2), "seconds\n",
-          "Use plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
+          "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
     } else {
       cat("Change point detection summary:\n",
           "- Data:", nrow(object$data), "-dimensional time series\n",
@@ -138,7 +138,7 @@ summary.DetectCpObj <- function(object, ...) {
           "- Average number of detected change points:",
           round(mean(apply(object$orders[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) max(x) + 1)), 2), "\n",
           "- Computational time:", round(object$time, 2), "seconds\n",
-          "Use plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
+          "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
 
     }
   }
@@ -151,7 +151,7 @@ summary.DetectCpObj <- function(object, ...) {
         "- Average number of detected change points:",
         round(mean(apply(object$orders[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) max(x) + 1)), 2), "\n",
         "- Computational time:", round(object$time, 2), "seconds\n",
-        "Use plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
+        "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
 
   }
 

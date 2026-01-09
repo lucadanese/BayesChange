@@ -46,13 +46,4 @@ Function \code{detect_cp_uni} returns a list containing the following components
 \description{
 Detect Change Points on an univariate time series.
 }
-\examples{
-
-data_vec <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
-
-out <- detect_cp_uni(data = data_vec,
-                            n_iterations = 2500,
-                            q = 0.25)
-
-}
 \keyword{internal}

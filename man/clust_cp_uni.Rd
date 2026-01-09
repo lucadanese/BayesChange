@@ -49,17 +49,4 @@ Function \code{clust_cp_uni} returns a list containing the following components:
 \description{
 Clustering univariate times series with common changes in time
 }
-\examples{
-\donttest{
-data_mat <- matrix(NA, nrow = 5, ncol = 100)
-
-data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-
-out <- clust_cp_uni(data = data_mat, n_iterations = 5000, B = 1000, L = 1, phi = 0.5)
-}
-}
 \keyword{internal}

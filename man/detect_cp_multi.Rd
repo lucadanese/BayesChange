@@ -48,18 +48,4 @@ Function \code{detect_cp_multi} returns a list containing the following componen
 \description{
 Detect Change Points on multivariate time series
 }
-\examples{
-
-data_mat <- matrix(NA, nrow = 3, ncol = 100)
-
-data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-
-out <- detect_cp_multi(data = data_mat,
-                              n_iterations = 2500,
-                              q = 0.25,k_0 = 0.25, nu_0 = 4, S_0 = diag(1,3,3), m_0 = rep(0,3),
-                              prior_delta_c = 2, prior_delta_d = 0.2, prior_var_phi = 0.1)
-
-}
 \keyword{internal}

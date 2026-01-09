@@ -60,35 +60,4 @@ Function \code{clust_cp_epi} returns a list containing the following components:
 \description{
 Clustering Epidemiological epidemic_diffusions with common changes in time
 }
-\examples{
-\donttest{
-data_mat <- matrix(NA, nrow = 5, ncol = 50)
-
-betas <- list(c(rep(0.45, 25),rep(0.14,25)),
-              c(rep(0.55, 25),rep(0.11,25)),
-              c(rep(0.50, 25),rep(0.12,25)),
-              c(rep(0.52, 10),rep(0.15,40)),
-              c(rep(0.53, 10),rep(0.13,40)))
-
- inf_times <- list()
-
- for(i in 1:5){
-
-   inf_times[[i]] <- sim_epi_data(10000, 10, 50, betas[[i]], 1/8)
-
-   vec <- rep(0,50)
-   names(vec) <- as.character(1:50)
-
-   for(j in 1:50){
-     if(as.character(j) \%in\% names(table(floor(inf_times[[i]])))){
-       vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
-     }
-   }
-   data_mat[i,] <- vec
- }
-
- out <- clust_cp_epi(data = data_mat, n_iterations = 3000, M = 250, B = 1000, L = 1)
-
-}
-}
 \keyword{internal}

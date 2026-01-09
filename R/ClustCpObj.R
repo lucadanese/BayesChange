@@ -125,7 +125,7 @@ summary.ClustCpObj <- function(object, ...) {
           "- Average number of clusters:",
           round(mean(apply(object$clust[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) length(unique(x)))), 2), "\n",
           "- Computational time:", round(object$time, 2), "seconds\n",
-          "Use plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
+          "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
     } else {
       cat("Clustering ", paste0(nrow(object$data[,,1]), "-dimensional time series:\n"),
           "- Burn-in iterations:", object$n_burnin, "\n",
@@ -133,7 +133,7 @@ summary.ClustCpObj <- function(object, ...) {
           "- Average number of clusters:",
           round(mean(apply(object$clust[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) length(unique(x)))), 2), "\n",
           "- Computational time:", round(object$time, 2), "seconds\n",
-          "Use plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
+          "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
     }
   } else if (object$kernel_epi){
     cat("Clustering epidemic diffusions:\n",
@@ -142,7 +142,7 @@ summary.ClustCpObj <- function(object, ...) {
         "- Average number of clusters:",
         round(mean(apply(object$clust[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) length(unique(x)))), 2), "\n",
         "- Computational time:", round(object$time, 2), "seconds\n",
-        "Use plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
+        "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the clustering results.\n")
   }
 }
 
@@ -418,4 +418,78 @@ plot.ClustCpObj <- function(x, y = NULL,
 
   }
 
+}
+
+#' Plot the Posterior Similarity Matrix (PSM) for a ClustCpObj
+#'
+#' This function computes and visualizes the posterior similarity matrix
+#' (PSM) from a \code{ClustCpObj} object.
+#' The PSM shows the posterior co-clustering probabilities of all observations.
+#'
+#' @param x an object of class \code{ClustCpObj}.
+#' @param reorder Logical; if \code{TRUE} (default), items are reordered using
+#'   hierarchical clustering to highlight clusters in the final plot
+#' @param title Character; the plot title (default: \code{"Posterior Similarity Matrix"}).
+#'
+#' @return A \code{ggplot2} object representing the posterior similarity matrix.
+#' @export
+#'
+#' @examples
+#' data("stock_uni")
+#'
+#' params_uni <- list(a = 1,
+#'                    b = 1,
+#'                    c = 1,
+#'                    phi = 0.1)
+#'
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
+#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+#' plot_psm(res)
+#'
+plot_psm <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
+  if (!inherits(x, "ClustCpObj")) {
+    stop("object must be of class 'ClustCpObj'")
+  }
+
+  # Extract MCMC cluster samples
+  if (is.null(x$clust)) {
+    stop("The ClustCpObj does not contain MCMC cluster samples (clust).")
+  }
+
+  mcmc_chain <- x$clust[(x$n_burnin + 1):x$n_iterations,]
+  n_items <- ncol(mcmc_chain)
+
+  # Compute Posterior Similarity Matrix using SALSO
+  psm <- salso::psm(mcmc_chain)
+
+  obs_labels <- 1:n_items
+
+  # Reorder items if requested
+  if (reorder) {
+    hc <- hclust(dist(1 - psm))
+    order_idx <- hc$order
+    psm <- psm[order_idx, order_idx]
+    obs_labels <- obs_labels[order_idx]
+  }
+
+  psm_melt <- reshape2::melt(psm[1:nrow(psm), , drop = FALSE])
+  colnames(psm_melt) <- c("Obs1", "Obs2", "Similarity")
+
+  # Plot
+  plot_heat <- ggplot(psm_melt) +
+    geom_tile(aes(x = Obs1, y = Obs2, fill = Similarity), na.rm = TRUE, size = 0.0) +
+    scale_fill_gradient(low = "transparent", high = "#470D60FF") +
+    labs(title = title, fill = "Co-clustering\nProbability", x = " ", y = " ") +
+    theme_linedraw() +
+    coord_cartesian(xlim = c(0, ncol(psm) + 1), ylim = c(0, ncol(psm) + 1), expand = FALSE) +
+    scale_x_continuous(breaks = seq(1, ncol(psm), by = 1), labels = obs_labels) +
+    scale_y_continuous(breaks = seq(1, ncol(psm), by = 1),labels = obs_labels) +
+    theme(legend.position = "right",
+          plot.title = element_text(hjust = 0.5),
+          axis.text.x = element_text(size = 8),
+          axis.text.y = element_text(size = 8),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_line(size=0.1))
+
+  return(plot_heat)
 }

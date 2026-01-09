@@ -173,8 +173,8 @@ clust_cp <- function(data,
                           print_progress = print_progress_input, user_seed = user_seed_input)
 
       # create coda objects
-      entropy_mcmc <- coda::mcmc(out$entropy)
-      lkl_mcmc <- coda::mcmc(out$lkl)
+      entropy_MCMC <- coda::mcmc(out$entropy)
+      lkl_MCMC <- coda::mcmc(out$lkl)
 
       result <- ClustCpObj(data = data_input,
                            n_iterations = n_iterations_input,
@@ -183,8 +183,8 @@ clust_cp <- function(data,
                            orders = out$orders,
                            time = out$time,
                            norm_vec = out$norm_vec,
-                           entropy_MCMC = entropy_mcmc,
-                           lkl_MCMC = lkl_mcmc,
+                           entropy_MCMC = entropy_MCMC,
+                           lkl_MCMC = lkl_MCMC,
                            kernel_ts = TRUE,
                            kernel_epi = FALSE,
                            univariate_ts = TRUE)
@@ -225,8 +225,8 @@ clust_cp <- function(data,
                             user_seed = user_seed_input)
 
       # create coda objects
-      entropy_mcmc <- coda::mcmc(out$entropy)
-      lkl_mcmc <- coda::mcmc(out$lkl)
+      entropy_MCMC <- coda::mcmc(out$entropy)
+      lkl_MCMC <- coda::mcmc(out$lkl)
 
       result <- ClustCpObj(data = data_input,
                            n_iterations = n_iterations_input,
@@ -235,8 +235,8 @@ clust_cp <- function(data,
                            orders = out$orders,
                            time = out$time,
                            norm_vec = out$norm_vec,
-                           entropy_MCMC = entropy_mcmc,
-                           lkl = lkl_mcmc,
+                           entropy_MCMC = entropy_MCMC,
+                           lkl_MCMC = lkl_MCMC,
                            kernel_ts = TRUE,
                            kernel_epi = FALSE,
                            univariate_ts = FALSE)
@@ -283,9 +283,9 @@ clust_cp <- function(data,
                         user_seed = user_seed_input)
 
     # create coda objects
-    entropy_mcmc <- coda::mcmc(out$entropy)
-    I0_mcmc <- coda::mcmc(out$I0_MCMC)
-    lkl_mcmc <- coda::mcmc(out$llik)
+    entropy_MCMC <- coda::mcmc(out$entropy)
+    I0_MCMC <- coda::mcmc(out$I0_MCMC)
+    lkl_MCMC <- coda::mcmc(out$llik)
 
     result <- ClustCpObj(data = data_input,
                          n_iterations = n_iterations_input,
@@ -294,9 +294,9 @@ clust_cp <- function(data,
                          orders = out$orders,
                          time = out$time,
                          norm_vec = out$norm_vec,
-                         entropy_MCMC = entropy_mcmc,
-                         lkl = lkl_mcmc,
-                         I0_MCMC = I0_mcmc,
+                         entropy_MCMC = entropy_MCMC,
+                         lkl_MCMC = lkl_MCMC,
+                         I0_MCMC = I0_MCMC,
                          kernel_ts = FALSE,
                          kernel_epi = TRUE,
                          univariate_ts = TRUE)

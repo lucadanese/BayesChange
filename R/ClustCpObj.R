@@ -444,7 +444,7 @@ plot.ClustCpObj <- function(x, y = NULL,
 #'
 #' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
 #'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
-#' plot_psm(res)
+#' plot_psm(out)
 #'
 plot_psm <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
   if (!inherits(x, "ClustCpObj")) {
@@ -466,7 +466,7 @@ plot_psm <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
 
   # Reorder items if requested
   if (reorder) {
-    hc <- hclust(dist(1 - psm))
+    hc <- stats::hclust(stats::dist(1 - psm))
     order_idx <- hc$order
     psm <- psm[order_idx, order_idx]
     obs_labels <- obs_labels[order_idx]
@@ -476,20 +476,20 @@ plot_psm <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
   colnames(psm_melt) <- c("Obs1", "Obs2", "Similarity")
 
   # Plot
-  plot_heat <- ggplot(psm_melt) +
-    geom_tile(aes(x = Obs1, y = Obs2, fill = Similarity), na.rm = TRUE, size = 0.0) +
-    scale_fill_gradient(low = "transparent", high = "#470D60FF") +
-    labs(title = title, fill = "Co-clustering\nProbability", x = " ", y = " ") +
-    theme_linedraw() +
-    coord_cartesian(xlim = c(0, ncol(psm) + 1), ylim = c(0, ncol(psm) + 1), expand = FALSE) +
-    scale_x_continuous(breaks = seq(1, ncol(psm), by = 1), labels = obs_labels) +
-    scale_y_continuous(breaks = seq(1, ncol(psm), by = 1),labels = obs_labels) +
-    theme(legend.position = "right",
-          plot.title = element_text(hjust = 0.5),
-          axis.text.x = element_text(size = 8),
-          axis.text.y = element_text(size = 8),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_line(size=0.1))
+  plot_heat <- ggplot2::ggplot(psm_melt) +
+    ggplot2::geom_tile(ggplot2::aes(x = rlang::.data$Obs1, y = rlang::.data$Obs2, fill = rlang::.data$Similarity), na.rm = TRUE, size = 0.0) +
+    ggplot2::scale_fill_gradient(low = "transparent", high = "#470D60FF") +
+    ggplot2::labs(title = title, fill = "Co-clustering\nProbability", x = " ", y = " ") +
+    ggplot2::theme_linedraw() +
+    ggplot2::coord_cartesian(xlim = c(0, ncol(psm) + 1), ylim = c(0, ncol(psm) + 1), expand = FALSE) +
+    ggplot2::scale_x_continuous(breaks = seq(1, ncol(psm), by = 1), labels = obs_labels) +
+    ggplot2::scale_y_continuous(breaks = seq(1, ncol(psm), by = 1),labels = obs_labels) +
+    ggplot2::theme(legend.position = "right",
+          plot.title = ggplot2::element_text(hjust = 0.5),
+          axis.text.x = ggplot2::element_text(size = 8),
+          axis.text.y = ggplot2::element_text(size = 8),
+          panel.grid.major = ggplot2::element_blank(),
+          panel.grid.minor = ggplot2::element_line(size=0.1))
 
   return(plot_heat)
 }

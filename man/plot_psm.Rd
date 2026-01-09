@@ -32,6 +32,6 @@ params_uni <- list(a = 1,
 
 out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
-plot_psm(res)
+plot_psm(out)
 
 }

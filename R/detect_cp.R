@@ -176,22 +176,22 @@ detect_cp <- function(data,
                            user_seed = user_seed_input)
 
       # create coda objects
-      entropy_mcmc <- coda::mcmc(out$entropy)
-      lkl_mcmc <- coda::mcmc(out$lkl)
-      phi_mcmc <- coda::mcmc(out$phi_MCMC)
-      sigma_mcmc <- coda::mcmc(out$sigma_MCMC)
-      delta_mcmc <- coda::mcmc(out$delta_MCMC)
+      entropy_MCMC <- coda::mcmc(out$entropy)
+      lkl_MCMC <- coda::mcmc(out$lkl)
+      phi_MCMC <- coda::mcmc(out$phi_MCMC)
+      sigma_MCMC <- coda::mcmc(out$sigma_MCMC)
+      delta_MCMC <- coda::mcmc(out$delta_MCMC)
 
       result <- DetectCpObj(data = data_input,
                             n_iterations = n_iterations_input,
                             n_burnin = n_burnin_input,
                             orders = out$orders,
                             time = out$time,
-                            entropy_MCMC = entropy_mcmc,
-                            lkl_MCMC = lkl_mcmc,
-                            phi_MCMC = phi_mcmc,
-                            sigma_MCMC = sigma_mcmc,
-                            delta_MCMC = delta_mcmc,
+                            entropy_MCMC = entropy_MCMC,
+                            lkl_MCMC = lkl_MCMC,
+                            phi_MCMC = phi_MCMC,
+                            sigma_MCMC = sigma_MCMC,
+                            delta_MCMC = delta_MCMC,
                             kernel_ts = TRUE,
                             kernel_epi = FALSE,
                             univariate_ts = TRUE)
@@ -236,22 +236,22 @@ detect_cp <- function(data,
                              user_seed = user_seed_input)
 
       # create coda objects
-      entropy_mcmc <- coda::mcmc(out$entropy)
-      lkl_mcmc <- coda::mcmc(out$lkl)
-      phi_mcmc <- coda::mcmc(out$phi_MCMC)
-      sigma_mcmc <- coda::mcmc(out$sigma_MCMC)
-      delta_mcmc <- coda::mcmc(out$delta_MCMC)
+      entropy_MCMC <- coda::mcmc(out$entropy)
+      lkl_MCMC <- coda::mcmc(out$lkl)
+      phi_MCMC <- coda::mcmc(out$phi_MCMC)
+      sigma_MCMC <- coda::mcmc(out$sigma_MCMC)
+      delta_MCMC <- coda::mcmc(out$delta_MCMC)
 
       result <- DetectCpObj(data = data_input,
                             n_iterations = n_iterations_input,
                             n_burnin = n_burnin_input,
                             orders = out$orders,
                             time = out$time,
-                            entropy_MCMC = entropy_mcmc,
-                            lkl_MCMC = lkl_mcmc,
-                            phi_MCMC = phi_mcmc,
-                            sigma_MCMC = sigma_mcmc,
-                            delta_MCMC = delta_mcmc,
+                            entropy_MCMC = entropy_MCMC,
+                            lkl_MCMC = lkl_MCMC,
+                            phi_MCMC = phi_MCMC,
+                            sigma_MCMC = sigma_MCMC,
+                            delta_MCMC = delta_MCMC,
                             kernel_ts = TRUE,
                             kernel_epi = FALSE,
                             univariate_ts = FALSE)
@@ -298,18 +298,18 @@ detect_cp <- function(data,
                          user_seed = user_seed_input)
 
     # create coda objects
-    entropy_mcmc <- coda::mcmc(out$entropy)
-    lkl_mcmc <- coda::mcmc(out$lkl)
-    I0_mcmc <- coda::mcmc(out$I0_MCMC)
+    entropy_MCMC <- coda::mcmc(out$entropy)
+    lkl_MCMC <- coda::mcmc(out$lkl)
+    I0_MCMC <- coda::mcmc(out$I0_MCMC)
 
     result <- DetectCpObj(data = data_input,
                           n_iterations = n_iterations_input,
                           n_burnin = n_burnin_input,
                           orders = out$orders,
                           time = out$time,
-                          entropy_MCMC = entropy_mcmc,
-                          lkl_MCMC = lkl_mcmc,
-                          I0_MCMC = I0_mcmc,
+                          entropy_MCMC = entropy_MCMC,
+                          lkl_MCMC = lkl_MCMC,
+                          I0_MCMC = I0_MCMC,
                           kernel_ts = FALSE,
                           kernel_epi = TRUE,
                           univariate_ts = FALSE)

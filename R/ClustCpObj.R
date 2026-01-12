@@ -439,6 +439,7 @@ plot_psm <- function (object, ...) {
 #' @param reorder Logical; if \code{TRUE} (default), items are reordered using
 #'   hierarchical clustering to highlight clusters in the final plot
 #' @param title Character; the plot title (default: \code{"Posterior Similarity Matrix"}).
+#' @param ... parameter of the generic method.
 #'
 #' @return A \code{ggplot2} object representing the posterior similarity matrix.
 #'

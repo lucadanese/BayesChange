@@ -13,6 +13,8 @@
 hierarchical clustering to highlight clusters in the final plot}
 
 \item{title}{Character; the plot title (default: \code{"Posterior Similarity Matrix"}).}
+
+\item{...}{parameter of the generic method.}
 }
 \value{
 A \code{ggplot2} object representing the posterior similarity matrix.

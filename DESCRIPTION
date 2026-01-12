@@ -21,7 +21,8 @@ Imports:
     tidyr,
     ggplot2,
     ggpubr,
-    coda
+    coda,
+    reshape2
 Depends: R (>= 3.5.0)
 Suggests: 
     knitr,

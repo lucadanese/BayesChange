@@ -432,6 +432,8 @@ plot.ClustCpObj <- function(x, y = NULL,
 #' @param title Character; the plot title (default: \code{"Posterior Similarity Matrix"}).
 #'
 #' @return A \code{ggplot2} object representing the posterior similarity matrix.
+#'
+#' @importFrom rlang .data
 #' @export
 #'
 #' @examples

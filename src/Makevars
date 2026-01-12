@@ -1,4 +1,4 @@
-CXX_STD = CXX
+CXX_STD = CXX17
 
 GSL_LIBS = -L$(R_HOME)/lib -lgsl -lgslcblas
 

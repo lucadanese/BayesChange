@@ -446,11 +446,9 @@ plot.ClustCpObj <- function(x, y = NULL,
 #' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
 #'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
 #' plot_psm(out)
-#'
-#' @rdname plot_psm.ClustCpObj
 #' @export
 #'
-plot_psm.ClustCpObj <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
+plot_psm <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
   if (!inherits(x, "ClustCpObj")) {
     stop("object must be of class 'ClustCpObj'")
   }

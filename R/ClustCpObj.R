@@ -70,8 +70,8 @@ ClustCpObj <- function(data = NULL,
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
+#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
 #'
 #' print(out)
 #'
@@ -107,8 +107,8 @@ print.ClustCpObj <- function(x, ...) {
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
+#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
 #'
 #' summary(out)
 #'
@@ -176,8 +176,8 @@ summary.ClustCpObj <- function(object, ...) {
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
+#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
 #'
 #' posterior_estimate(out)
 #'
@@ -285,8 +285,8 @@ posterior_estimate.ClustCpObj <- function(object,
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
+#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
 #'
 #' plot(out)
 #'
@@ -301,7 +301,7 @@ posterior_estimate.ClustCpObj <- function(object,
 #'                    I0_var = 0.1,
 #'                    avg_blk = 2)
 #'
-#' out <- clust_cp(epi_synthetic_multi, n_iterations = 5000, n_burnin = 2000,
+#' out <- clust_cp(epi_synthetic_multi, n_iterations = 3000, n_burnin = 1000,
 #'                 L = 1, B = 1000, params = params_epi, kernel = "epi")
 #'
 #' plot(out)
@@ -453,8 +453,8 @@ plot_psm <- function (object, ...) {
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
+#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
 #' plot_psm(out)
 #' @export
 #'

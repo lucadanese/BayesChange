@@ -14,7 +14,7 @@
   ...
 )
 
-\method{plot_psm}{ClustCpObj}(x, reorder = TRUE, title = "Posterior Similarity Matrix")
+\method{plot_psm}{ClustCpObj}(object, reorder = TRUE, title = "Posterior Similarity Matrix")
 }
 \arguments{
 \item{object}{an object of class \code{ClustCpObj}.}
@@ -29,12 +29,12 @@
 
 \item{...}{parameter of the generic method.}
 
-\item{x}{an object of class \code{ClustCpObj}.}
-
 \item{reorder}{Logical; if \code{TRUE} (default), items are reordered using
 hierarchical clustering to highlight clusters in the final plot}
 
 \item{title}{Character; the plot title (default: \code{"Posterior Similarity Matrix"}).}
+
+\item{x}{an object of class \code{ClustCpObj}.}
 }
 \value{
 The function returns a vector with the cluster assignment of each observation.

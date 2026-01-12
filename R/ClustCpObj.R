@@ -458,17 +458,17 @@ plot_psm <- function (object, ...) {
 #' plot_psm(out)
 #' @export
 #'
-plot_psm.ClustCpObj <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
-  if (!inherits(x, "ClustCpObj")) {
+plot_psm.ClustCpObj <- function(object, reorder = TRUE, title = "Posterior Similarity Matrix") {
+  if (!inherits(object, "ClustCpObj")) {
     stop("object must be of class 'ClustCpObj'")
   }
 
   # Extract MCMC cluster samples
-  if (is.null(x$clust)) {
+  if (is.null(object$clust)) {
     stop("The ClustCpObj does not contain MCMC cluster samples (clust).")
   }
 
-  mcmc_chain <- x$clust[(x$n_burnin + 1):x$n_iterations,]
+  mcmc_chain <- object$clust[(object$n_burnin + 1):x$n_iterations,]
   n_items <- ncol(mcmc_chain)
 
   # Compute Posterior Similarity Matrix using SALSO

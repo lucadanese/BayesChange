@@ -2,7 +2,6 @@
 % Please edit documentation in R/ClustCpObj.R
 \name{posterior_estimate.ClustCpObj}
 \alias{posterior_estimate.ClustCpObj}
-\alias{plot_psm.ClustCpObj}
 \title{Estimate the change points of the data}
 \usage{
 \method{posterior_estimate}{ClustCpObj}(
@@ -13,8 +12,6 @@
   maxZealousAttempts = 10,
   ...
 )
-
-\method{plot_psm}{ClustCpObj}(object, reorder = TRUE, title = "Posterior Similarity Matrix")
 }
 \arguments{
 \item{object}{an object of class \code{ClustCpObj}.}
@@ -28,25 +25,12 @@
 \item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
 
 \item{...}{parameter of the generic method.}
-
-\item{reorder}{Logical; if \code{TRUE} (default), items are reordered using
-hierarchical clustering to highlight clusters in the final plot}
-
-\item{title}{Character; the plot title (default: \code{"Posterior Similarity Matrix"}).}
-
-\item{x}{an object of class \code{ClustCpObj}.}
 }
 \value{
 The function returns a vector with the cluster assignment of each observation.
-
-A \code{ggplot2} object representing the posterior similarity matrix.
 }
 \description{
 The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
-
-This function computes and visualizes the posterior similarity matrix
-(PSM) from a \code{ClustCpObj} object.
-The PSM shows the posterior co-clustering probabilities of all observations.
 }
 \examples{
 
@@ -62,16 +46,6 @@ out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
 
 posterior_estimate(out)
 
-data("stock_uni")
-
-params_uni <- list(a = 1,
-                   b = 1,
-                   c = 1,
-                   phi = 0.1)
-
-out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-                L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
-plot_psm(out)
 }
 \references{
 #' D. B. Dahl, D. J. Johnson, and P. Müller (2022), Search Algorithms and Loss

@@ -435,7 +435,7 @@ plot_psm <- function (object, ...) {
 #' (PSM) from a \code{ClustCpObj} object.
 #' The PSM shows the posterior co-clustering probabilities of all observations.
 #'
-#' @param x an object of class \code{ClustCpObj}.
+#' @param object an object of class \code{ClustCpObj}.
 #' @param reorder Logical; if \code{TRUE} (default), items are reordered using
 #'   hierarchical clustering to highlight clusters in the final plot
 #' @param title Character; the plot title (default: \code{"Posterior Similarity Matrix"}).
@@ -444,7 +444,7 @@ plot_psm <- function (object, ...) {
 #'
 #' @importFrom rlang .data
 #'
-#' @rdname posterior_estimate.ClustCpObj
+#' @rdname plot_psm.ClustCpObj
 #' @examples
 #' data("stock_uni")
 #'
@@ -458,7 +458,9 @@ plot_psm <- function (object, ...) {
 #' plot_psm(out)
 #' @export
 #'
-plot_psm.ClustCpObj <- function(object, reorder = TRUE, title = "Posterior Similarity Matrix") {
+plot_psm.ClustCpObj <- function(object,
+                                reorder = TRUE,
+                                title = "Posterior Similarity Matrix", ...) {
   if (!inherits(object, "ClustCpObj")) {
     stop("object must be of class 'ClustCpObj'")
   }

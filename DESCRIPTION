@@ -22,6 +22,7 @@ Imports:
     ggplot2,
     ggpubr,
     coda,
+    rlang,
     reshape2
 Depends: R (>= 3.5.0)
 Suggests: 

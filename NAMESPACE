@@ -2,6 +2,7 @@
 
 S3method(plot,ClustCpObj)
 S3method(plot,DetectCpObj)
+S3method(plot_psm,ClustCpObj)
 S3method(posterior_estimate,ClustCpObj)
 S3method(posterior_estimate,DetectCpObj)
 S3method(print,ClustCpObj)

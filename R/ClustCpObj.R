@@ -420,6 +420,15 @@ plot.ClustCpObj <- function(x, y = NULL,
 
 }
 
+#' set generic
+#' @name posterior_estimate
+#' @keywords internal
+#' @export
+#'
+plot_psm <- function (object, ...) {
+  UseMethod("plot_psm")
+}
+
 #' Plot the Posterior Similarity Matrix (PSM) for a ClustCpObj
 #'
 #' This function computes and visualizes the posterior similarity matrix
@@ -435,6 +444,7 @@ plot.ClustCpObj <- function(x, y = NULL,
 #'
 #' @importFrom rlang .data
 #'
+#' @rdname posterior_estimate.ClustCpObj
 #' @examples
 #' data("stock_uni")
 #'
@@ -448,7 +458,7 @@ plot.ClustCpObj <- function(x, y = NULL,
 #' plot_psm(out)
 #' @export
 #'
-plot_psm <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
+plot_psm.ClustCpObj <- function(x, reorder = TRUE, title = "Posterior Similarity Matrix") {
   if (!inherits(x, "ClustCpObj")) {
     stop("object must be of class 'ClustCpObj'")
   }

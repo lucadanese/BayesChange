@@ -468,7 +468,7 @@ plot_psm.ClustCpObj <- function(object, reorder = TRUE, title = "Posterior Simil
     stop("The ClustCpObj does not contain MCMC cluster samples (clust).")
   }
 
-  mcmc_chain <- object$clust[(object$n_burnin + 1):x$n_iterations,]
+  mcmc_chain <- object$clust[(object$n_burnin + 1):object$n_iterations,]
   n_items <- ncol(mcmc_chain)
 
   # Compute Posterior Similarity Matrix using SALSO

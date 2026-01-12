@@ -56,7 +56,7 @@ plot(out)
 
 data("epi_synthetic_multi")
 
-params_epi <- list(M = 1000, xi = 1/8,
+params_epi <- list(M = 250, xi = 1/8,
                    alpha_SM = 1,
                    a0 = 4,
                    b0 = 10,

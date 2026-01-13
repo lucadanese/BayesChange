@@ -1,16 +1,16 @@
 test_that("clust_cp works", {
 
-  data_mat <- matrix(NA, nrow = 5, ncol = 50)
+  data("stock_multi")
 
-  data_mat[1,] <- as.numeric(c(rnorm(30,0,0.100), rnorm(20,1,0.250)))
-  data_mat[2,] <- as.numeric(c(rnorm(30,0,0.125), rnorm(20,1,0.225)))
-  data_mat[3,] <- as.numeric(c(rnorm(30,0,0.175), rnorm(20,1,0.280)))
-  data_mat[4,] <- as.numeric(c(rnorm(10,0,0.135), rnorm(40,1,0.225)))
-  data_mat[5,] <- as.numeric(c(rnorm(10,0,0.155), rnorm(40,1,0.280)))
+  params_multi <- list(m_0 = rep(0,2),
+                       k_0 = 1,
+                       nu_0 = 10,
+                       S_0 = diag(1,2,2),
+                       phi = 0.1)
 
-  out_test <- clust_cp(data = data_mat,
-                       n_iterations = 100, params =  list(B = 100, L = 1, phi = 0.1),
-                       kernel = "ts", print_progress = FALSE)
+  out_test <- clust_cp(data = stock_multi[,,1:5], n_iterations = 7500, n_burnin = 2500,
+                  L = 1, B = 10000, params = params_multi, kernel = "ts")
+
 
   est <- posterior_estimate(out_test, maxNClusters = 3)
 
@@ -19,7 +19,6 @@ test_that("clust_cp works", {
   } else {
     check = FALSE
   }
-
 
   expect_equal(check, TRUE)
 })

@@ -1389,8 +1389,10 @@ arma::vec norm_constant_uni(arma::mat data,
   int T = data.n_cols;
   double ord_lprob;
 
-  int start_s = clock();
-  int current_s;
+  //int start_s = clock();
+  clock_t start_s = clock();
+  //int current_s = start_s;
+  clock_t current_s = start_s;
   int nupd = round(R / 10);
   for(int r = 0; r < R; r++){
 
@@ -1467,8 +1469,10 @@ arma::vec norm_constant_multi(arma::cube data,
   int T = data.slice(0).n_cols;
   double ord_lprob;
 
-  int start_s = clock();
-  int current_s;
+  //int start_s = clock();
+  clock_t start_s = clock();
+  //int current_s = start_s;
+  clock_t current_s = start_s;
   int nupd = round(R / 10);
   for(int r = 0; r < R; r++){
 
@@ -1544,8 +1548,10 @@ arma::vec norm_constant_epi(arma::mat data,
   int T = data.n_cols;
   double ord_lprob;
 
-  int start_s = clock();
-  int current_s;
+  //int start_s = clock();
+  clock_t start_s = clock();
+  //int current_s = start_s;
+  clock_t current_s = start_s;
   int nupd = round(num_orders / 10);
   for(int r_iter = 0; r_iter < num_orders; r_iter++){
 
@@ -2441,8 +2447,10 @@ Rcpp::List marginal_CP(arma::mat data,
   arma::mat res_rho(niter - nburn, data.n_rows);
 
   //loop
-  int start_s = clock();
-  int current_s;
+  //int start_s = clock();
+  clock_t start_s = clock();
+  //int current_s = start_s;
+  clock_t current_s = start_s;
   if(nupd == 0){
     nupd = round(niter / 10);
   }
@@ -2650,8 +2658,10 @@ Rcpp::List detect_cp_uni(arma::vec data,
                                 bool print_progress = true,
                                 unsigned long user_seed = 1234){
 
- int start_s = clock();
- int current_s = start_s;
+ //int start_s = clock();
+ clock_t start_s = clock();
+ //int current_s = start_s;
+ clock_t current_s = start_s;
  int nupd = round(n_iterations / 10);
 
  // set seed for gsl random distribution generator
@@ -2858,8 +2868,10 @@ Rcpp::List detect_cp_multi(arma::mat data,
    //generate random starting order
    arma::vec order = generate_random_order(data.n_cols, 2/data.n_cols, r);
 
-   int start_s = clock();
-   int current_s = start_s;
+   //int start_s = clock();
+   clock_t start_s = clock();
+   //int current_s = start_s;
+   clock_t current_s = start_s;
    int nupd = round(n_iterations / 10);
 
    for(int iter = 0; iter < n_iterations; iter++){
@@ -3030,8 +3042,10 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
    arma::mat rho_output(n_iterations, data.n_rows);
    order.row(0).fill(0);
 
-   int start_s = clock();
-   int current_s = start_s;
+   //int start_s = clock();
+   clock_t start_s = clock();
+   //int current_s = start_s;
+   clock_t current_s = start_s;
    int nupd = round(n_iterations / 10);
 
    double c0 = 1;
@@ -3166,8 +3180,10 @@ Rcpp::List clust_cp_epi(arma::mat data,
  arma::mat res_rho_01(n_iterations, data.n_rows);
 
  //loop
- int start_s = clock();
- int current_s = start_s;
+ //int start_s = clock();
+ clock_t start_s = clock();
+ //int current_s = start_s;
+ clock_t current_s = start_s;
  int nupd = round(n_iterations / 10);
 
  if(print_progress == true){
@@ -3303,8 +3319,10 @@ if(print_progress == true){
 
 // MAIN LOOP
 
-int start_s = clock();
-int current_s = start_s;
+//int start_s = clock();
+clock_t start_s = clock();
+//int current_s = start_s;
+clock_t current_s = start_s;
 int nupd = round(n_iterations / 10);
 
 for(int iter = 0; iter < n_iterations; iter++){
@@ -3629,8 +3647,10 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   // MAIN LOOP
 
-  int start_s = clock();
-  int current_s = start_s;
+  //int start_s = clock();
+  clock_t start_s = clock();
+  //int current_s = start_s;
+  clock_t current_s = start_s;
   int nupd = round(n_iterations / 10);
 
   for(int iter = 0; iter < n_iterations; iter++){

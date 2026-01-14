@@ -70,8 +70,8 @@ ClustCpObj <- function(data = NULL,
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
-#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
+#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
 #'
 #' print(out)
 #'
@@ -107,8 +107,8 @@ print.ClustCpObj <- function(x, ...) {
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
-#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
+#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
 #'
 #' summary(out)
 #'
@@ -176,8 +176,8 @@ summary.ClustCpObj <- function(object, ...) {
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
-#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
+#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
 #'
 #' posterior_estimate(out)
 #'
@@ -275,9 +275,6 @@ posterior_estimate.ClustCpObj <- function(object,
 #'
 #' @examples
 #'
-#'\donttest{
-#' ## Time series
-#'
 #' data("stock_uni")
 #'
 #' params_uni <- list(a = 1,
@@ -285,28 +282,11 @@ posterior_estimate.ClustCpObj <- function(object,
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
-#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
+#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
 #'
 #' plot(out)
 #'
-#' ## Epidemic diffusions
-#'
-#' data("epi_synthetic_multi")
-#'
-#' params_epi <- list(M = 250, xi = 1/8,
-#'                    alpha_SM = 1,
-#'                    a0 = 4,
-#'                    b0 = 10,
-#'                    I0_var = 0.1,
-#'                    avg_blk = 2)
-#'
-#' out <- clust_cp(epi_synthetic_multi, n_iterations = 3000, n_burnin = 1000,
-#'                 L = 1, B = 1000, params = params_epi, kernel = "epi")
-#'
-#' plot(out)
-#'
-#' }
 #'
 #' @rdname plot.ClustCpObj
 #' @export
@@ -454,8 +434,8 @@ plot_psm <- function (object, ...) {
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
-#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
+#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
 #' plot_psm(out)
 #' @export
 #'

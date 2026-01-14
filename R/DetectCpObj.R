@@ -71,8 +71,8 @@ DetectCpObj <- function(data = NULL,
 #' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
-#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
-#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
+#'                  n_burnin = 100, q = 0.5, params = params_uni,
 #'                  kernel = "ts")
 #' print(out)
 #'
@@ -104,15 +104,13 @@ print.DetectCpObj <- function(x, ...) {
 #'
 #' @examples
 #'
-#' ## Univariate time series
-#'
 #' data("eu_inflation")
 #'
 #' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
-#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
-#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
+#'                  n_burnin = 100, q = 0.5, params = params_uni,
 #'                  kernel = "ts")
 #' summary(out)
 #'
@@ -191,15 +189,14 @@ posterior_estimate <- function (object, ...) {
 #'
 #' @examples
 #'
-#' ## Univariate time series
 #'
 #' data("eu_inflation")
 #'
 #' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
-#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
-#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
+#'                  n_burnin = 100, q = 0.5, params = params_uni,
 #'                  kernel = "ts")
 #'
 #' posterior_estimate(out)
@@ -307,8 +304,8 @@ posterior_estimate.DetectCpObj <- function(object,
 #' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
-#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 7500,
-#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
+#'                  n_burnin = 100, q = 0.5, params = params_uni,
 #'                  kernel = "ts")
 #'
 #' plot(out)

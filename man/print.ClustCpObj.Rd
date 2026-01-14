@@ -23,8 +23,8 @@ params_uni <- list(a = 1,
                    c = 1,
                    phi = 0.1)
 
-out <- clust_cp(data = stock_uni[1:5,], n_iterations = 3000, n_burnin = 1000,
-                L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
+out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
+                L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
 
 print(out)
 

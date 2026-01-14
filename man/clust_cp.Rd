@@ -118,6 +118,8 @@ params_multi <- list(m_0 = rep(0,2),
 out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 7500, n_burnin = 2500,
                 L = 1, B = 10000, params = params_multi, kernel = "ts")
 
+print(out)
+
 ## Epidemic diffusions
 
 data("epi_synthetic_multi")

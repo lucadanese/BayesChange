@@ -121,7 +121,7 @@ print(out)
 
 data("epi_synthetic")
 
-params_epi <- list(M = 250, xi = 1/8, a0 = 4, b0 = 10, I0_var = 0.1)
+params_epi <- list(M = 100, xi = 1/8, a0 = 4, b0 = 10, I0_var = 0.1)
 
 out <- detect_cp(data = epi_synthetic, n_iterations = 2000, n_burnin = 250,
                  q = 0.25, params = params_epi, kernel = "epi")

@@ -2,7 +2,7 @@
 title: "BayesChange Tutorial"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{tutorial}
+  %\VignetteIndexEntry{BayesChange Tutorial}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-Here we provide a brief tutorial of the `BayesChange` package. The `BayesChange` package contains two main functions: one that performs change points detection on time series and survival functions and one that perform clustering of time series and survival functions with common change points. Here we briefly show how to implement these. 
+Here we provide a brief tutorial of the `BayesChange` package. The `BayesChange` package contains two main functions: one that performs change points detection on time series and epidemic diffusions and one that perform clustering of time series and epidemic diffusions with common change points. Here we briefly show how to implement these. 
 
 ```{r setup}
 library(BayesChange)
@@ -23,34 +23,34 @@ library(BayesChange)
 
 ## Detecting change points
 
-The function `detect_cp` provide a method for detecting change points, it is based on the work @MM2014 and on @CORRADIN202226.
+The function `detect_cp` provide a method for detecting change points, it is based on the work @MM2014 and on @corradin2024
 
-Depending on the structure of the data, `detect_cp` might perform change points detection on univariate time series or multivariate time series. For example we can create a vector of 100 observations where the first 50 observations are sampled from a normal distribution with mean 0 and variance 0.1 and the other 50 observations still from a normal distribution with mean 0 but variance 0.25. 
+Depending on the structure of the data, `detect_cp` might perform change points detection on univariate time series or multivariate time series. We import dataset `eu_inflation` that contains the standardized monthly inflation rates from the Harmonized Index of Consumer Prices (HICP) for the 12 COICOP expenditure categories across European Union countries. The data span the period from February~1997 to December~2024 resulting in a matrix of $12$ rows and $355$ columns. 
 
 ```{r}
-data_uni <- as.numeric(c(rnorm(50,0,0.1), rnorm(50,1,0.25)))
+data("eu_inflation")
 ```
 
 Now we can run the function `detect_cp`, as arguments of the function we need to specify the number of iterations, the number of burn-in steps and a list with the the autoregressive coefficient `phi` for the likelihood of the data, the parameters `a`, `b`, `c` for the priors and the probability `q` of performing a split at each step. Since we deal with time series we need also to specify `kernel = "ts"`.
 
 ```{r}
-out <- detect_cp(data = data_uni,                             
-                 n_iterations = 1000, n_burnin = 100,  
-                 params = list(q = 0.25, phi = 0.1, a = 1, b = 1, c = 0.1), kernel = "ts")
+out <- detect_cp(data = eu_inflation[1,],
+                 n_iterations = 7500, n_burnin = 2500, q = 0.5,
+                 params = list(prior_var_phi = 0.1, prior_delta_c = 1, prior_delta_d = 1), kernel = "ts")
 ```
 
 With the methods `print` and `summary` we can get information about the algorithm. 
 
 ```{r}
 print(out)
-
 summary(out)
 ```
 
 In order to get a point estimate of the change points we can use the method `posterior_estimate` that uses the method *salso* by @Dahl02102022 to get the final latent order and then detect the change points. 
 
 ```{r}
-table(posterior_estimate(out, loss = "binder"))
+cp_est <- posterior_estimate(out, loss = "binder")
+cumsum(table(cp_est))[-length(table(cp_est))] + 1
 ```
 
 The package also provides a method for plotting the change points. 
@@ -59,23 +59,31 @@ The package also provides a method for plotting the change points.
 plot(out, loss = "binder")
 ```
 
-If we define instead a matrix of data, `detect_cp` automatically performs a multivariate change points detection method. 
+We can assess convergence of the latent order posterior chain, for example, by inspecting the
+traceplot of its log-likelihood with `coda::traceplot`.
 
 ```{r}
-data_multi <- matrix(NA, nrow = 3, ncol = 100)
-
-data_multi[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_multi[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-data_multi[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
+coda::traceplot(out$lkl_MCMC, ylab = "Log-Likelihood")
 ```
 
-Arguments `k_0`, `nu_0`, `phi_0`, `m_0`, `par_theta_c`, `par_theta_d` and `prior_var_gamma` correspond to the parameters of the prior distributions for the multivariate likelihood. 
+
+If we instead consider a matrix of data, `detect_cp` automatically performs a multivariate change points detection method. We define the parameters.
 
 ```{r}
-out <- detect_cp(data = data_multi, n_iterations = 1000, n_burnin = 100,
-                 q = 0.25, params = list(k_0 = 0.25, nu_0 = 4, phi_0 = diag(1,3,3), 
-                      m_0 = rep(0,3), par_theta_c = 2, par_theta_d = 0.2, 
-                      prior_var_gamma = 0.1), kernel = "ts")
+params_multi <- list(m_0 = rep(0,3),
+                     k_0 = 1,
+                     nu_0 = 10,
+                     S_0 = diag(0.1,3,3),
+                     prior_var_phi = 0.1,
+                     prior_delta_c = 1,
+                     prior_delta_d = 1)
+```
+
+Arguments `k_0`, `nu_0`, `phi_0`, `m_0`, `prior_delta_c`, `prior_delta_d` and `prior_var_phi` correspond to the parameters of the prior distributions for the multivariate likelihood. 
+
+```{r}
+out <- detect_cp(data = eu_inflation[1:3,], n_iterations = 7500,
+          n_burnin = 2500, q = 0.5, params = params_multi, kernel = "ts")
 
 table(posterior_estimate(out, loss = "binder"))
 ```
@@ -84,39 +92,21 @@ table(posterior_estimate(out, loss = "binder"))
 plot(out, loss = "binder", plot_freq = TRUE)
 ```
 
-Function `detect_cp` can also be used to detect change points on survival functions. We define a matrix of one row and a vector with the infection rates.
+Function `detect_cp` can also be used to detect change points on survival functions. We consider the synthetic dataset `epi_synthetic`
 
 ```{r}
-data_mat <- matrix(NA, nrow = 100, ncol = 1)
-
-betas <- c(rep(0.45, 25),rep(0.14,75))
-```
-
-With function `sim_epi_data` we simulate a set of infection times. 
-
-```{r}
-inf_times <- sim_epi_data(10000, 10, 100, betas, 1/8)
-
-inf_times_vec <- rep(0,100)
-names(inf_times_vec) <- as.character(1:100)
-
-for(j in 1:100){
- if(as.character(j) %in% names(table(floor(inf_times)))){
-   inf_times_vec[j] = table(floor(inf_times))[which(names(table(floor(inf_times))) == j)]
- }
-}
-
-data_mat[,1] <- inf_times_vec
+data("epi_synthetic")
 ```
 
 To run `detect_cp` on epidemiological data we need to set `kernel = "epi"`. Moreover, besides the usual parameters, we need to set the number of Monte Carlo replications `M` for the approximation of the integrated likelihood and the recovery rate `xi`. `a0` and `b0` are optional and correspond to the parameters of the gamma distribution for the integration of the likelihood. 
 
 ```{r}
-out <- detect_cp(data = data_mat, n_iterations = 200, n_burnin = 50,
-                 params = list(xi = 1/8, a0 = 40, b0 = 10, M = 1000), kernel = "epi")
+params_epi <- list(M = 250, xi = 1/8, a0 = 4, b0 = 10, I0_var = 0.1)
+
+out <- detect_cp(data = epi_synthetic, n_iterations = 5000, n_burnin = 2000,
+                 q = 0.25, params = params_epi, kernel = "epi")
 
 print(out)
-table(posterior_estimate(out, loss = "binder"))
 ```
 
 Also here, with function `plot` we can plot the survival function and the position of the change points. 
@@ -130,29 +120,26 @@ plot(out)
 ## Clustering time dependent data with common change points
 
 
-`BayesChange` contains another function, `clust_cp`, that cluster respectively univariate and multivariate time series and survival functions with common change points. Details about this methods can be found in @corradin2024.
+`BayesChange` contains another function, `clust_cp`, that cluster respectively univariate and multivariate time series and survival functions with common change points. Details about this methods can be found in @CORRADIN202226
 
 In `clust_cp` the argument `kernel` must be specified, if data are time series then `kernel = "ts"` must be set. Then the algorithm automatically detects if data are univariate or multivariate. 
 
-If time series are univariate we need to set a matrix where each row is a time series.
+We consider for this example dataset `stock_uni` that contains the daily mean stock prices for the 50 largest companies (by market capitalization) in the Standard&Poor’s 500 Index from January 1, 2020 to January 1, 2022. 
 
 ```{r}
-data_mat <- matrix(NA, nrow = 5, ncol = 100)
-
-data_mat[1,] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_mat[2,] <- as.numeric(c(rnorm(50,0,0.125), rnorm(50,1,0.225)))
-data_mat[3,] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-data_mat[4,] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-data_mat[5,] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-
+data("stock_uni")
 ```
 
 Arguments that need to be specified in `clust_cp` are the number of iterations `n_iterations`, the number of elements in the normalisation constant `B`, the split-and-merge step `L` performed when a new partition is proposed and a list with the parameters of the algorithm, the likelihood and the priors..
 
 ```{r}
-out <- clust_cp(data = data_mat, n_iterations = 1000, n_burnin = 100, 
-                kernel = "ts",
-                params = list(B = 1000, L = 1, gamma = 0.5))
+params_uni <- list(a = 1,
+                   b = 1,
+                   c = 1,
+                   phi = 0.1)
+
+out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
+                L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
 
 posterior_estimate(out, loss = "binder")
 ```
@@ -163,38 +150,27 @@ Method `plot` for clustering univariate time series represents the data colored 
 plot(out, loss = "binder")
 ```
 
-
-
-If time series are multivariate, data must be an array, where each element is a multivariate time series represented by a matrix. Each row of the matrix is a component of the time series. 
+Method `plot_psm` shows the posterior similarity matrix of the clustering. Selecting `reorder = TRUE` we can choose to order the matrix depending on the clustering obtained. 
 
 ```{r}
-data_array <- array(data = NA, dim = c(3,100,5))
+plot_psm(out, reorder = TRUE)
+```
 
-data_array[1,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_array[2,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_array[3,,1] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
+If time series are multivariate, data must be an array, where each element is a multivariate time series represented by a matrix. Each row of the matrix is a component of the time series. Here we use dataset `stock_multi` that contains for each company the daily opening and closing stock prices. 
 
-data_array[1,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_array[2,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-data_array[3,,2] <- as.numeric(c(rnorm(50,0,0.100), rnorm(50,1,0.250)))
-
-data_array[1,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-data_array[2,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-data_array[3,,3] <- as.numeric(c(rnorm(50,0,0.175), rnorm(50,1,0.280)))
-
-data_array[1,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-data_array[2,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-data_array[3,,4] <- as.numeric(c(rnorm(25,0,0.135), rnorm(75,1,0.225)))
-
-data_array[1,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-data_array[2,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-data_array[3,,5] <- as.numeric(c(rnorm(25,0,0.155), rnorm(75,1,0.280)))
-
+```{r}
+data("stock_multi")
 ```
 
 ```{r}
-out <- clust_cp(data = data_array, n_iterations = 1000, n_burnin = 100, 
-                kernel = "ts", params = list(gamma = 0.1, k_0 = 0.25, nu_0 = 5,  phi_0 = diag(0.1,3,3), m_0 = rep(0,3)))
+params_multi <- list(m_0 = rep(0,2),
+                     k_0 = 1,
+                     nu_0 = 10,
+                     S_0 = diag(1,2,2),
+                     phi = 0.1)
+
+out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 7500, n_burnin = 2500,
+                L = 1, B = 10000, params = params_multi, kernel = "ts")
 
 posterior_estimate(out, loss = "binder")
 ```
@@ -204,44 +180,22 @@ posterior_estimate(out, loss = "binder")
 plot(out, loss = "binder")
 ```
 
-Finally, if we set `kernel = "epi"`, `clust_cp` cluster survival functions with common change points. Also here details can be found in @corradin2024.
+Finally, if we set `kernel = "epi"`, `clust_cp` cluster survival functions with common change points. Also here details can be found in @CORRADIN202226
 
-Data are a matrix where each row is the number of infected at each time. Inside this package is included the function `sim_epi_data` that simulates infection times. 
-
-```{r}
-data_mat <- matrix(NA, nrow = 5, ncol = 50)
-
-betas <- list(c(rep(0.45, 25),rep(0.14,25)),
-               c(rep(0.55, 25),rep(0.11,25)),
-               c(rep(0.50, 25),rep(0.12,25)),
-               c(rep(0.52, 10),rep(0.15,40)),
-               c(rep(0.53, 10),rep(0.13,40)))
-
-  inf_times <- list()
-
-  for(i in 1:5){
-
-    inf_times[[i]] <- sim_epi_data(S0 = 10000, I0 = 10, max_time = 50, beta_vec = betas[[i]], xi_0 = 1/8)
-
-    vec <- rep(0,50)
-    names(vec) <- as.character(1:50)
-
-    for(j in 1:50){
-      if(as.character(j) %in% names(table(floor(inf_times[[i]])))){
-      vec[j] = table(floor(inf_times[[i]]))[which(names(table(floor(inf_times[[i]]))) == j)]
-      }
-    }
-    data_mat[i,] <- vec
-  }
-
-
-```
-
+Data are a matrix where each row is the number of infected at each time. Inside this package is included the dataset `epi_synthetic_multi` with multivariate synthetic epidemic diffusions.
 
 ```{r}
-out <- clust_cp(data = data_mat, n_iterations = 100, n_burnin = 10, 
-                kernel = "epi", 
-                list(M = 100, B = 1000, L = 1, q = 0.1, gamma = 1/8))
+data("epi_synthetic_multi")
+
+params_epi <- list(M = 250, xi = 1/8,
+                   alpha_SM = 1,
+                   a0 = 4,
+                   b0 = 10,
+                   I0_var = 0.1,
+                   avg_blk = 2)
+
+out <- clust_cp(epi_synthetic_multi[,10:150], n_iterations = 5000, n_burnin = 2000,
+                L = 1, B = 1000, params = params_epi, kernel = "epi")
 
 posterior_estimate(out, loss = "binder")
 ```

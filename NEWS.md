@@ -1,6 +1,13 @@
-# BayesChange 2.1.4
+# BayesChange 2.2.0
 
-# BayesChange 2.1.2
+## New features
+- Added datasets included in the package
+- Added the `plot_psm()` function
+- Implemented MCMC output as `coda` objects to facilitate convergence diagnostics and posterior inspection
 
-* Fix position of change points in plot() 
-* Add updated reference to the work for clustering of time dependent data
+## Improvements
+- Improved `summary()` output
+- Improved vignette title 
+
+## Bug fixes
+- Fixed several bugs and stability issues

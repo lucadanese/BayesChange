@@ -73,8 +73,8 @@
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-#'                 L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+#' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 2000, n_burnin = 500,
+#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
 #'
 #' print(out)
 #'
@@ -88,8 +88,8 @@
 #'                      S_0 = diag(1,2,2),
 #'                      phi = 0.1)
 #'
-#' out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 7500, n_burnin = 2500,
-#'                 L = 1, B = 10000, params = params_multi, kernel = "ts")
+#' out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 2000, n_burnin = 500,
+#'                 L = 1, B = 1000, params = params_multi, kernel = "ts")
 #'
 #' print(out)
 #'
@@ -104,7 +104,7 @@
 #'                    I0_var = 0.1,
 #'                    avg_blk = 2)
 #'
-#' out <- clust_cp(epi_synthetic_multi, n_iterations = 5000, n_burnin = 2000,
+#' out <- clust_cp(epi_synthetic_multi, n_iterations = 2000, n_burnin = 500,
 #'                 L = 1, B = 1000, params = params_epi, kernel = "epi")
 #'
 #' print(out)

@@ -75,8 +75,8 @@
 #' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
-#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 5000,
-#'                  n_burnin = 2500, q = 0.5, params = params_uni,
+#' out <- detect_cp(data = eu_inflation[1,], n_iterations = 2000,
+#'                  n_burnin = 250, q = 0.5, params = params_uni,
 #'                  kernel = "ts")
 #'
 #' print(out)
@@ -93,8 +93,8 @@
 #'                      prior_delta_c = 1,
 #'                      prior_delta_d = 1)
 #'
-#' out <- detect_cp(data = eu_inflation[1:3,], n_iterations = 5000,
-#'                  n_burnin = 2500, q = 0.5, params = params_multi, kernel = "ts")
+#' out <- detect_cp(data = eu_inflation[1:3,], n_iterations = 2000,
+#'                  n_burnin = 250, q = 0.5, params = params_multi, kernel = "ts")
 #'
 #' print(out)
 #'
@@ -105,7 +105,7 @@
 #'
 #' params_epi <- list(M = 250, xi = 1/8, a0 = 4, b0 = 10, I0_var = 0.1)
 #'
-#' out <- detect_cp(data = epi_synthetic, n_iterations = 3000, n_burnin = 1000,
+#' out <- detect_cp(data = epi_synthetic, n_iterations = 2000, n_burnin = 250,
 #'                  q = 0.25, params = params_epi, kernel = "epi")
 #'
 #' print(out)

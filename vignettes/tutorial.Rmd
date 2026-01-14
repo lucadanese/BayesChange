@@ -35,7 +35,7 @@ Now we can run the function `detect_cp`, as arguments of the function we need to
 
 ```{r}
 out <- detect_cp(data = eu_inflation[1,],
-                 n_iterations = 7500, n_burnin = 2500, q = 0.5,
+                 n_iterations = 2000, n_burnin = 500, q = 0.5,
                  params = list(prior_var_phi = 0.1, prior_delta_c = 1, prior_delta_d = 1), kernel = "ts")
 ```
 
@@ -82,8 +82,8 @@ params_multi <- list(m_0 = rep(0,3),
 Arguments `k_0`, `nu_0`, `phi_0`, `m_0`, `prior_delta_c`, `prior_delta_d` and `prior_var_phi` correspond to the parameters of the prior distributions for the multivariate likelihood. 
 
 ```{r}
-out <- detect_cp(data = eu_inflation[1:3,], n_iterations = 7500,
-          n_burnin = 2500, q = 0.5, params = params_multi, kernel = "ts")
+out <- detect_cp(data = eu_inflation[1:3,], n_iterations = 2000,
+          n_burnin = 500, q = 0.5, params = params_multi, kernel = "ts")
 
 table(posterior_estimate(out, loss = "binder"))
 ```
@@ -103,7 +103,7 @@ To run `detect_cp` on epidemiological data we need to set `kernel = "epi"`. More
 ```{r}
 params_epi <- list(M = 250, xi = 1/8, a0 = 4, b0 = 10, I0_var = 0.1)
 
-out <- detect_cp(data = epi_synthetic, n_iterations = 5000, n_burnin = 2000,
+out <- detect_cp(data = epi_synthetic, n_iterations = 2000, n_burnin = 500,
                  q = 0.25, params = params_epi, kernel = "epi")
 
 print(out)
@@ -138,8 +138,8 @@ params_uni <- list(a = 1,
                    c = 1,
                    phi = 0.1)
 
-out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-                L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+out <- clust_cp(data = stock_uni[1:5,], n_iterations = 2000, n_burnin = 500,
+                L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
 
 posterior_estimate(out, loss = "binder")
 ```
@@ -169,8 +169,8 @@ params_multi <- list(m_0 = rep(0,2),
                      S_0 = diag(1,2,2),
                      phi = 0.1)
 
-out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 7500, n_burnin = 2500,
-                L = 1, B = 10000, params = params_multi, kernel = "ts")
+out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 2500, n_burnin = 500,
+                L = 1, B = 1000, params = params_multi, kernel = "ts")
 
 posterior_estimate(out, loss = "binder")
 ```
@@ -184,23 +184,24 @@ Finally, if we set `kernel = "epi"`, `clust_cp` cluster survival functions with 
 
 Data are a matrix where each row is the number of infected at each time. Inside this package is included the dataset `epi_synthetic_multi` with multivariate synthetic epidemic diffusions.
 
-```{r}
+```{r, eval = FALSE}
 data("epi_synthetic_multi")
 
-params_epi <- list(M = 250, xi = 1/8,
+params_epi <- list(M = 100, xi = 1/8,
                    alpha_SM = 1,
                    a0 = 4,
                    b0 = 10,
                    I0_var = 0.1,
                    avg_blk = 2)
 
-out <- clust_cp(epi_synthetic_multi[,10:150], n_iterations = 5000, n_burnin = 2000,
+out <- clust_cp(epi_synthetic_multi[,10:150], n_iterations = 2000, n_burnin = 500,
                 L = 1, B = 1000, params = params_epi, kernel = "epi")
 
 posterior_estimate(out, loss = "binder")
-```
-
-```{r}
 plot(out, loss = "binder")
 ```
+
+
+
+
 

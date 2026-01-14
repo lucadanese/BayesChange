@@ -4,9 +4,9 @@
 \name{BayesChange-package}
 \alias{BayesChange}
 \alias{BayesChange-package}
-\title{BayesChange: Bayesian Methods for Change Points Analysis}
+\title{BayesChange: Bayesian Methods for Change Point Analysis}
 \description{
-Performs change point detection on univariate and multivariate time series (Martínez & Mena, 2014, doi:10.1214/14-BA878; Corradin, Danese & Ongaro, 2022, doi:10.1016/j.ijar.2021.12.019) and clusters time-dependent data with common change points (Corradin, Danese, KhudaBukhsh & Ongaro, 2026, doi:10.1007/s11222-025-10756-x).
+Performs change point detection on univariate and multivariate time series (Martínez & Mena, 2014, \doi{10.1214/14-BA878} ; Corradin, Danese & Ongaro, 2022, \doi{10.1016/j.ijar.2021.12.019}) and clusters time-dependent data with common change points (Corradin, Danese, KhudaBukhsh & Ongaro, 2026, \doi{10.1007/s11222-025-10756-x}).
 }
 \seealso{
 Useful links:

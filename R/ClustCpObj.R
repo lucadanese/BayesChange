@@ -58,7 +58,7 @@ ClustCpObj <- function(data = NULL,
 #' ClustCpObj print method
 #'
 #' @description The \code{ClustCpObj} method prints which algorithm was run.
-#' @param x an object of class \code{ClustCpObj}.
+#' @param x An object of class \code{ClustCpObj}.
 #' @param ... parameter of the generic method.
 #'
 #' @examples
@@ -95,7 +95,7 @@ print.ClustCpObj <- function(x, ...) {
 #' ClustCpObj summary method
 #'
 #' @description The \code{ClustCpObj} method returns a summary of the algorithm.
-#' @param object an object of class \code{ClustCpObj}.
+#' @param object An object of class \code{ClustCpObj}.
 #' @param ... parameter of the generic method.
 #'
 #' @examples
@@ -150,11 +150,11 @@ summary.ClustCpObj <- function(object, ...) {
 #'
 #' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
 #'
-#' @param object an object of class \code{ClustCpObj}.
+#' @param object An object of class \code{ClustCpObj}.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
-#' @param maxNClusters maximum number of clusters in salso procedure.
-#' @param nRuns number of runs in salso procedure.
-#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#' @param maxNClusters Maximum number of clusters in salso procedure.
+#' @param nRuns Number of runs in salso procedure.
+#' @param maxZealousAttempts Maximum number of zealous attempts in salso procedure.
 #' @param ... parameter of the generic method.
 #'
 #' @return

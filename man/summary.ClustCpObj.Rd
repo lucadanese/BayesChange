@@ -7,7 +7,7 @@
 \method{summary}{ClustCpObj}(object, ...)
 }
 \arguments{
-\item{object}{an object of class \code{ClustCpObj}.}
+\item{object}{An object of class \code{ClustCpObj}.}
 
 \item{...}{parameter of the generic method.}
 }

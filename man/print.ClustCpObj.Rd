@@ -7,7 +7,7 @@
 \method{print}{ClustCpObj}(x, ...)
 }
 \arguments{
-\item{x}{an object of class \code{ClustCpObj}.}
+\item{x}{An object of class \code{ClustCpObj}.}
 
 \item{...}{parameter of the generic method.}
 }

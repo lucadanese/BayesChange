@@ -6,6 +6,7 @@
 \usage{
 \method{posterior_estimate}{DetectCpObj}(
   object,
+  show_cp = FALSE,
   loss = "VI",
   maxNClusters = 0,
   nRuns = 16,
@@ -14,15 +15,17 @@
 )
 }
 \arguments{
-\item{object}{an object of class \code{DetectCpObj}.}
+\item{object}{An object of class \code{DetectCpObj}.}
+
+\item{show_cp}{Logical; if TRUE show change point locations; FALSE show cluster assignment.}
 
 \item{loss}{The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".}
 
-\item{maxNClusters}{maximum number of clusters in salso procedure.}
+\item{maxNClusters}{Maximum number of clusters in salso procedure.}
 
-\item{nRuns}{number of runs in salso procedure.}
+\item{nRuns}{Number of runs in salso procedure.}
 
-\item{maxZealousAttempts}{maximum number of zealous attempts in salso procedure.}
+\item{maxZealousAttempts}{Maximum number of zealous attempts in salso procedure.}
 
 \item{...}{parameter of the generic method.}
 }

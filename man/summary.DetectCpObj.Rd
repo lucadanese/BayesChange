@@ -7,7 +7,7 @@
 \method{summary}{DetectCpObj}(object, ...)
 }
 \arguments{
-\item{object}{an object of class \code{DetectCpObj};}
+\item{object}{An object of class \code{DetectCpObj};}
 
 \item{...}{parameter of the generic method.}
 }

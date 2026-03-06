@@ -99,7 +99,7 @@ print.DetectCpObj <- function(x, ...) {
 #' DetectCpObj summary method
 #'
 #' @description The \code{DetectCpObj} method returns a summary of the algorithm.
-#' @param object an object of class \code{DetectCpObj};
+#' @param object An object of class \code{DetectCpObj};
 #' @param ... parameter of the generic method.
 #'
 #' @examples
@@ -170,11 +170,12 @@ posterior_estimate <- function (object, ...) {
 #'
 #' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
 #'
-#' @param object an object of class \code{DetectCpObj}.
+#' @param object An object of class \code{DetectCpObj}.
+#' @param show_cp Logical; if TRUE show change point locations; FALSE show cluster assignment.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
-#' @param maxNClusters maximum number of clusters in salso procedure.
-#' @param nRuns number of runs in salso procedure.
-#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#' @param maxNClusters Maximum number of clusters in salso procedure.
+#' @param nRuns Number of runs in salso procedure.
+#' @param maxZealousAttempts Maximum number of zealous attempts in salso procedure.
 #' @param ... parameter of the generic method.
 #'
 #' @return
@@ -205,6 +206,7 @@ posterior_estimate <- function (object, ...) {
 #' @export
 #'
 posterior_estimate.DetectCpObj <- function(object,
+                               show_cp = FALSE,
                                loss = "VI",
                                maxNClusters = 0,
                                nRuns = 16,
@@ -221,6 +223,10 @@ posterior_estimate.DetectCpObj <- function(object,
 
     output <- as.numeric(est_cp)
 
+    if(show_cp){
+      output <- cumsum(table(output))[-length(table(output))] + 1
+    }
+
     return(output)
 
   } else if(loss == "binder"){
@@ -232,7 +238,12 @@ posterior_estimate.DetectCpObj <- function(object,
 
     output <- as.numeric(est_cp)
 
+    if(show_cp){
+      output <- cumsum(table(output))[-length(table(output))] + 1
+    }
+
     return(output)
+
   } else if (loss == "omARI"){
     est_cp <- salso::salso(mcmc_chain, loss = "omARI",
                            maxNClusters = maxNClusters,
@@ -240,6 +251,10 @@ posterior_estimate.DetectCpObj <- function(object,
                            maxZealousAttempts = maxZealousAttempts)
 
     output <- as.numeric(est_cp)
+
+    if(show_cp){
+      output <- cumsum(table(output))[-length(table(output))] + 1
+    }
 
     return(output)
 
@@ -251,6 +266,10 @@ posterior_estimate.DetectCpObj <- function(object,
 
     output <- as.numeric(est_cp)
 
+    if(show_cp){
+      output <- cumsum(table(output))[-length(table(output))] + 1
+    }
+
     return(output)
 
   } else if (loss == "ID"){
@@ -261,6 +280,10 @@ posterior_estimate.DetectCpObj <- function(object,
 
     output <- as.numeric(est_cp)
 
+    if(show_cp){
+      output <- cumsum(table(output))[-length(table(output))] + 1
+    }
+
     return(output)
 
   } else if (loss == "NID"){
@@ -270,6 +293,10 @@ posterior_estimate.DetectCpObj <- function(object,
                            maxZealousAttempts = maxZealousAttempts)
 
     output <- as.numeric(est_cp)
+
+    if(show_cp){
+      output <- cumsum(table(output))[-length(table(output))] + 1
+    }
 
     return(output)
 
@@ -282,12 +309,12 @@ posterior_estimate.DetectCpObj <- function(object,
 #'
 #' @description  The \code{plot} method plots the estimated change points estimated through the salso algorithm, for a \code{DetectCpObj} class object.
 #'
-#' @param x an object of class \code{DetectCpObj}.
-#' @param plot_freq if TRUE also the histogram with the empirical frequency of each change point is plotted.
+#' @param x An object of class \code{DetectCpObj}.
+#' @param plot_freq Logical; TRUE also the histogram with the empirical frequency of each change point is plotted.
 #' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
-#' @param maxNClusters maximum number of clusters in salso procedure.
-#' @param nRuns number of runs in salso procedure.
-#' @param maxZealousAttempts maximum number of zealous attempts in salso procedure.
+#' @param maxNClusters Maximum number of clusters in salso procedure.
+#' @param nRuns Number of runs in salso procedure.
+#' @param maxZealousAttempts Maximum number of zealous attempts in salso procedure.
 #' @param y,... parameters of the generic method.
 #'
 #'

@@ -1,3 +1,5 @@
+# BayesChange 2.3.0
+
 # BayesChange 2.2.0
 
 ## New features

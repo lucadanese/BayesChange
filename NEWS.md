@@ -1,15 +1,4 @@
 # BayesChange 2.3.0
 
-# BayesChange 2.2.0
-
 ## New features
-- Added datasets included in the package
-- Added the `plot_psm()` function
-- Implemented MCMC output as `coda` objects to facilitate convergence diagnostics and posterior inspection
-
-## Improvements
-- Improved `summary()` output
-- Improved vignette title 
-
-## Bug fixes
-- Fixed several bugs and stability issues
+- Added argument `show_cp` to `posterior_estimate()` to provide also point estimation of the position of the change points in change point detection.

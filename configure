@@ -1,0 +1,41 @@
+#!/bin/sh
+# Locate the GNU Scientific Library (GSL) with gsl-config and write src/Makevars.
+# Users can override the detection by setting GSL_CFLAGS and GSL_LIBS, e.g.
+#   R CMD INSTALL --configure-vars='GSL_CFLAGS=-I/path/include GSL_LIBS="-L/path/lib -lgsl -lgslcblas"' BayesChange
+
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+  echo "could not determine R_HOME"
+  exit 1
+fi
+
+if test -z "${GSL_CFLAGS}" || test -z "${GSL_LIBS}"; then
+  GSL_CONFIG=`command -v gsl-config`
+  if test -z "${GSL_CONFIG}"; then
+    for d in /opt/homebrew/bin /usr/local/bin /opt/local/bin /opt/R/arm64/bin /opt/R/x86_64/bin; do
+      if test -x "$d/gsl-config"; then GSL_CONFIG="$d/gsl-config"; break; fi
+    done
+  fi
+  if test -z "${GSL_CONFIG}"; then
+    echo "------------------------------------------------------------------"
+    echo " BayesChange requires the GNU Scientific Library (GSL), but"
+    echo " 'gsl-config' was not found on the PATH. Install GSL first:"
+    echo "   macOS (Homebrew):        brew install gsl"
+    echo "   Debian/Ubuntu:           sudo apt-get install libgsl-dev"
+    echo "   Fedora/RHEL:             sudo dnf install gsl-devel"
+    echo " or set GSL_CFLAGS and GSL_LIBS via --configure-vars."
+    echo "------------------------------------------------------------------"
+    exit 1
+  fi
+  GSL_CFLAGS=`"${GSL_CONFIG}" --cflags`
+  GSL_LIBS=`"${GSL_CONFIG}" --libs`
+fi
+
+echo "Using GSL_CFLAGS=${GSL_CFLAGS}"
+echo "Using GSL_LIBS=${GSL_LIBS}"
+
+sed -e "s|@GSL_CFLAGS@|${GSL_CFLAGS}|" \
+    -e "s|@GSL_LIBS@|${GSL_LIBS}|" \
+    src/Makevars.in > src/Makevars
+
+exit 0

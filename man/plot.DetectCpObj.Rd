@@ -11,7 +11,7 @@
   loss = "VI",
   maxNClusters = 0,
   nRuns = 16,
-  maxZealousAttempts = 10,
+  maxZealousAttempts = 100,
   ...
 )
 }

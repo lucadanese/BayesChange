@@ -30,7 +30,7 @@ If data is an univariate time series the following must be specified:
 
 \itemize{
 \item \code{a}, \code{b}, \code{c} parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
-\item \code{prior_var_phi} variance for the proposal in the \eqn{N(0,\sigma^2_\phi)} posterior estimate of \eqn{\delta}.
+\item \code{prior_var_phi} standard deviation of the Gaussian random-walk proposal on \eqn{\mathrm{logit}(\phi)} used in the Metropolis-Hastings update of the autocorrelation parameter \eqn{\phi} (default 0.1). Despite its name, it is a tuning parameter of the sampler, not a parameter of the prior.
 \item \code{prior_delta_c} parameter of the shifted Gamma prior of \eqn{\delta}.
 \item \code{prior_delta_d} parameter of the shifted Gamma prior of \eqn{\delta}.
 }
@@ -39,7 +39,7 @@ If the time series is multivariate the following must be specified:
 
 \itemize{
 \item \code{m_0}, \code{k_0}, \code{nu_0}, \code{S_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-\item \code{prior_var_phi} variance for the proposal in the \eqn{N(0,\sigma^2_\phi)} posterior estimate of \eqn{\delta}.
+\item \code{prior_var_phi} standard deviation of the Gaussian random-walk proposal on \eqn{\mathrm{logit}(\phi)} used in the Metropolis-Hastings update of the autocorrelation parameter \eqn{\phi} (default 0.1). Despite its name, it is a tuning parameter of the sampler, not a parameter of the prior.
 \item \code{prior_delta_c} parameter of the shifted Gamma prior of \eqn{\delta}.
 \item \code{prior_delta_d} parameter of the shifted Gamma prior of \eqn{\delta}.
 }
@@ -57,7 +57,7 @@ If data are epidemic diffusions:
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
-\item{user_seed}{seed for random distribution generation.}
+\item{user_seed}{seed for random number generation (default 1234). The output is fully determined by \code{user_seed}: two calls with the same data, arguments and \code{user_seed} return identical results, regardless of any previous call to \code{set.seed()}. The state of R's random number generator is restored on exit. If \code{NULL}, the current state of R's random number generator is used.}
 }
 \value{
 A \code{DetectCpObj} object containing:

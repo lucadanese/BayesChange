@@ -146,114 +146,17 @@ summary.ClustCpObj <- function(object, ...) {
   }
 }
 
-#' Estimate the change points of the data
-#'
-#' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
-#'
-#' @param object An object of class \code{ClustCpObj}.
-#' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
-#' @param maxNClusters Maximum number of clusters in salso procedure.
-#' @param nRuns Number of runs in salso procedure.
-#' @param maxZealousAttempts Maximum number of zealous attempts in salso procedure.
-#' @param ... parameter of the generic method.
-#'
-#' @return
-#'
-#' The function returns a vector with the cluster assignment of each observation.
-#'
-#' @references
-#'
-#' #' D. B. Dahl, D. J. Johnson, and P. Müller (2022), Search Algorithms and Loss
-#' Functions for Bayesian Clustering, \emph{Journal of Computational and
-#' Graphical Statistics}, 31(4), 1189-1201, \doi{10.1080/10618600.2022.2069779}.
-#'
-#' @examples
-#'
-#' data("stock_uni")
-#'
-#' params_uni <- list(a = 1,
-#'                    b = 1,
-#'                    c = 1,
-#'                    phi = 0.1)
-#'
-#' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
-#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
-#'
-#' posterior_estimate(out)
-#'
-#' @rdname posterior_estimate.ClustCpObj
+#' @rdname posterior_estimate
 #' @export
-#'
 posterior_estimate.ClustCpObj <- function(object,
                                loss = "VI",
                                maxNClusters = 0,
                                nRuns = 16,
-                               maxZealousAttempts = 10, ...) {
+                               maxZealousAttempts = 100, ...) {
 
-  mcmc_chain <- object$clust[(object$n_burnin + 1):object$n_iterations,]
+  mcmc_chain <- object$clust[(object$n_burnin + 1):object$n_iterations, , drop = FALSE]
 
-  if(loss == "VI"){
-
-    est_cp <- salso::salso(mcmc_chain, loss = "VI",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    return(output)
-
-  } else if(loss == "binder"){
-
-    est_cp <- salso::salso(mcmc_chain, loss = "binder",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    return(output)
-  } else if (loss == "omARI"){
-    est_cp <- salso::salso(mcmc_chain, loss = "omARI",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    return(output)
-
-  } else if (loss == "NVI"){
-    est_cp <- salso::salso(mcmc_chain, loss = "NVI",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    return(output)
-
-  } else if (loss == "ID"){
-    est_cp <- salso::salso(mcmc_chain, loss = "ID",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    return(output)
-
-  } else if (loss == "NID"){
-    est_cp <- salso::salso(mcmc_chain, loss = "NID",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    return(output)
-
-  }
+  run_salso(mcmc_chain, loss, maxNClusters, nRuns, maxZealousAttempts)
 }
 
 
@@ -295,7 +198,7 @@ plot.ClustCpObj <- function(x, y = NULL,
                              loss = "VI",
                              maxNClusters = 0,
                              nRuns = 16,
-                             maxZealousAttempts = 10, ...) {
+                             maxZealousAttempts = 100, ...) {
 
   Observation <- Time <- Value <- Cluster <- Count <- y <- obs <- NULL
 
@@ -400,11 +303,8 @@ plot.ClustCpObj <- function(x, y = NULL,
 
 }
 
-#' set generic
-#' @name posterior_estimate
-#' @keywords internal
+#' @rdname plot_psm.ClustCpObj
 #' @export
-#'
 plot_psm <- function (object, ...) {
   UseMethod("plot_psm")
 }

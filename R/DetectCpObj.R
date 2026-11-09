@@ -157,30 +157,54 @@ summary.DetectCpObj <- function(object, ...) {
 }
 
 
-#' set generic
-#' @name posterior_estimate
-#' @keywords internal
-#' @export
+#' Point estimate of change points or of the partition
 #'
-posterior_estimate <- function (object, ...) {
-  UseMethod("posterior_estimate")
-}
-
-#' Estimate the change points of the data
+#' @description \code{posterior_estimate} summarises the MCMC output of
+#' [detect_cp()] or [clust_cp()] with a single point estimate, obtained by
+#' minimising the posterior expected loss with the SALSO algorithm of
+#' Dahl, Johnson and Müller (2022), as implemented in [salso::salso()].
 #'
-#' @description  The \code{posterior_estimate} method estimates the change points of the data making use of the salso algorithm, for a \code{DetectCPObj} class object.
+#' \itemize{
+#'   \item For a \code{DetectCpObj} (output of [detect_cp()]) the sampled
+#'   orders are treated as partitions of the time indices and the estimate is
+#'   a partition of the times into contiguous blocks. With
+#'   \code{show_cp = TRUE} the positions of the change points are returned
+#'   instead.
+#'   \item For a \code{ClustCpObj} (output of [clust_cp()]) the estimate is
+#'   the partition of the observations (time series or epidemic diffusions)
+#'   into clusters.
+#' }
 #'
-#' @param object An object of class \code{DetectCpObj}.
-#' @param show_cp Logical; if TRUE show change point locations; FALSE show cluster assignment.
-#' @param loss The loss function used to estimate the final partition, it can be "VI", "binder", "omARI", "NVI", "ID", "NID".
-#' @param maxNClusters Maximum number of clusters in salso procedure.
-#' @param nRuns Number of runs in salso procedure.
-#' @param maxZealousAttempts Maximum number of zealous attempts in salso procedure.
-#' @param ... parameter of the generic method.
+#' @param object an object of class \code{DetectCpObj} or \code{ClustCpObj}.
+#' @param show_cp (\code{DetectCpObj} only) logical; if \code{TRUE} return the
+#'   positions of the estimated change points, i.e. the first time index of
+#'   every block after the first one. If \code{FALSE} (default) return the
+#'   block membership of each time index.
+#' @param loss the loss function minimised by SALSO. One of
+#'   \describe{
+#'     \item{\code{"VI"}}{variation of information (default; Meilă, 2007);}
+#'     \item{\code{"binder"}}{Binder's loss (Binder, 1978);}
+#'     \item{\code{"omARI"}}{one minus the adjusted Rand index;}
+#'     \item{\code{"NVI"}}{normalised variation of information;}
+#'     \item{\code{"ID"}}{information distance;}
+#'     \item{\code{"NID"}}{normalised information distance.}
+#'   }
+#'   See [salso::salso()] for details.
+#' @param maxNClusters maximum number of blocks (\code{DetectCpObj}) or
+#'   clusters (\code{ClustCpObj}) considered by SALSO. The default \code{0}
+#'   uses the largest number observed in the MCMC sample.
+#' @param nRuns number of independent SALSO runs.
+#' @param maxZealousAttempts maximum number of zealous updates per SALSO run.
+#'   The default (\code{100}) is larger than the one of \pkg{salso}
+#'   (\code{10}), because a time series can easily contain more than ten
+#'   blocks; with too few attempts SALSO warns that \emph{"the number of
+#'   possible zealous attempts exceeded the maximum"}.
+#' @param ... further arguments passed to or from other methods.
 #'
-#' @return
-#'
-#' The function returns a vector with the cluster assignment of each observation.
+#' @return For a \code{DetectCpObj}, an integer vector with the block of each
+#'   time index (blocks are numbered from 1 in temporal order) or, if
+#'   \code{show_cp = TRUE}, the positions of the change points. For a
+#'   \code{ClustCpObj}, an integer vector with the cluster of each observation.
 #'
 #' @references
 #'
@@ -189,7 +213,6 @@ posterior_estimate <- function (object, ...) {
 #' Graphical Statistics}, 31(4), 1189-1201, \doi{10.1080/10618600.2022.2069779}.
 #'
 #' @examples
-#'
 #'
 #' data("eu_inflation")
 #'
@@ -200,110 +223,56 @@ posterior_estimate <- function (object, ...) {
 #'                  n_burnin = 100, q = 0.5, params = params_uni,
 #'                  kernel = "ts")
 #'
-#' posterior_estimate(out)
+#' posterior_estimate(out, loss = "binder")
+#' posterior_estimate(out, loss = "binder", show_cp = TRUE)
 #'
-#' @rdname posterior_estimate.DetectCpObj
+#' data("stock_uni")
+#'
+#' params_clust <- list(a = 1, b = 1, c = 1, phi = 0.1)
+#'
+#' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
+#'                 L = 1, q = 0.5, B = 500, params = params_clust, kernel = "ts")
+#'
+#' posterior_estimate(out, loss = "binder")
+#'
 #' @export
-#'
+posterior_estimate <- function (object, ...) {
+  UseMethod("posterior_estimate")
+}
+
+# Run SALSO on a matrix of sampled partitions (one per row).
+run_salso <- function(mcmc_chain, loss, maxNClusters, nRuns, maxZealousAttempts){
+  loss <- match.arg(loss, c("VI", "binder", "omARI", "NVI", "ID", "NID"))
+  as.integer(salso::salso(mcmc_chain, loss = loss,
+                          maxNClusters = maxNClusters,
+                          nRuns = nRuns,
+                          maxZealousAttempts = maxZealousAttempts))
+}
+
+#' @rdname posterior_estimate
+#' @export
 posterior_estimate.DetectCpObj <- function(object,
                                show_cp = FALSE,
                                loss = "VI",
                                maxNClusters = 0,
                                nRuns = 16,
-                               maxZealousAttempts = 10,...) {
+                               maxZealousAttempts = 100, ...) {
 
-  mcmc_chain <- object$orders[(object$n_burnin + 1):object$n_iterations,]
+  mcmc_chain <- object$orders[(object$n_burnin + 1):object$n_iterations, , drop = FALSE]
 
-  if(loss == "VI"){
+  est <- run_salso(mcmc_chain, loss, maxNClusters, nRuns, maxZealousAttempts)
 
-    est_cp <- salso::salso(mcmc_chain, loss = "VI",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
+  # SALSO is not aware of the temporal ordering, so the labels it returns need
+  # not form contiguous blocks. Every maximal run of equal labels is a block.
+  new_block <- c(TRUE, est[-1] != est[-length(est)])
+  output <- cumsum(new_block)
 
-    output <- as.numeric(est_cp)
-
-    if(show_cp){
-      output <- cumsum(table(output))[-length(table(output))] + 1
-    }
-
-    return(output)
-
-  } else if(loss == "binder"){
-
-    est_cp <- salso::salso(mcmc_chain, loss = "binder",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    if(show_cp){
-      output <- cumsum(table(output))[-length(table(output))] + 1
-    }
-
-    return(output)
-
-  } else if (loss == "omARI"){
-    est_cp <- salso::salso(mcmc_chain, loss = "omARI",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    if(show_cp){
-      output <- cumsum(table(output))[-length(table(output))] + 1
-    }
-
-    return(output)
-
-  } else if (loss == "NVI"){
-    est_cp <- salso::salso(mcmc_chain, loss = "NVI",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    if(show_cp){
-      output <- cumsum(table(output))[-length(table(output))] + 1
-    }
-
-    return(output)
-
-  } else if (loss == "ID"){
-    est_cp <- salso::salso(mcmc_chain, loss = "ID",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    if(show_cp){
-      output <- cumsum(table(output))[-length(table(output))] + 1
-    }
-
-    return(output)
-
-  } else if (loss == "NID"){
-    est_cp <- salso::salso(mcmc_chain, loss = "NID",
-                           maxNClusters = maxNClusters,
-                           nRuns = nRuns,
-                           maxZealousAttempts = maxZealousAttempts)
-
-    output <- as.numeric(est_cp)
-
-    if(show_cp){
-      output <- cumsum(table(output))[-length(table(output))] + 1
-    }
-
-    return(output)
-
+  if(show_cp){
+    output <- which(new_block)[-1]
   }
+
+  return(output)
 }
-
-
 
 #' Plot estimated change points
 #'
@@ -345,7 +314,7 @@ plot.DetectCpObj <- function(x, y = NULL,
                              loss = "VI",
                              maxNClusters = 0,
                              nRuns = 16,
-                             maxZealousAttempts = 10, ...) {
+                             maxZealousAttempts = 100, ...) {
 
 
   time <- V2 <- y <- obs <- NULL

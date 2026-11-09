@@ -12,7 +12,7 @@
 #' @param q probability of performing a split at each iteration.
 #' @param kernel can be "ts" if data are time series or "epi" if data are epidemic diffusions.
 #' @param print_progress If TRUE (default) print the progress bar.
-#' @param user_seed seed for random distribution generation.
+#' @param user_seed seed for random number generation (default 1234). The output is fully determined by \code{user_seed}: two calls with the same data, arguments and \code{user_seed} return identical results, regardless of any previous call to \code{set.seed()}. The state of R's random number generator is restored on exit. If \code{NULL}, the current state of R's random number generator is used.
 #'
 #'
 #' @param params a list of parameters:
@@ -21,7 +21,7 @@
 #'
 #' \itemize{
 #'   \item \code{a}, \code{b}, \code{c} parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
-#'   \item \code{prior_var_phi} variance for the proposal in the \eqn{N(0,\sigma^2_\phi)} posterior estimate of \eqn{\delta}.
+#'   \item \code{prior_var_phi} standard deviation of the Gaussian random-walk proposal on \eqn{\mathrm{logit}(\phi)} used in the Metropolis-Hastings update of the autocorrelation parameter \eqn{\phi} (default 0.1). Despite its name, it is a tuning parameter of the sampler, not a parameter of the prior.
 #'   \item \code{prior_delta_c} parameter of the shifted Gamma prior of \eqn{\delta}.
 #'   \item \code{prior_delta_d} parameter of the shifted Gamma prior of \eqn{\delta}.
 #' }
@@ -30,7 +30,7 @@
 #'
 #' \itemize{
 #'   \item \code{m_0}, \code{k_0}, \code{nu_0}, \code{S_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-#'   \item \code{prior_var_phi} variance for the proposal in the \eqn{N(0,\sigma^2_\phi)} posterior estimate of \eqn{\delta}.
+#'   \item \code{prior_var_phi} standard deviation of the Gaussian random-walk proposal on \eqn{\mathrm{logit}(\phi)} used in the Metropolis-Hastings update of the autocorrelation parameter \eqn{\phi} (default 0.1). Despite its name, it is a tuning parameter of the sampler, not a parameter of the prior.
 #'   \item \code{prior_delta_c} parameter of the shifted Gamma prior of \eqn{\delta}.
 #'   \item \code{prior_delta_d} parameter of the shifted Gamma prior of \eqn{\delta}.
 #' }
@@ -134,6 +134,8 @@ detect_cp <- function(data,
   if((is.null(kernel) | !(kernel %in% c("ts", "epi")))) stop("kernel must be 'ts' or 'epi'")
   if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
   if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
+
+  user_seed <- local_user_seed(user_seed)
 
   if(kernel == "ts"){
 

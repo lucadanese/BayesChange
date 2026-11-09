@@ -64,7 +64,7 @@ If data are epidemic diffusions:
 
 \item{print_progress}{If TRUE (default) print the progress bar.}
 
-\item{user_seed}{seed for random distribution generation.}
+\item{user_seed}{seed for random number generation (default 1234). The output is fully determined by \code{user_seed}: two calls with the same data, arguments and \code{user_seed} return identical results, regardless of any previous call to \code{set.seed()}. The state of R's random number generator is restored on exit. If \code{NULL}, the current state of R's random number generator is used.}
 }
 \value{
 A \code{ClustCpObj} class object containing

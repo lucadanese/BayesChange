@@ -9,17 +9,50 @@
 
 ## Installation
 
-To install `BayesChange` the package `devtools` is needed. 
+The released version is on CRAN. On Windows and macOS CRAN provides
+pre-compiled binaries, so no additional software is needed:
 
 ``` r
-install.packages("devtools")
+install.packages("BayesChange")
 ```
 
-Now `BayesChange` can be installed through the [GitHub repository](https://github.com/lucadanese/BayesChange) of the package:
+### Installing from source
 
-``` r
-devtools::install_github("lucadanese/BayesChange")
+Installing from source (the GitHub version or a `.tar.gz` file) requires a
+C++17 compiler and the [GNU Scientific Library (GSL)](https://www.gnu.org/software/gsl/).
+The R packages `Rcpp`, `RcppArmadillo` and `RcppGSL` are installed
+automatically as dependencies.
+
+1. **Install GSL and a compiler.**
+
+   | System | Command |
+   |---|---|
+   | macOS | `xcode-select --install` (compiler), then `brew install gsl` ([Homebrew](https://brew.sh)) |
+   | Debian / Ubuntu | `sudo apt-get install build-essential libgsl-dev` |
+   | Fedora / RHEL | `sudo dnf install gcc-c++ gsl-devel` |
+   | Windows | Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/) matching your R version; it already contains GSL. |
+
+   On macOS and Linux, check that `gsl-config --version` works in a terminal:
+   the installer uses it to locate GSL.
+
+2. **Install the package.**
+
+   ``` r
+   install.packages("remotes")
+   remotes::install_github("lucadanese/BayesChange")
+   # or, from a source file:
+   install.packages("BayesChange_x.y.z.tar.gz", repos = NULL, type = "source")
+   ```
+
+If GSL is installed in a non-standard location, point the installer to it:
+
+``` sh
+# macOS / Linux
+R CMD INSTALL --configure-vars='GSL_CFLAGS=-I/path/to/gsl/include GSL_LIBS="-L/path/to/gsl/lib -lgsl -lgslcblas"' BayesChange_x.y.z.tar.gz
 ```
+
+On Windows, set the environment variable `LIB_GSL` to the GSL installation
+folder (containing `include/` and `lib/`) before installing.
 
 ## Package contents
 

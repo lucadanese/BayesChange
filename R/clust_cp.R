@@ -13,7 +13,7 @@
 #' @param L number of split-merge steps for the proposal step.
 #' @param q probability of a split in the split-merge proposal and acceleration step.
 #' @param print_progress If TRUE (default) print the progress bar.
-#' @param user_seed seed for random distribution generation.
+#' @param user_seed seed for random number generation (default 1234). The output is fully determined by \code{user_seed}: two calls with the same data, arguments and \code{user_seed} return identical results, regardless of any previous call to \code{set.seed()}. The state of R's random number generator is restored on exit. If \code{NULL}, the current state of R's random number generator is used.
 #' @param kernel can be "ts" if data are time series or "epi" if data are epidemic diffusions.
 #'
 #' @param params a list of parameters:
@@ -137,6 +137,8 @@ clust_cp <- function(data,
   if((is.null(kernel) | !(kernel %in% c("ts", "epi")))) stop("kernel must be 'ts' or 'epi'")
   if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
   if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
+
+  user_seed <- local_user_seed(user_seed)
 
   if(kernel == "ts"){
 

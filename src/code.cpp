@@ -100,15 +100,16 @@ arma::mat compute_s_n(int d, arma::vec m_0, float k_0, int V_0, arma::mat S_0, f
   return phi_n;
 }
 
-float lgamma_multi(int d, int a){
+// Log multivariate gamma function: log Gamma_d(a).
+// NB: `a` must be a double (it is typically nu/2, which is often non-integer).
+double lgamma_multi(int d, double a){
 
   arma::vec vettore(d, arma::fill::zeros);
 
   for(int j = 0; j < d ; j++){
-    float j_float = j;
-    vettore(j) = std::lgamma(a + (-j_float/2));
+    vettore(j) = std::lgamma(a - j / 2.0);
   }
-  return log(std::pow(M_PI,(d*(d-1)/4))) + arma::accu(vettore);
+  return (d * (d - 1) / 4.0) * log(M_PI) + arma::accu(vettore);
 }
 
 double indicator_1(int k, int n){
@@ -297,10 +298,14 @@ arma::vec generate_random_order(double t, double p, gsl_rng *r){
       new_order(i) = j;
     }
   }
-  while(new_order(0) > 0){
-    new_order -= 1;
+  // empty blocks (zero multinomial counts, or k > t) leave gaps in the labels:
+  // relabel the blocks consecutively as 0, 1, 2, ...
+  arma::vec clean_order(t);
+  clean_order(0) = 0;
+  for(arma::uword i = 1; i < (arma::uword) t; i++){
+    clean_order(i) = clean_order(i-1) + (new_order(i) != new_order(i-1) ? 1 : 0);
   }
-  return new_order;
+  return clean_order;
 }
 
 double AbsStirling1st(double r, double k){
@@ -318,7 +323,7 @@ double AbsStirling1st(double r, double k){
       }
       matrix(i,i) = 1;
     }
-    res = abs(matrix(r,k));
+    res = std::abs(matrix(r,k));
   }
   return(res);
 }
@@ -343,107 +348,69 @@ arma::mat ExtractSubData(arma::mat data, arma::vec order, int index){
 // LIKELIHOOD PRIOR AND POSTERIOR
 //---------------------------------
 
+// Log integrated marginal likelihood of one block x_1, ..., x_n of a univariate
+// time series: stationary Ornstein-Uhlenbeck / AR(1) process with
+// Var(X_t) = s2 and Corr(X_i, X_j) = phi^|i-j| (Corradin, Danese & Ongaro, 2022,
+// Eq. (7) with d = 1), with prior s2 ~ IG(a, b), mu | s2 ~ N(0, s2 / c).
+// This is the d = 1 case of Eq. (11) of the same paper.
+double LogLikelihood_Block_UniTS(const arma::rowvec &x, double phi,
+                                 double a, double b, double c){
+
+  const double n = x.n_elem;
+  const double one_m_phi2 = 1 - std::pow(phi, 2);
+  // c + 1' Corr^{-1} 1, multiplied by (1 + phi)
+  const double D = c + n - phi * (n - c - 2);
+
+  // quad = (1 - phi^2) * [x' Corr^{-1} x - (1' Corr^{-1} x)^2 / (c + 1' Corr^{-1} 1)]
+  double quad;
+  if(n == 1){
+    quad = one_m_phi2 * std::pow(x(0), 2) * c / (c + 1);
+  } else {
+    double xSx = std::pow(x(0), 2) + std::pow(x(n - 1), 2);
+    double s1 = x(0) + x(n - 1);
+    for(arma::uword t = 1; t + 1 < (arma::uword) n; t++){
+      xSx += (1 + std::pow(phi, 2)) * std::pow(x(t), 2);
+      s1 += (1 - phi) * x(t);
+    }
+    for(arma::uword t = 0; t + 1 < (arma::uword) n; t++){
+      xSx -= 2 * phi * x(t) * x(t + 1);
+    }
+    quad = xSx - (1 - phi) * std::pow(s1, 2) / D;
+  }
+
+  return a * std::log(2 * b * one_m_phi2) + std::lgamma(n / 2 + a) - (n / 2) * std::log(M_PI) - std::lgamma(a) +
+    0.5 * (std::log(c) + std::log(1 + phi) + std::log(one_m_phi2) - std::log(D)) -
+    (n / 2 + a) * std::log(quad + 2 * b * one_m_phi2);
+}
+
+// Log integrated likelihood of a univariate time series (first row of `data`)
+// given an order with contiguous blocks labelled 0, 1, 2, ...
 double Likelihood_UniTS(arma::mat data, arma::vec order,
                         double phi, double a, double b, double c){
 
-  double k = max(order) + 1;
-  arma::vec res_vec, table_order = table_cpp(order), vec_likelihood(k);
-
-  for(int i = 0; i < k; i++){
-
-    double n_i = table_order(i);
-
-    arma::mat gamma_k(1,n_i);
-
-    if(i == 0){
-      gamma_k = data.row(0).cols(0, n_i-1);
-    } else if (i == k) {
-      gamma_k = data.row(0).cols(data.n_cols - 1 - n_i, data.n_cols - 1);
-    } else {
-      arma::vec table_order_temp = table_order.subvec(0,i-1);
-      gamma_k = data.row(0).cols(sum(table_order_temp), sum(table_order_temp) + n_i - 1);
-    }
-
-    if((n_i != 1) & (n_i != 2)){
-
-      arma::mat S_i(n_i,n_i,arma::fill::zeros);
-      S_i(0,0) = 1;
-      for(int j = 1; j < n_i; j++){
-        S_i(j,j) = 1 + std::pow(phi,2);
-        S_i(j,j-1) = -phi;
-        S_i(j-1,j) = -phi;
-      }
-
-      S_i(n_i-1,n_i-1) = 1;
-
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1-std::pow(phi,2)) - std::log(c + n_i - phi * (n_i-c-2))) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).cols(1,gamma_k.n_cols - 2)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
-    } else if (n_i == 1) {
-
-      arma::mat S_i(1,1,arma::fill::zeros);
-      S_i(0,0) = 1;
-
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1-std::pow(phi,2)) - std::log(c + n_i - phi * (n_i-c-2))) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
-    } else if (n_i == 2) {
-
-      arma::mat S_i(n_i,n_i,arma::fill::zeros);
-      S_i(0,0) = 1;
-      for(int j = 1; j < n_i; j++){
-        S_i(j,j) = 1 + std::pow(phi,2);
-        S_i(j,j-1) = -phi;
-        S_i(j-1,j) = -phi;
-      }
-
-      S_i(n_i-1,n_i-1) = 1;
-
-      vec_likelihood(i) = a*std::log(2*b* ( 1 -std::pow(phi,2))) + gsl_sf_lngamma(n_i/2 + a) - n_i/2 * std::log(M_PI) - gsl_sf_lngamma(a) + 0.5*(std::log(c) + std::log(1+phi) + std::log(1-std::pow(phi,2)) - std::log(c + n_i - phi * (n_i-c-2))) - (n_i/2 + a) * log((gamma_k * S_i * gamma_k.t()).eval()(0,0) - (((1-phi)*std::pow(sum(gamma_k.row(0)) - phi * sum(gamma_k.row(0).col(1)),2))/(c+n_i-phi*(n_i-c-2))) + 2*b*(1-std::pow(phi,2)));
+  double res = 0.0;
+  arma::uword start = 0;
+  for(arma::uword t = 1; t <= order.n_elem; t++){
+    if(t == order.n_elem || order(t) != order(t - 1)){
+      res += LogLikelihood_Block_UniTS(data.row(0).cols(start, t - 1), phi, a, b, c);
+      start = t;
     }
   }
-  return sum(vec_likelihood);
+  return res;
 }
 
-
+// Same as Likelihood_UniTS, with the order given as a row vector.
 double LogLikelihood_TS(arma::mat data, arma::mat order,
                         double gamma_par, double a, double b, double c){
+  return Likelihood_UniTS(data, order.row(0).t(), gamma_par, a, b, c);
+}
 
-  arma::vec lkl(max(order.row(0))+1);
-  double length_block;
-
-  for(int j = 0; j < max(order.row(0)) + 1; j++){
-
-    length_block = max(find(order.row(0) == j))+1 - min(find(order.row(0) == j));
-    arma::mat data_block = data.cols(min(find(order.row(0) == j)),max(find(order.row(0) == j)));
-    arma::mat Sj(length_block, length_block);
-
-    if(length_block != 1.0){
-      Sj.fill(0);
-      Sj.diag().fill(1 + std::pow(gamma_par,2));
-      Sj.row(0).col(0) = 1;
-      Sj.row(Sj.n_rows - 1).col(Sj.n_cols - 1) = 1;
-      for(arma::uword h = 0; h < Sj.n_rows - 2; h ++){
-        Sj.row(h).col(h+1) = - gamma_par;
-      }
-      for(arma::uword h = 1; h < Sj.n_rows - 1; h ++){
-        Sj.row(h).col(h-1) = - gamma_par;
-      }
-    } else {
-      Sj.fill(1);
-    }
-
-    double r1 = a * log(2*b * (1-pow(gamma_par,2))) + lgamma(length_block/2 + a) - (log(M_PI) * (length_block/2) + lgamma(a));
-    double r2 = 0.5 * (log(c*(1-gamma_par) * (1-pow(gamma_par,2))) - log(c + length_block - gamma_par * (length_block-c-2)) );
-
-    arma::mat r3;
-
-    if(length_block > 2.0){
-      r3 = -(length_block/2 + a) * log( (data_block.row(0) * Sj * data_block.row(0).t()) - (( (1-gamma_par) * pow(sum(data_block.row(0)) - gamma_par * sum(data_block.row(0).cols(1,length_block-2)),2) / (c + length_block - gamma_par*(length_block-c-2)) )) + 2*b*(1-pow(gamma_par,2)));
-    } else if (length_block == 2.0) {
-      r3 = -(length_block/2 + a) * log( (data_block.row(0) * Sj * data_block.row(0).t()) - (( (1-gamma_par) * pow(sum(data_block.row(0)) - gamma_par * sum(data_block.row(0).col(1)),2) / (c + length_block - gamma_par*(length_block-c-2)) )) + 2*b*(1-pow(gamma_par,2)));
-    } else {
-      r3 = -(length_block/2 + a) * log( (data_block.row(0) * Sj * data_block.row(0).t()) - (( (1-0) * pow(sum(data_block.row(0)),2)) / (c+length_block - 0*(length_block-c-2))) + 2*b*(1-0));
-    }
-    lkl(j) = r1+r2+as_scalar(r3);
-  }
-  return(sum(lkl));
+//' Log integrated likelihood of a univariate time series given an order (internal, used in tests)
+//' @noRd
+// [[Rcpp::export]]
+double log_marginal_uni_ts(arma::vec x, arma::vec order, double phi, double a, double b, double c){
+  arma::mat data = x.t();
+  return Likelihood_UniTS(data, order, phi, a, b, c);
 }
 
 double Likelihood_MultiTS(arma::mat data, arma::vec order,
@@ -1396,13 +1363,14 @@ arma::vec norm_constant_uni(arma::mat data,
   int nupd = round(R / 10);
   for(int r = 0; r < R; r++){
 
-    double k = 1 + rbinom(T, p);
+    double k = 1 + rbinom(T - 1, p); // k in {1,...,T}
     temp_probs.resize(k);
     temp_probs.fill(1/k);
 
     freqs = rmultin(T-k, temp_probs);
 
-    ord_lprob = dmultinom_log_cpp(freqs, temp_probs) + dbinom_log_cpp(freqs.n_elem,T-1,0.5);
+    // log-density of the proposed order under the importance distribution
+    ord_lprob = dmultinom_log_cpp(freqs, temp_probs) + dbinom_log_cpp(k - 1, T - 1, p);
 
     for(arma::uword i = 0; i < freqs.n_elem; i++){
       freqs(i) = freqs(i) + 1;
@@ -1448,7 +1416,8 @@ arma::vec norm_constant_uni(arma::mat data,
 
 
 
-    temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) + log(R) - (T-1)*log(2);
+    // IS estimate: log( (1/R) sum_r p(y|rho_r) pi(rho_r) / q(rho_r) ), with pi uniform on the 2^(T-1) orders
+    temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) - log(R) - (T-1)*log(2);
   }
 
   return temp_llik_vec;
@@ -1476,13 +1445,14 @@ arma::vec norm_constant_multi(arma::cube data,
   int nupd = round(R / 10);
   for(int r = 0; r < R; r++){
 
-    double k = 1 + rbinom(T, p);
+    double k = 1 + rbinom(T - 1, p); // k in {1,...,T}
     temp_probs.resize(k);
     temp_probs.fill(1/k);
 
     freqs = rmultin(T-k, temp_probs);
 
-    ord_lprob = dmultinom_log_cpp(freqs, temp_probs) + dbinom_log_cpp(freqs.n_elem,T-1,0.5);
+    // log-density of the proposed order under the importance distribution
+    ord_lprob = dmultinom_log_cpp(freqs, temp_probs) + dbinom_log_cpp(k - 1, T - 1, p);
 
     for(arma::uword i = 0; i < freqs.n_elem; i++){
       freqs(i) = freqs(i) + 1;
@@ -1523,7 +1493,8 @@ arma::vec norm_constant_multi(arma::cube data,
   }
 
   for(arma::uword i = 0; i < data.n_slices; i++){
-    temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) + log(R) - (T-1)*log(2);
+    // IS estimate: log( (1/R) sum_r p(y|rho_r) pi(rho_r) / q(rho_r) ), with pi uniform on the 2^(T-1) orders
+    temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) - log(R) - (T-1)*log(2);
   }
   return temp_llik_vec;
 }
@@ -1555,13 +1526,14 @@ arma::vec norm_constant_epi(arma::mat data,
   int nupd = round(num_orders / 10);
   for(int r_iter = 0; r_iter < num_orders; r_iter++){
 
-    double k = 1 + rbinom(data.n_cols, p);
+    double k = 1 + rbinom(T - 1, p); // k in {1,...,T}
     temp_probs.resize(k);
     temp_probs.fill(1/k);
 
     freqs = rmultin(data.n_cols-k, temp_probs);
 
-    ord_lprob = dmultinom_log_cpp(freqs, temp_probs) + dbinom_log_cpp(freqs.n_elem,T-1,0.5);
+    // log-density of the proposed order under the importance distribution
+    ord_lprob = dmultinom_log_cpp(freqs, temp_probs) + dbinom_log_cpp(k - 1, T - 1, p);
 
     for(arma::uword i = 0; i < freqs.n_elem; i++){
       freqs(i) = freqs(i) + 1;
@@ -1604,7 +1576,8 @@ arma::vec norm_constant_epi(arma::mat data,
   }
 
   for(arma::uword i = 0; i < data.n_rows; i++){
-    temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) + log(num_orders) - (T-1)*log(2);
+    // IS estimate: log( (1/R) sum_r p(y|rho_r) pi(rho_r) / q(rho_r) ), with pi uniform on the 2^(T-1) orders
+    temp_llik_vec(i) = log_sum_exp(temp_llik_mat.col(i)) - log(num_orders) - (T-1)*log(2);
   }
 
   return temp_llik_vec;
@@ -1644,7 +1617,7 @@ double FullConditionalPhi(arma::mat data, arma::vec order, double gamma,
 
     //
     double num_vec_dx = lgamma_multi(d,(nu_0 + n_i)/2) + gsl_sf_lnpoch((1-sigma),(n_i-1)) ;
-    double den_vec_dx = gsl_sf_lnfact(n_i) + (d/2)*(k_ni) + ((nu_0 + n_i)/2) * log(det(S_ni));
+    double den_vec_dx = gsl_sf_lnfact(n_i) + (d/2)*log(k_ni) + ((nu_0 + n_i)/2) * log(det(S_ni));
 
     vec_dx(i) = num_vec_dx - den_vec_dx;
 
@@ -1694,15 +1667,16 @@ void UpdatePhi(double phi_old, arma::mat data, arma::vec order,
 
   double phi_new = exp(tau_star)/(1+exp(tau_star));
 
-  double deriv_inv_star = abs(exp(tau_star) / std::pow(1+exp(tau_star),2));
+  double deriv_inv_star = std::abs(exp(tau_star) / std::pow(1+exp(tau_star),2));
 
-  double deriv_inv = abs(exp(tau) / std::pow(1+exp(tau),2));
+  double deriv_inv = std::abs(exp(tau) / std::pow(1+exp(tau),2));
 
   double alpha_MH = FullConditionalPhi(data, order, phi_new, delta, sigma, k_0,
                                        nu_0, S_0, m_0) + log(deriv_inv_star) - FullConditionalPhi(data, order, phi_old, delta, sigma, k_0,
                                        nu_0, S_0, m_0) - log(deriv_inv);
 
-  if(log(arma::randu()) <= my_min(alpha_MH,log(1))){
+  // a NaN ratio (e.g. -inf - -inf) must lead to a rejection, not an acceptance
+  if(!std::isnan(alpha_MH) && log(arma::randu()) <= my_min(alpha_MH,log(1))){
     phi_inf(phi_inf.n_elem - 1) = phi_new;
   } else {
     phi_inf(phi_inf.n_elem - 1) = phi_old;
@@ -2481,7 +2455,7 @@ Rcpp::List marginal_CP(arma::mat data,
     }
     Rcpp::checkUserInterrupt();
   }
-  //double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+  //double time = double(clock() - start_s)/CLOCKS_PER_SEC; // read the clock at the end: current_s is only updated when progress is printed
 
   Rcpp::List results;
   results["clust"] = res_clust;
@@ -2770,14 +2744,16 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
    order = res_order;
 
+   // Normal-Inverse-Wishart hyperparameters equivalent (d = 1) to the prior used
+   // in the integrated likelihood: s2 ~ IG(a, b), mu | s2 ~ N(0, s2 / c)
    arma::mat S_0(1,1);
-   S_0.row(0).col(0) = 1;
+   S_0(0,0) = 2 * b;
 
    arma::vec m_0(1);
    m_0(0) = 0;
 
-   double k_0 = 0.1;
-   double nu_0 = 1;
+   double k_0 = c;
+   double nu_0 = 2 * a;
 
    // Posterior infererence on main parameters
    UpdatePhi(phi_inf(iter), data_mat, order, delta_inf(iter), sigma_inf(iter), k_0, nu_0,
@@ -2801,7 +2777,7 @@ Rcpp::List detect_cp_uni(arma::vec data,
 
  }
 
- double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+ double time = double(clock() - start_s)/CLOCKS_PER_SEC; // read the clock at the end: current_s is only updated when progress is printed
 
  Rcpp::List out_list;
  out_list["orders"] = res_mat;
@@ -2977,7 +2953,7 @@ Rcpp::List detect_cp_multi(arma::mat data,
 
    }
 
-   double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+   double time = double(clock() - start_s)/CLOCKS_PER_SEC; // read the clock at the end: current_s is only updated when progress is printed
 
    Rcpp::List out_list;
    out_list["orders"] = res_mat;
@@ -3077,7 +3053,7 @@ Rcpp::List detect_cp_epi(arma::mat data, int n_iterations, double q,
      Rcpp::checkUserInterrupt();
    }
 
-   double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+   double time = double(clock() - start_s)/CLOCKS_PER_SEC; // read the clock at the end: current_s is only updated when progress is printed
 
    Rcpp::List out_list;
    out_list["orders"] = orders_output;
@@ -3227,7 +3203,7 @@ Rcpp::List clust_cp_epi(arma::mat data,
 
  }
 
- double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+ double time = double(clock() - start_s)/CLOCKS_PER_SEC; // read the clock at the end: current_s is only updated when progress is printed
 
  Rcpp::List results;
  results["clust"] = res_clust;
@@ -3557,7 +3533,7 @@ for(int iter = 0; iter < n_iterations; iter++){
 
 }
 
-double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+double time = double(clock() - start_s)/CLOCKS_PER_SEC; // read the clock at the end: current_s is only updated when progress is printed
 
 Rcpp::List out_list;
 out_list["clust"] = res_clust;
@@ -3876,7 +3852,7 @@ Rcpp::List clust_cp_multi(arma::cube data,
 
   }
 
-  double time = double(current_s-start_s)/CLOCKS_PER_SEC;
+  double time = double(clock() - start_s)/CLOCKS_PER_SEC; // read the clock at the end: current_s is only updated when progress is printed
 
 
 

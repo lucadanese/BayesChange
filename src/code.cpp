@@ -243,19 +243,16 @@ double log_sum_exp(arma::vec log_vals){
 arma::vec generate_random_partition(int n, gsl_rng *r ){
   arma::vec random_order(n);
 
-  int num_groups = gsl_rng_uniform_int(r, n) + 1;
-  int counter = 0;
+  int num_groups = gsl_rng_uniform_int(r, n) + 1;   // in {1, ..., n}
 
-  //for(int i = 0; i < (num_groups-1); i++){
-  for(int i = 0; i < (num_groups+1); i++){
-    random_order(i) = counter;
-    counter = counter + 1;
+  // the first num_groups observations open the groups 0, ..., num_groups - 1
+  // (so that no group is empty), the others are assigned at random
+  for(int i = 0; i < num_groups; i++){
+    random_order(i) = i;
   }
 
-  if((num_groups - n) != 0){
-    for(int i = (num_groups+1); i < n; i++){
-      random_order(i) = randi(1,arma::distr_param(0,num_groups-1))(0);
-    }
+  for(int i = num_groups; i < n; i++){
+    random_order(i) = randi(1,arma::distr_param(0,num_groups-1))(0);
   }
 
   return random_order;
@@ -3504,13 +3501,13 @@ for(int iter = 0; iter < n_iterations; iter++){
 
   for(int i = 0; i <= max(partition_temp); i++){
 
-    proposed_order = orders_temp.row(min(find(partition_temp == i))).t();
+    proposed_order = orders_temp.row(i).t();
 
     arma::uvec obs = find(partition_temp == i);
 
     SplitMergeUniTS(data.rows(obs), proposed_order, 1, q, a, b, c, phi);
 
-    orders_temp.row(min(find(partition_temp == i))) = proposed_order.t();
+    orders_temp.row(i) = proposed_order.t();
 
   }
 
@@ -3827,10 +3824,10 @@ Rcpp::List clust_cp_multi(arma::cube data,
     // ACCELERATION STEP
 
     for(int i = 0; i <= max(partition_temp); i++){
-      proposed_order = orders_temp.row(min(find(partition_temp == i))).t();
+      proposed_order = orders_temp.row(i).t();
       arma::uvec obs = find(partition_temp == i);
       SplitMergeMultiTS(data.slices(obs), proposed_order, 1, q, k_0, nu_0, S_0, m_0, phi);
-      orders_temp.row(min(find(partition_temp == i))) = proposed_order.t();
+      orders_temp.row(i) = proposed_order.t();
     }
 
     for(arma::uword i = 0; i < data.n_slices; i++){

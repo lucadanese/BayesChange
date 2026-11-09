@@ -6,6 +6,8 @@
 - Fixed the integrated likelihood of univariate time series. It now equals the closed-form marginal of the model in Corradin, Danese & Ongaro (2022) (Eq. (11) with d = 1). Previously the function used by `clust_cp()` and in the split-merge steps had `log(1 - phi)` instead of `log(1 + phi)`, and blocks of length 1 and 2 were handled incorrectly.
 - The update of `phi` in `detect_cp()` for univariate time series now uses the prior given by `a`, `b`, `c` (it previously used fixed hyperparameters), and its full conditional no longer omits a `log` in the `k_n` term (this also affected multivariate time series).
 - Fixed the importance-sampling estimate of the normalisation constant used by `clust_cp()` (all kernels): the estimate was biased upwards by about `2 * log(B)` and used an incorrect proposal density, which made the algorithm favour too many clusters.
+- Fixed a crash (`Mat::operator(): index out of bounds`) in `clust_cp()` for time series, occurring when the random starting partition had as many groups as observations; the starting partition no longer has one group too many.
+- The acceleration step of `clust_cp()` for time series now updates the order of the correct cluster (it was indexed by observation instead of by cluster).
 - Computational time is now recorded also when `print_progress = FALSE` (it was reported as 0).
 - Random starting orders no longer contain empty blocks.
 - `posterior_estimate()` for `DetectCpObj` objects always returns contiguous blocks, and `show_cp = TRUE` returns the first time index of each new block. Invalid `loss` values now raise an error.

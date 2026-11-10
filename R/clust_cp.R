@@ -165,7 +165,8 @@ clust_cp <- function(data,
       a_input = ifelse(is.null(params$a), 1, params$a)
       b_input = ifelse(is.null(params$b), 1, params$b)
       c_input = ifelse(is.null(params$c), 0.1, params$c)
-      q_input = ifelse(is.null(params$q), 0.5, params$q)
+      # the argument `q` is used; `params$q` is still accepted for backward compatibility
+      q_input = ifelse(is.null(params$q), q, params$q)
       #
 
       out <- clust_cp_uni(data = data_input,

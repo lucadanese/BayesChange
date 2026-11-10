@@ -43,7 +43,7 @@ See \code{\link[salso:salso]{salso::salso()}} for details.}
 
 \item{maxNClusters}{maximum number of blocks (\code{DetectCpObj}) or
 clusters (\code{ClustCpObj}) considered by SALSO. The default \code{0}
-uses the largest number observed in the MCMC sample.}
+sets no upper bound.}
 
 \item{nRuns}{number of independent SALSO runs.}
 

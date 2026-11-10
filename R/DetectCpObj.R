@@ -125,7 +125,7 @@ summary.DetectCpObj <- function(object, ...) {
           "- Data: univariate time series\n",
           "- Burn-in iterations:", object$n_burnin, "\n",
           "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
-          "- Average number of detected change points:", round(mean(apply(object$orders[(object$n_burnin+1):object$n_iterations,], 1,  function(x) max(x) + 1)),2), "\n",
+          "- Average number of detected change points:", round(mean(apply(object$orders[(object$n_burnin+1):object$n_iterations,], 1,  function(x) max(x))),2), "\n",
           "- Computational time:", round(object$time, 2), "seconds\n",
           "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
     } else {
@@ -134,7 +134,7 @@ summary.DetectCpObj <- function(object, ...) {
           "- Burn-in iterations:", object$n_burnin, "\n",
           "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
           "- Average number of detected change points:",
-          round(mean(apply(object$orders[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) max(x) + 1)), 2), "\n",
+          round(mean(apply(object$orders[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) max(x))), 2), "\n",
           "- Computational time:", round(object$time, 2), "seconds\n",
           "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
 
@@ -147,7 +147,7 @@ summary.DetectCpObj <- function(object, ...) {
         "- Burn-in iterations:", object$n_burnin, "\n",
         "- MCMC iterations:", object$n_iterations - object$n_burnin, "\n",
         "- Average number of detected change points:",
-        round(mean(apply(object$orders[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) max(x) + 1)), 2), "\n",
+        round(mean(apply(object$orders[(object$n_burnin + 1):object$n_iterations, ], 1, function(x) max(x))), 2), "\n",
         "- Computational time:", round(object$time, 2), "seconds\n",
         "\nUse plot() for a detailed visualization or posterior_estimate() to analyze the detected change points.\n")
 
@@ -192,7 +192,7 @@ summary.DetectCpObj <- function(object, ...) {
 #'   See [salso::salso()] for details.
 #' @param maxNClusters maximum number of blocks (\code{DetectCpObj}) or
 #'   clusters (\code{ClustCpObj}) considered by SALSO. The default \code{0}
-#'   uses the largest number observed in the MCMC sample.
+#'   sets no upper bound.
 #' @param nRuns number of independent SALSO runs.
 #' @param maxZealousAttempts maximum number of zealous updates per SALSO run.
 #'   The default (\code{100}) is larger than the one of \pkg{salso}
@@ -243,6 +243,9 @@ posterior_estimate <- function (object, ...) {
 # Run SALSO on a matrix of sampled partitions (one per row).
 run_salso <- function(mcmc_chain, loss, maxNClusters, nRuns, maxZealousAttempts){
   loss <- match.arg(loss, c("VI", "binder", "omARI", "NVI", "ID", "NID"))
+  # maxNClusters = 0: no upper bound (salso's own default caps the estimate at
+  # the largest number of clusters in the sample and warns when it is reached)
+  if(maxNClusters == 0) maxNClusters <- ncol(mcmc_chain)
   as.integer(salso::salso(mcmc_chain, loss = loss,
                           maxNClusters = maxNClusters,
                           nRuns = nRuns,

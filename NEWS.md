@@ -8,12 +8,15 @@
 - Fixed the importance-sampling estimate of the normalisation constant used by `clust_cp()` (all kernels): the estimate was biased upwards by about `2 * log(B)` and used an incorrect proposal density, which made the algorithm favour too many clusters.
 - Fixed a crash (`Mat::operator(): index out of bounds`) in `clust_cp()` for time series, occurring when the random starting partition had as many groups as observations; the starting partition no longer has one group too many.
 - The acceleration step of `clust_cp()` for time series now updates the order of the correct cluster (it was indexed by observation instead of by cluster).
+- `clust_cp()` for univariate time series now uses its argument `q` (it was ignored in favour of `params$q`, which is still accepted).
+- `summary()` for `DetectCpObj` objects reported the average number of blocks (change points + 1) as the average number of change points.
 - Computational time is now recorded also when `print_progress = FALSE` (it was reported as 0).
 - Random starting orders no longer contain empty blocks.
 - `posterior_estimate()` for `DetectCpObj` objects always returns contiguous blocks, and `show_cp = TRUE` returns the first time index of each new block. Invalid `loss` values now raise an error.
 
 ## Other changes
 - `posterior_estimate()` uses `maxZealousAttempts = 100` by default, avoiding spurious SALSO warnings when many change points are present.
+- `posterior_estimate()` with `maxNClusters = 0` (default) sets no upper bound on the number of clusters, so SALSO no longer warns that the estimate "equals the default maximum possible number of clusters".
 - `?posterior_estimate` now documents both methods and all available loss functions.
 - GSL is located with `gsl-config` through a `configure` script, so the package installs from source on macOS and Linux with GSL installed in non-standard locations (e.g. Homebrew). Installation instructions for each operating system have been added to the README.
 - Clarified the documentation of `prior_var_phi` (standard deviation of the proposal for `logit(phi)`) and `user_seed`.

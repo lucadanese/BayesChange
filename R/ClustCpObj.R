@@ -65,13 +65,13 @@ ClustCpObj <- function(data = NULL,
 #'
 #' data("stock_uni")
 #'
-#' params_uni <- list(a = 1,
+#' model_params <- params_uni(a = 1,
 #'                    b = 1,
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
 #' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
-#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
+#'                 L = 1, q = 0.5, B = 500, params = model_params, kernel = "ts")
 #'
 #' print(out)
 #'
@@ -102,13 +102,13 @@ print.ClustCpObj <- function(x, ...) {
 #'
 #' data("stock_uni")
 #'
-#' params_uni <- list(a = 1,
+#' model_params <- params_uni(a = 1,
 #'                    b = 1,
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
 #' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
-#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
+#'                 L = 1, q = 0.5, B = 500, params = model_params, kernel = "ts")
 #'
 #' summary(out)
 #'
@@ -180,13 +180,13 @@ posterior_estimate.ClustCpObj <- function(object,
 #'
 #' data("stock_uni")
 #'
-#' params_uni <- list(a = 1,
+#' model_params <- params_uni(a = 1,
 #'                    b = 1,
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
 #' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
-#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
+#'                 L = 1, q = 0.5, B = 500, params = model_params, kernel = "ts")
 #'
 #' plot(out)
 #'
@@ -329,13 +329,13 @@ plot_psm <- function (object, ...) {
 #' @examples
 #' data("stock_uni")
 #'
-#' params_uni <- list(a = 1,
+#' model_params <- params_uni(a = 1,
 #'                    b = 1,
 #'                    c = 1,
 #'                    phi = 0.1)
 #'
 #' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
-#'                 L = 1, q = 0.5, B = 500, params = params_uni, kernel = "ts")
+#'                 L = 1, q = 0.5, B = 500, params = model_params, kernel = "ts")
 #' plot_psm(out)
 #' @export
 #'

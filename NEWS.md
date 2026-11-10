@@ -1,5 +1,9 @@
 # BayesChange (development version)
 
+## New features
+- New functions `params_uni()`, `params_multi()` and `params_epi()` create the model parameters passed to `detect_cp()` and `clust_cp()`. Their arguments can be auto-completed, have documented defaults and are validated; `print()` shows all values and which ones are defaults. Plain lists are still accepted, and unknown names now raise a warning instead of being silently ignored.
+- Model parameters and sampler settings are now separate: `q`, `B`, `L` and `alpha_SM` are only arguments of `detect_cp()`/`clust_cp()`. A `q` given in `params` is still used by `clust_cp()` for univariate time series, with a deprecation warning; other sampler settings in `params` are ignored with a warning.
+
 ## Bug fixes
 - `user_seed` now fully determines the output of `detect_cp()` and `clust_cp()`. Previously only the GSL generator was seeded, while most draws came from R's random number generator, so two calls with the same `user_seed` could return different results. R's random number generator state is restored on exit; `user_seed = NULL` uses the current state of R's generator.
 - Fixed the Metropolis-Hastings update of the autocorrelation parameter `phi` in `detect_cp()` for time series: the multivariate log-gamma function truncated its argument to an integer, the log full conditional evaluated to `-Inf` and every proposal was accepted. The same truncation also affected the integrated likelihood of multivariate time series.

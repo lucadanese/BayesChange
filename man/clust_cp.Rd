@@ -26,31 +26,10 @@ univariate time series is used, where each row is a time series. If an array, th
 
 \item{n_burnin}{number of iterations that must be excluded when computing the posterior estimate.}
 
-\item{params}{a list of parameters:
-
-If the time series is univariate the following must be specified:
-
-\itemize{
-\item \code{a},\code{b},\code{c} parameters of the integrated likelihood.
-\item \code{phi} correlation parameter in the likelihood.
-}
-
-If the time series is multivariate the following must be specified:
-
-\itemize{
-\item \code{k_0}, \code{nu_0}, \code{S_0}, \code{m_0} parameters of the integrated likelihood.
-\item \code{phi} correlation parameter in the likelihood.
-}
-
-If data are epidemic diffusions:
-
-\itemize{
-\item \code{M} number of Monte Carlo iterations when computing the likelihood of the epidemic diffusion.
-\item \code{xi} recovery rate fixed constant for each population at each time.
-\item \code{a0}, \code{b0} parameters for the computation of the integrated likelihood of the epidemic diffusions.
-\item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-\item \code{avg_blk} prior average number of change points for each order.
-}}
+\item{params}{the model parameters, created with \code{\link[=params_uni]{params_uni()}} (univariate
+time series), \code{\link[=params_multi]{params_multi()}} (multivariate time series) or \code{\link[=params_epi]{params_epi()}}
+(epidemic diffusions). Parameters not given take their default values, see
+\code{\link[=params_uni]{params_uni()}}. A plain list with the same names is also accepted.}
 
 \item{alpha_SM}{\eqn{\alpha} for the split-merge main algorithm.}
 
@@ -95,13 +74,9 @@ The \code{clust_cp} function cluster observations with common change points. Dat
 
 data("stock_uni")
 
-params_uni <- list(a = 1,
-                   b = 1,
-                   c = 1,
-                   phi = 0.1)
-
 out <- clust_cp(data = stock_uni[1:5,], n_iterations = 2000, n_burnin = 500,
-                L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
+                L = 1, q = 0.5, B = 1000,
+                params = params_uni(c = 1, phi = 0.1), kernel = "ts")
 
 print(out)
 
@@ -109,14 +84,10 @@ print(out)
 
 data("stock_multi")
 
-params_multi <- list(m_0 = rep(0,2),
-                     k_0 = 1,
-                     nu_0 = 10,
-                     S_0 = diag(1,2,2),
-                     phi = 0.1)
-
 out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 2000, n_burnin = 500,
-                L = 1, B = 1000, params = params_multi, kernel = "ts")
+                L = 1, B = 1000,
+                params = params_multi(k_0 = 1, nu_0 = 10, S_0 = diag(1, 2, 2)),
+                kernel = "ts")
 
 print(out)
 
@@ -124,15 +95,9 @@ print(out)
 
 data("epi_synthetic_multi")
 
-params_epi <- list(M = 100, xi = 1/8,
-                   alpha_SM = 1,
-                   a0 = 4,
-                   b0 = 10,
-                   I0_var = 0.1,
-                   avg_blk = 2)
-
 out <- clust_cp(epi_synthetic_multi, n_iterations = 2000, n_burnin = 500,
-                L = 1, B = 1000, params = params_epi, kernel = "epi")
+                L = 1, B = 1000, alpha_SM = 1,
+                params = params_epi(M = 100, I0_var = 0.1), kernel = "epi")
 
 print(out)
 

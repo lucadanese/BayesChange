@@ -24,34 +24,10 @@ detect_cp(
 
 \item{q}{probability of performing a split at each iteration.}
 
-\item{params}{a list of parameters:
-
-If data is an univariate time series the following must be specified:
-
-\itemize{
-\item \code{a}, \code{b}, \code{c} parameters of the Normal-Gamma prior for \eqn{\mu} and \eqn{\lambda}.
-\item \code{prior_var_phi} standard deviation of the Gaussian random-walk proposal on \eqn{\mathrm{logit}(\phi)} used in the Metropolis-Hastings update of the autocorrelation parameter \eqn{\phi} (default 0.1). Despite its name, it is a tuning parameter of the sampler, not a parameter of the prior.
-\item \code{prior_delta_c} parameter of the shifted Gamma prior of \eqn{\delta}.
-\item \code{prior_delta_d} parameter of the shifted Gamma prior of \eqn{\delta}.
-}
-
-If the time series is multivariate the following must be specified:
-
-\itemize{
-\item \code{m_0}, \code{k_0}, \code{nu_0}, \code{S_0} parameters for the Normal-Inverse-Wishart prior for \eqn{(\mu,\lambda)}.
-\item \code{prior_var_phi} standard deviation of the Gaussian random-walk proposal on \eqn{\mathrm{logit}(\phi)} used in the Metropolis-Hastings update of the autocorrelation parameter \eqn{\phi} (default 0.1). Despite its name, it is a tuning parameter of the sampler, not a parameter of the prior.
-\item \code{prior_delta_c} parameter of the shifted Gamma prior of \eqn{\delta}.
-\item \code{prior_delta_d} parameter of the shifted Gamma prior of \eqn{\delta}.
-}
-
-If data are epidemic diffusions:
-
-\itemize{
-\item \code{M} number of Monte Carlo iterations when computing the likelihood of the epidemic diffusion.
-\item \code{xi} recovery rate fixed constant for each population at each time.
-\item \code{a0},\code{b0} parameters for the computation of the integrated likelihood of the epidemic diffusions.
-\item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-}}
+\item{params}{the model parameters, created with \code{\link[=params_uni]{params_uni()}} (univariate
+time series), \code{\link[=params_multi]{params_multi()}} (multivariate time series) or \code{\link[=params_epi]{params_epi()}}
+(epidemic diffusions). Parameters not given take their default values, see
+\code{\link[=params_uni]{params_uni()}}. A plain list with the same names is also accepted.}
 
 \item{kernel}{can be "ts" if data are time series or "epi" if data are epidemic diffusions.}
 
@@ -90,11 +66,9 @@ The \code{detect_cp} function detect change points on univariate and multivariat
 
 data("eu_inflation")
 
-params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
-                   prior_delta_c = 1, prior_delta_d = 1)
-
 out <- detect_cp(data = eu_inflation[1,], n_iterations = 2000,
-                 n_burnin = 250, q = 0.5, params = params_uni,
+                 n_burnin = 250, q = 0.5,
+                 params = params_uni(c = 1, prior_var_phi = 0.1),
                  kernel = "ts")
 
 print(out)
@@ -103,16 +77,9 @@ print(out)
 
 data("eu_inflation")
 
-params_multi <- list(m_0 = rep(0,3),
-                     k_0 = 1,
-                     nu_0 = 10,
-                     S_0 = diag(0.1,3,3),
-                     prior_var_phi = 0.1,
-                     prior_delta_c = 1,
-                     prior_delta_d = 1)
-
 out <- detect_cp(data = eu_inflation[1:3,], n_iterations = 2000,
-                 n_burnin = 250, q = 0.5, params = params_multi, kernel = "ts")
+                 n_burnin = 250, q = 0.5,
+                 params = params_multi(k_0 = 1, nu_0 = 10), kernel = "ts")
 
 print(out)
 
@@ -121,10 +88,9 @@ print(out)
 
 data("epi_synthetic")
 
-params_epi <- list(M = 100, xi = 1/8, a0 = 4, b0 = 10, I0_var = 0.1)
-
 out <- detect_cp(data = epi_synthetic, n_iterations = 2000, n_burnin = 250,
-                 q = 0.25, params = params_epi, kernel = "epi")
+                 q = 0.25, params = params_epi(M = 100, I0_var = 0.1),
+                 kernel = "epi")
 
 print(out)
 }

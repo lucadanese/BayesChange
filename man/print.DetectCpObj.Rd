@@ -18,11 +18,11 @@ The \code{DetectCpObj} method prints which algorithm was run.
 
 data("eu_inflation")
 
-params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+model_params <- params_uni(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
                    prior_delta_c = 1, prior_delta_d = 1)
 
 out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
-                 n_burnin = 100, q = 0.5, params = params_uni,
+                 n_burnin = 100, q = 0.5, params = model_params,
                  kernel = "ts")
 print(out)
 

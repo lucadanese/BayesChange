@@ -63,6 +63,7 @@ The package contains two main functions:
 
 Additional methods and functions are included: 
 
+* `params_uni()`, `params_multi()` and `params_epi()` create the model parameters, with documented defaults.
 * `print()` and `summary()` return information about the algorithm.
 * `posterior_estimate()` estimates the change points or the final partition of the data. 
 * `plot()` provides a graphical representation of the results.
@@ -80,13 +81,13 @@ library(BayesChange)
 
 data("stock_uni")
 
-params_uni <- list(a = 1,
+model_params <- params_uni(a = 1,
                    b = 1,
                    c = 1,
                    phi = 0.1)
 
 out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-                L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+                L = 1, q = 0.5, B = 10000, params = model_params, kernel = "ts")
 
 print(out)
 summary(out)
@@ -102,14 +103,14 @@ plot(out)
 
 data("stock_multi")
 
-params_multi <- list(m_0 = rep(0,2),
+model_params <- params_multi(m_0 = rep(0,2),
                      k_0 = 1,
                      nu_0 = 10,
                      S_0 = diag(1,2,2),
                      phi = 0.1)
 
 out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 7500, n_burnin = 2500,
-                L = 1, B = 10000, params = params_multi, kernel = "ts")
+                L = 1, B = 10000, params = model_params, kernel = "ts")
 
 print(out)
 summary(out)
@@ -124,15 +125,14 @@ plot(out)
 
 data("epi_synthetic_multi")
 
-params_epi <- list(M = 250, xi = 1/8,
-                   alpha_SM = 1,
+model_params <- params_epi(M = 250, xi = 1/8,
                    a0 = 4,
                    b0 = 10,
                    I0_var = 0.1,
                    avg_blk = 2)
 
 out <- clust_cp(epi_synthetic_multi, n_iterations = 5000, n_burnin = 2000,
-                L = 1, B = 1000, params = params_epi, kernel = "epi")
+                L = 1, B = 1000, alpha_SM = 1, params = model_params, kernel = "epi")
 
 print(out)
 summary(out)
@@ -149,13 +149,13 @@ plot(out)
 
 data("stock_uni")
 
-params_uni <- list(a = 1,
+model_params <- params_uni(a = 1,
                    b = 1,
                    c = 1,
                    phi = 0.1)
 
 out <- clust_cp(data = stock_uni[1:5,], n_iterations = 7500, n_burnin = 2500,
-                L = 1, q = 0.5, B = 10000, params = params_uni, kernel = "ts")
+                L = 1, q = 0.5, B = 10000, params = model_params, kernel = "ts")
 
 print(out)
 summary(out)
@@ -170,14 +170,14 @@ plot(out)
 
 data("stock_multi")
 
-params_multi <- list(m_0 = rep(0,2),
+model_params <- params_multi(m_0 = rep(0,2),
                      k_0 = 1,
                      nu_0 = 10,
                      S_0 = diag(1,2,2),
                      phi = 0.1)
 
 out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 7500, n_burnin = 2500,
-                L = 1, B = 10000, params = params_multi, kernel = "ts")
+                L = 1, B = 10000, params = model_params, kernel = "ts")
 
 print(out)
 summary(out)
@@ -193,15 +193,14 @@ plot(out)
 
 data("epi_synthetic_multi")
 
-params_epi <- list(M = 250, xi = 1/8,
-                   alpha_SM = 1,
+model_params <- params_epi(M = 250, xi = 1/8,
                    a0 = 4,
                    b0 = 10,
                    I0_var = 0.1,
                    avg_blk = 2)
 
 out <- clust_cp(epi_synthetic_multi, n_iterations = 5000, n_burnin = 2000,
-                L = 1, B = 1000, params = params_epi, kernel = "epi")
+                L = 1, B = 1000, alpha_SM = 1, params = model_params, kernel = "epi")
 
 print(out)
 summary(out)

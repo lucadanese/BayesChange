@@ -68,11 +68,11 @@ DetectCpObj <- function(data = NULL,
 #'
 #' data("eu_inflation")
 #'
-#' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+#' model_params <- params_uni(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
 #' out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
-#'                  n_burnin = 100, q = 0.5, params = params_uni,
+#'                  n_burnin = 100, q = 0.5, params = model_params,
 #'                  kernel = "ts")
 #' print(out)
 #'
@@ -106,11 +106,11 @@ print.DetectCpObj <- function(x, ...) {
 #'
 #' data("eu_inflation")
 #'
-#' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+#' model_params <- params_uni(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
 #' out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
-#'                  n_burnin = 100, q = 0.5, params = params_uni,
+#'                  n_burnin = 100, q = 0.5, params = model_params,
 #'                  kernel = "ts")
 #' summary(out)
 #'
@@ -216,11 +216,11 @@ summary.DetectCpObj <- function(object, ...) {
 #'
 #' data("eu_inflation")
 #'
-#' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+#' model_params <- params_uni(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
 #' out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
-#'                  n_burnin = 100, q = 0.5, params = params_uni,
+#'                  n_burnin = 100, q = 0.5, params = model_params,
 #'                  kernel = "ts")
 #'
 #' posterior_estimate(out, loss = "binder")
@@ -228,10 +228,10 @@ summary.DetectCpObj <- function(object, ...) {
 #'
 #' data("stock_uni")
 #'
-#' params_clust <- list(a = 1, b = 1, c = 1, phi = 0.1)
+#' model_params <- params_uni(a = 1, b = 1, c = 1, phi = 0.1)
 #'
 #' out <- clust_cp(data = stock_uni[1:3,], n_iterations = 1000, n_burnin = 100,
-#'                 L = 1, q = 0.5, B = 500, params = params_clust, kernel = "ts")
+#'                 L = 1, q = 0.5, B = 500, params = model_params, kernel = "ts")
 #'
 #' posterior_estimate(out, loss = "binder")
 #'
@@ -300,11 +300,11 @@ posterior_estimate.DetectCpObj <- function(object,
 #'
 #' data("eu_inflation")
 #'
-#' params_uni <- list(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
+#' model_params <- params_uni(a = 1, b = 1, c = 1, prior_var_phi = 0.1,
 #'                    prior_delta_c = 1, prior_delta_d = 1)
 #'
 #' out <- detect_cp(data = eu_inflation[1,], n_iterations = 1000,
-#'                  n_burnin = 100, q = 0.5, params = params_uni,
+#'                  n_burnin = 100, q = 0.5, params = model_params,
 #'                  kernel = "ts")
 #'
 #' plot(out)

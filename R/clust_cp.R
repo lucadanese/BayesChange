@@ -16,31 +16,10 @@
 #' @param user_seed seed for random number generation (default 1234). The output is fully determined by \code{user_seed}: two calls with the same data, arguments and \code{user_seed} return identical results, regardless of any previous call to \code{set.seed()}. The state of R's random number generator is restored on exit. If \code{NULL}, the current state of R's random number generator is used.
 #' @param kernel can be "ts" if data are time series or "epi" if data are epidemic diffusions.
 #'
-#' @param params a list of parameters:
-#'
-#' If the time series is univariate the following must be specified:
-#'
-#' \itemize{
-#'   \item \code{a},\code{b},\code{c} parameters of the integrated likelihood.
-#'   \item \code{phi} correlation parameter in the likelihood.
-#' }
-#'
-#' If the time series is multivariate the following must be specified:
-#'
-#' \itemize{
-#'   \item \code{k_0}, \code{nu_0}, \code{S_0}, \code{m_0} parameters of the integrated likelihood.
-#'   \item \code{phi} correlation parameter in the likelihood.
-#' }
-#'
-#' If data are epidemic diffusions:
-#'
-#' \itemize{
-#'   \item \code{M} number of Monte Carlo iterations when computing the likelihood of the epidemic diffusion.
-#'   \item \code{xi} recovery rate fixed constant for each population at each time.
-#'   \item \code{a0}, \code{b0} parameters for the computation of the integrated likelihood of the epidemic diffusions.
-#'   \item \code{I0_var} variance for the Metropolis-Hastings estimation of the proportion of infected at time 0.
-#'   \item \code{avg_blk} prior average number of change points for each order.
-#' }
+#' @param params the model parameters, created with [params_uni()] (univariate
+#'   time series), [params_multi()] (multivariate time series) or [params_epi()]
+#'   (epidemic diffusions). Parameters not given take their default values, see
+#'   [params_uni()]. A plain list with the same names is also accepted.
 #'
 #' @return A \code{ClustCpObj} class object containing
 #'
@@ -68,13 +47,9 @@
 #'
 #' data("stock_uni")
 #'
-#' params_uni <- list(a = 1,
-#'                    b = 1,
-#'                    c = 1,
-#'                    phi = 0.1)
-#'
 #' out <- clust_cp(data = stock_uni[1:5,], n_iterations = 2000, n_burnin = 500,
-#'                 L = 1, q = 0.5, B = 1000, params = params_uni, kernel = "ts")
+#'                 L = 1, q = 0.5, B = 1000,
+#'                 params = params_uni(c = 1, phi = 0.1), kernel = "ts")
 #'
 #' print(out)
 #'
@@ -82,14 +57,10 @@
 #'
 #' data("stock_multi")
 #'
-#' params_multi <- list(m_0 = rep(0,2),
-#'                      k_0 = 1,
-#'                      nu_0 = 10,
-#'                      S_0 = diag(1,2,2),
-#'                      phi = 0.1)
-#'
 #' out <- clust_cp(data = stock_multi[,,1:5], n_iterations = 2000, n_burnin = 500,
-#'                 L = 1, B = 1000, params = params_multi, kernel = "ts")
+#'                 L = 1, B = 1000,
+#'                 params = params_multi(k_0 = 1, nu_0 = 10, S_0 = diag(1, 2, 2)),
+#'                 kernel = "ts")
 #'
 #' print(out)
 #'
@@ -97,15 +68,9 @@
 #'
 #' data("epi_synthetic_multi")
 #'
-#' params_epi <- list(M = 100, xi = 1/8,
-#'                    alpha_SM = 1,
-#'                    a0 = 4,
-#'                    b0 = 10,
-#'                    I0_var = 0.1,
-#'                    avg_blk = 2)
-#'
 #' out <- clust_cp(epi_synthetic_multi, n_iterations = 2000, n_burnin = 500,
-#'                 L = 1, B = 1000, params = params_epi, kernel = "epi")
+#'                 L = 1, B = 1000, alpha_SM = 1,
+#'                 params = params_epi(M = 100, I0_var = 0.1), kernel = "epi")
 #'
 #' print(out)
 #'
@@ -133,175 +98,92 @@ clust_cp <- function(data,
   if(alpha_SM < 0) stop("alpha_SM must be positive")
   if((!is.null(B)) && (B < 1)) stop("B must be at least equal to 1")
   if((!is.null(L)) && (L < 1)) stop("L must be at least equal to 1")
-  if((!is.null(q)) && ((q >= 1) | (q <= 0))) stop("params$q must be in (0,1)")
+  if((!is.null(q)) && ((q >= 1) | (q <= 0))) stop("q must be in (0,1)")
   if((is.null(kernel) | !(kernel %in% c("ts", "epi")))) stop("kernel must be 'ts' or 'epi'")
   if((!is.null(print_progress) && (print_progress != TRUE & print_progress != FALSE))) stop("print_progress must be TRUE/FALSE")
   if(!is.null(user_seed) && !is.numeric(user_seed)) stop("user_seed must be an integer")
 
   user_seed <- local_user_seed(user_seed)
 
-  if(kernel == "ts"){
+  if(kernel == "ts" && is.matrix(data)){
 
-    if(is.matrix(data)){
+    rp <- resolve_params(params, "uni")
+    # for backward compatibility, `q` given in params is still used
+    report_sampler_settings(rp$sampler, "clust_cp", used = "q")
+    if(!is.null(rp$sampler$q)) q <- rp$sampler$q
+    pr <- rp$values
 
-      if((!is.null(params$phi)) && ((params$phi > 1) | (params$phi < 0))) stop("params$phi must be in (0,1)")
-      if((!is.null(params$a)) && (params$a <= 0)) stop("params$a must be positive")
-      if((!is.null(params$b)) && (params$b <= 0)) stop("params$b must be positive")
-      if((!is.null(params$c)) && (params$c <= 0)) stop("params$c must be positive")
-      if(!is.null(params) && !is.list(params)) stop("params must be a list")
+    out <- clust_cp_uni(data = data,
+                        n_iterations = n_iterations,
+                        B = B, L = L,
+                        phi = pr$phi, a = pr$a, b = pr$b, c = pr$c,
+                        q = q,
+                        alpha_SM = alpha_SM,
+                        print_progress = print_progress, user_seed = user_seed)
 
-
-      data_input = data
-      n_iterations_input = n_iterations
-      alpha_SM_input = alpha_SM
-      n_burnin_input = n_burnin
-      B_input = B
-      L_input = L
-      print_progress_input = print_progress
-      user_seed_input = user_seed
-
-      # substitute missing parameters with default
-      phi_input = ifelse(is.null(params$phi), 0.1, params$phi)
-      a_input = ifelse(is.null(params$a), 1, params$a)
-      b_input = ifelse(is.null(params$b), 1, params$b)
-      c_input = ifelse(is.null(params$c), 0.1, params$c)
-      # the argument `q` is used; `params$q` is still accepted for backward compatibility
-      q_input = ifelse(is.null(params$q), q, params$q)
-      #
-
-      out <- clust_cp_uni(data = data_input,
-                          n_iterations = n_iterations_input,
-                          B = B_input, L = L_input,
-                          phi = phi_input, a = a_input, b = b_input,
-                          c = c_input, q = q_input,
-                          alpha_SM = alpha_SM_input,
-                          print_progress = print_progress_input, user_seed = user_seed_input)
-
-      # create coda objects
-      entropy_MCMC <- coda::mcmc(out$entropy)
-      lkl_MCMC <- coda::mcmc(out$lkl)
-
-      result <- ClustCpObj(data = data_input,
-                           n_iterations = n_iterations_input,
-                           n_burnin = n_burnin_input,
-                           clust = out$clust,
-                           orders = out$orders,
-                           time = out$time,
-                           norm_vec = out$norm_vec,
-                           entropy_MCMC = entropy_MCMC,
-                           lkl_MCMC = lkl_MCMC,
-                           kernel_ts = TRUE,
-                           kernel_epi = FALSE,
-                           univariate_ts = TRUE)
-
-    } else if(is.array(data)){
-
-      if((!is.null(params$k_0)) && (params$k_0 < 0)) stop("params$k_0 must be positive")
-      if((!is.null(params$nu_0)) && (params$nu_0 < 0)) stop("params$nu_0 must be positive")
-      if((!is.null(params$S_0)) && nrow(params$S_0) != ncol(params$S_0)) stop("number of rows and columns must be the same in params$S_0")
-      if((!is.null(params$m_0)) && (length(params$m_0) != nrow(data))) stop("number of elements in params$m_0 must equal the number of observations")
-      if((!is.null(params$q)) && ((params$q >= 1) | (params$q <= 0))) stop("params$q must be in (0,1)")
-      if((!is.null(params$params) && !is.list(params))) stop("params must be a list")
-
-      data_input = data
-      n_iterations_input = n_iterations
-      n_burnin_input = n_burnin
-      alpha_SM_input = alpha_SM
-      B_input = B
-      L_input = L
-      q_input = q
-      print_progress_input = print_progress
-      user_seed_input = user_seed
-
-      # substitute missing parameters with default
-      if(is.null(params$m_0)){m_0_input = rep(0, nrow(data))} else{m_0_input = params$m_0}
-      k_0_input = ifelse(is.null(params$k_0), 0.5, params$k_0)
-      phi_input = ifelse(is.null(params$phi), 0.1, params$phi)
-      if(is.null(params$S_0)){S_0_input = diag(0.1, nrow(data), nrow(data))} else{S_0_input = params$S_0}
-      nu_0_input = ifelse(is.null(params$nu_0), nrow(data)+1, params$nu_0)
-      #
-
-      out <- clust_cp_multi(data = data_input, n_iterations = n_iterations_input,
-                            B = B_input, L = L_input, phi = phi_input,
-                            k_0 = k_0_input, nu_0 = nu_0_input,
-                            S_0 = S_0_input, m_0 = m_0_input, q = q_input,
-                            alpha_SM = alpha_SM_input,
-                            print_progress = print_progress_input,
-                            user_seed = user_seed_input)
-
-      # create coda objects
-      entropy_MCMC <- coda::mcmc(out$entropy)
-      lkl_MCMC <- coda::mcmc(out$lkl)
-
-      result <- ClustCpObj(data = data_input,
-                           n_iterations = n_iterations_input,
-                           n_burnin = n_burnin_input,
-                           clust = out$clust,
-                           orders = out$orders,
-                           time = out$time,
-                           norm_vec = out$norm_vec,
-                           entropy_MCMC = entropy_MCMC,
-                           lkl_MCMC = lkl_MCMC,
-                           kernel_ts = TRUE,
-                           kernel_epi = FALSE,
-                           univariate_ts = FALSE)
-
-    }
-
-  }
-
-  if(kernel == "epi"){
-
-    if((!is.null(params$M)) && (params$M < 1)) stop("params$M must be at least equal to 1")
-    if((!is.null(params$xi)) && ((params$xi <= 0) | (params$xi >= 1))) stop("params$xi must be in (0,1)")
-    if((!is.null(params$alpha_SM)) && (params$alpha_SM <= 0)) stop("params$alpha_SM must be positive")
-    if((!is.null(params$a0)) && (params$a0 <= 0)) stop("params$a0 must be positive")
-    if((!is.null(params$b0)) && (params$b0 <= 0)) stop("params$b0 must be positive")
-    if((!is.null(params$I0_var)) && ((params$I0_var <= 0) | (params$I0_var >= 1))) stop("params$I0_var must be in (0,1)")
-    if((!is.null(params$avg_blk) && (params$avg_blk < 0))) stop("params$avg_blk must be positive")
-    if((!is.null(params) && !is.list(params))) stop("params must be a list")
-
-    data_input = data
-    n_iterations_input = n_iterations
-    n_burnin_input = n_burnin
-    alpha_SM_input = alpha_SM
-    B_input = B
-    L_input = L
-    q_input = q
-    print_progress_input = print_progress
-    user_seed_input = user_seed
-
-    # substitute missing parameters with default
-    M_input = ifelse(is.null(params$M), 250, params$M)
-    xi_input = ifelse(is.null(params$xi), 1/8, params$xi)
-    a0_input = ifelse(is.null(params$a0), 4, params$a0)
-    b0_input = ifelse(is.null(params$b0), 10, params$b0)
-    I0_var_input = ifelse(is.null(params$I0_var), 0.01, params$I0_var)
-    avg_blk_input = ifelse(is.null(params$avg_blk), 2, params$avg_blk)
-    #
-
-    out <- clust_cp_epi(data = data_input, n_iterations = n_iterations_input,
-                        M = M_input, B = B_input, L = L_input,
-                        xi = xi_input,alpha_SM = alpha_SM_input, q = q_input,
-                        a0 = a0_input, b0 = b0_input, I0_var = I0_var_input,
-                        avg_blk = avg_blk_input, print_progress = print_progress_input,
-                        user_seed = user_seed_input)
-
-    # create coda objects
-    entropy_MCMC <- coda::mcmc(out$entropy)
-    I0_MCMC <- coda::mcmc(out$I0_MCMC)
-    lkl_MCMC <- coda::mcmc(out$llik)
-
-    result <- ClustCpObj(data = data_input,
-                         n_iterations = n_iterations_input,
-                         n_burnin = n_burnin_input,
+    result <- ClustCpObj(data = data,
+                         n_iterations = n_iterations,
+                         n_burnin = n_burnin,
                          clust = out$clust,
                          orders = out$orders,
                          time = out$time,
                          norm_vec = out$norm_vec,
-                         entropy_MCMC = entropy_MCMC,
-                         lkl_MCMC = lkl_MCMC,
-                         I0_MCMC = I0_MCMC,
+                         entropy_MCMC = coda::mcmc(out$entropy),
+                         lkl_MCMC = coda::mcmc(out$lkl),
+                         kernel_ts = TRUE,
+                         kernel_epi = FALSE,
+                         univariate_ts = TRUE)
+
+  } else if(kernel == "ts"){
+
+    rp <- resolve_params(params, "multi", d = dim(data)[1])
+    report_sampler_settings(rp$sampler, "clust_cp")
+    pr <- rp$values
+
+    out <- clust_cp_multi(data = data, n_iterations = n_iterations,
+                          B = B, L = L, phi = pr$phi,
+                          k_0 = pr$k_0, nu_0 = pr$nu_0,
+                          S_0 = pr$S_0, m_0 = pr$m_0, q = q,
+                          alpha_SM = alpha_SM,
+                          print_progress = print_progress,
+                          user_seed = user_seed)
+
+    result <- ClustCpObj(data = data,
+                         n_iterations = n_iterations,
+                         n_burnin = n_burnin,
+                         clust = out$clust,
+                         orders = out$orders,
+                         time = out$time,
+                         norm_vec = out$norm_vec,
+                         entropy_MCMC = coda::mcmc(out$entropy),
+                         lkl_MCMC = coda::mcmc(out$lkl),
+                         kernel_ts = TRUE,
+                         kernel_epi = FALSE,
+                         univariate_ts = FALSE)
+
+  } else {
+
+    rp <- resolve_params(params, "epi")
+    report_sampler_settings(rp$sampler, "clust_cp")
+    pr <- rp$values
+
+    out <- clust_cp_epi(data = data, n_iterations = n_iterations,
+                        M = pr$M, B = B, L = L,
+                        xi = pr$xi, alpha_SM = alpha_SM, q = q,
+                        a0 = pr$a0, b0 = pr$b0, I0_var = pr$I0_var,
+                        avg_blk = pr$avg_blk, print_progress = print_progress,
+                        user_seed = user_seed)
+
+    result <- ClustCpObj(data = data,
+                         n_iterations = n_iterations,
+                         n_burnin = n_burnin,
+                         clust = out$clust,
+                         orders = out$orders,
+                         time = out$time,
+                         norm_vec = out$norm_vec,
+                         entropy_MCMC = coda::mcmc(out$entropy),
+                         lkl_MCMC = coda::mcmc(out$llik),
+                         I0_MCMC = coda::mcmc(out$I0_MCMC),
                          kernel_ts = FALSE,
                          kernel_epi = TRUE,
                          univariate_ts = TRUE)

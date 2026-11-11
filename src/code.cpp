@@ -471,11 +471,19 @@ double Likelihood_MultiTS(arma::mat data, arma::vec order,
 
     }
 
-    vec_likelihood(j) = log(pow(k_n,(-d/2))) - log(std::pow(k_0,(-d/2))) + (nu_0/2) * log(arma::det(S_0)) + lgamma_multi(d, (nu_n/2)) - (nu_n/2)*log(arma::det(phi_n)) - lgamma_multi(d,(nu_0/2)) + -(n_i * d / 2.0) * log(M_PI) - log(pow((1-pow(gamma,2)),((n_i-1)/2)));
+    vec_likelihood(j) = log(pow(k_n,(-d/2))) - log(std::pow(k_0,(-d/2))) + (nu_0/2) * log(arma::det(S_0)) + lgamma_multi(d, (nu_n/2)) - (nu_n/2)*log(arma::det(phi_n)) - lgamma_multi(d,(nu_0/2)) + -(n_i * d / 2.0) * log(M_PI) - (d * (n_i - 1) / 2.0) * log(1 - pow(gamma, 2)); // Jacobian of the d-dimensional OU transitions: (1 - phi^2)^(-d (n_i - 1) / 2)
   }
 
   return sum(vec_likelihood);
 
+}
+
+//' Log integrated likelihood of a multivariate time series given an order (internal, used in tests)
+//' @noRd
+// [[Rcpp::export]]
+double log_marginal_multi_ts(arma::mat data, arma::vec order, double phi, double k_0, double nu_0,
+                             arma::mat S_0, arma::vec m_0){
+  return Likelihood_MultiTS(data, order, phi, k_0, nu_0, S_0, m_0);
 }
 
 double Prior_TS(arma::vec order,
@@ -1600,7 +1608,7 @@ double FullConditionalPhi(arma::mat data, arma::vec order, double gamma,
 
   double num = gsl_sf_lnfact(n) + (k*d/2)*log(k_0) + (k*nu_0/2) * log(arma::det(S_0)) + sum(log(vec_num));
 
-  double den = gsl_sf_lnfact(k) + gsl_sf_lnpoch((delta+1),(n-1)) + (n*d/2) * log(M_PI) + ((n-k)/2)*log(1-std::pow(gamma,2)) + k * lgamma_multi(d, nu_0/2);
+  double den = gsl_sf_lnfact(k) + gsl_sf_lnpoch((delta+1),(n-1)) + (n*d/2) * log(M_PI) + (d*(n-k)/2)*log(1-std::pow(gamma,2)) + k * lgamma_multi(d, nu_0/2);
 
   for(int i = 0; i < k; i++){
 

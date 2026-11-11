@@ -28,6 +28,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// log_marginal_multi_ts
+double log_marginal_multi_ts(arma::mat data, arma::vec order, double phi, double k_0, double nu_0, arma::mat S_0, arma::vec m_0);
+RcppExport SEXP _BayesChange_log_marginal_multi_ts(SEXP dataSEXP, SEXP orderSEXP, SEXP phiSEXP, SEXP k_0SEXP, SEXP nu_0SEXP, SEXP S_0SEXP, SEXP m_0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type order(orderSEXP);
+    Rcpp::traits::input_parameter< double >::type phi(phiSEXP);
+    Rcpp::traits::input_parameter< double >::type k_0(k_0SEXP);
+    Rcpp::traits::input_parameter< double >::type nu_0(nu_0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type S_0(S_0SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type m_0(m_0SEXP);
+    rcpp_result_gen = Rcpp::wrap(log_marginal_multi_ts(data, order, phi, k_0, nu_0, S_0, m_0));
+    return rcpp_result_gen;
+END_RCPP
+}
 // sim_epi_data
 arma::vec sim_epi_data(double S0, double I0, double max_time, arma::vec beta_vec, double xi_0, unsigned long user_seed);
 RcppExport SEXP _BayesChange_sim_epi_data(SEXP S0SEXP, SEXP I0SEXP, SEXP max_timeSEXP, SEXP beta_vecSEXP, SEXP xi_0SEXP, SEXP user_seedSEXP) {
@@ -179,6 +196,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesChange_log_marginal_uni_ts", (DL_FUNC) &_BayesChange_log_marginal_uni_ts, 6},
+    {"_BayesChange_log_marginal_multi_ts", (DL_FUNC) &_BayesChange_log_marginal_multi_ts, 7},
     {"_BayesChange_sim_epi_data", (DL_FUNC) &_BayesChange_sim_epi_data, 6},
     {"_BayesChange_detect_cp_uni", (DL_FUNC) &_BayesChange_detect_cp_uni, 11},
     {"_BayesChange_detect_cp_multi", (DL_FUNC) &_BayesChange_detect_cp_multi, 12},

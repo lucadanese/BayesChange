@@ -7,6 +7,12 @@ log_marginal_uni_ts <- function(x, order, phi, a, b, c) {
     .Call(`_BayesChange_log_marginal_uni_ts`, x, order, phi, a, b, c)
 }
 
+#' Log integrated likelihood of a multivariate time series given an order (internal, used in tests)
+#' @noRd
+log_marginal_multi_ts <- function(data, order, phi, k_0, nu_0, S_0, m_0) {
+    .Call(`_BayesChange_log_marginal_multi_ts`, data, order, phi, k_0, nu_0, S_0, m_0)
+}
+
 #' Simulate epidemiological data
 #'
 #' @param S0 number of individuals in the population.

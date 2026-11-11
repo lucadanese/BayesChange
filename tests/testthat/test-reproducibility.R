@@ -103,3 +103,21 @@ test_that("univariate integrated likelihood equals the closed-form marginal", {
   expect_equal(BayesChange:::log_marginal_uni_ts(x, o, 0.3, 1, 1, 1),
                sum(sapply(split(x, o), exact, phi = 0.3, a = 1, b = 1, c = 1)), tolerance = 1e-8)
 })
+
+test_that("multivariate integrated likelihood equals the closed-form marginal", {
+  # X (n x d) | Sigma ~ MN(1 m0', R, Sigma), R = Corr_phi + 11'/k0, Sigma ~ IW(nu0, S0)
+  lmvgamma <- function(d, a) d * (d - 1) / 4 * log(pi) + sum(lgamma(a - (0:(d - 1)) / 2))
+  exact <- function(X, phi, k0, nu0, S0, m0){
+    n <- nrow(X); d <- ncol(X); R <- phi^abs(outer(1:n, 1:n, "-")) + matrix(1 / k0, n, n)
+    E <- sweep(X, 2, m0); Q <- t(E) %*% solve(R, E)
+    -n * d / 2 * log(pi) + lmvgamma(d, (nu0 + n) / 2) - lmvgamma(d, nu0 / 2) -
+      d / 2 * as.numeric(determinant(R)$modulus) + nu0 / 2 * as.numeric(determinant(S0)$modulus) -
+      (nu0 + n) / 2 * as.numeric(determinant(S0 + Q)$modulus)
+  }
+  set.seed(2)
+  for(d in c(1, 2, 3)) for(phi in c(0.1, 0.9)) for(n in c(1, 2, 10)){
+    X <- matrix(rnorm(n * d), n, d); S0 <- diag(0.5, d); m0 <- rep(0.1, d)
+    expect_equal(BayesChange:::log_marginal_multi_ts(t(X), rep(0, n), phi, 1.3, d + 3, S0, m0),
+                 exact(X, phi, 1.3, d + 3, S0, m0), tolerance = 1e-8)
+  }
+})
